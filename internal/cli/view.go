@@ -165,15 +165,35 @@ func (m Model) renderExtensions(width, height int) string {
 		focusIndicator = " ▸"
 	}
 	header := h1Style.Render("Extensions" + focusIndicator)
-	count := fmt.Sprintf("%d extensions found", len(m.extensions))
-	lines = append(lines, header, bodySmallStyle.Render(count), "")
 	
-	if len(m.extensions) == 0 {
-		lines = append(lines, mutedStyle.Render("No extensions installed."))
-		lines = append(lines, "", bodyStyle.Render("Press 'n' to add a new extension."))
+	// Show search bar if active or has query
+	if m.searchActive || m.searchBar.Value() != "" {
+		lines = append(lines, header)
+		lines = append(lines, m.searchBar.View())
+		lines = append(lines, "")
+	} else {
+		lines = append(lines, header)
+	}
+	
+	// Show count with filter indication
+	var count string
+	if m.searchBar.Value() != "" {
+		count = fmt.Sprintf("%d of %d extensions (filtered)", len(m.filteredExtensions), len(m.extensions))
+	} else {
+		count = fmt.Sprintf("%d extensions found", len(m.extensions))
+	}
+	lines = append(lines, bodySmallStyle.Render(count), "")
+	
+	if len(m.filteredExtensions) == 0 {
+		if m.searchBar.Value() != "" {
+			lines = append(lines, mutedStyle.Render("No extensions match your search."))
+		} else {
+			lines = append(lines, mutedStyle.Render("No extensions installed."))
+			lines = append(lines, "", bodyStyle.Render("Press 'n' to add a new extension."))
+		}
 	} else {
 		// Extension list
-		for i, ext := range m.extensions {
+		for i, ext := range m.filteredExtensions {
 			var line string
 			cursor := "  "
 			style := bodyStyle
@@ -203,7 +223,11 @@ func (m Model) renderExtensions(width, height int) string {
 		
 		// Help text
 		lines = append(lines, "")
-		lines = append(lines, helpDescStyle.Render("Space: Toggle • Enter: Details • n: New • d: Delete"))
+		helpText := "Space: Toggle • Enter: Details • n: New • d: Delete"
+		if !m.searchActive {
+			helpText += " • /: Search"
+		}
+		lines = append(lines, helpDescStyle.Render(helpText))
 	}
 	
 	return strings.Join(lines, "\n")
@@ -215,15 +239,39 @@ func (m Model) renderProfiles(width, height int) string {
 	
 	// Header
 	header := h1Style.Render("Profiles")
-	current := fmt.Sprintf("Active: %s", m.getProfileName())
-	lines = append(lines, header, bodySmallStyle.Render(current), "")
 	
-	if len(m.profiles) == 0 {
-		lines = append(lines, mutedStyle.Render("No profiles configured."))
-		lines = append(lines, "", bodyStyle.Render("Press 'n' to create a new profile."))
+	// Show search bar if active or has query
+	if m.searchActive || m.searchBar.Value() != "" {
+		lines = append(lines, header)
+		lines = append(lines, m.searchBar.View())
+		lines = append(lines, "")
+	} else {
+		lines = append(lines, header)
+	}
+	
+	// Active profile and count
+	current := fmt.Sprintf("Active: %s", m.getProfileName())
+	lines = append(lines, bodySmallStyle.Render(current))
+	
+	// Show count with filter indication
+	var count string
+	if m.searchBar.Value() != "" {
+		count = fmt.Sprintf("%d of %d profiles (filtered)", len(m.filteredProfiles), len(m.profiles))
+	} else {
+		count = fmt.Sprintf("%d profiles", len(m.profiles))
+	}
+	lines = append(lines, bodySmallStyle.Render(count), "")
+	
+	if len(m.filteredProfiles) == 0 {
+		if m.searchBar.Value() != "" {
+			lines = append(lines, mutedStyle.Render("No profiles match your search."))
+		} else {
+			lines = append(lines, mutedStyle.Render("No profiles configured."))
+			lines = append(lines, "", bodyStyle.Render("Press 'n' to create a new profile."))
+		}
 	} else {
 		// Profile list
-		for i, prof := range m.profiles {
+		for i, prof := range m.filteredProfiles {
 			var line string
 			cursor := "  "
 			style := bodyStyle
@@ -252,7 +300,11 @@ func (m Model) renderProfiles(width, height int) string {
 		
 		// Help text
 		lines = append(lines, "")
-		lines = append(lines, helpDescStyle.Render("Enter: Activate • n: New • e: Edit • d: Delete"))
+		helpText := "Enter: Activate • n: New • e: Edit • d: Delete"
+		if !m.searchActive {
+			helpText += " • /: Search"
+		}
+		lines = append(lines, helpDescStyle.Render(helpText))
 	}
 	
 	return strings.Join(lines, "\n")
@@ -375,7 +427,13 @@ func (m Model) renderStatusBar() string {
 	// Error in the middle if present
 	middle := ""
 	if m.err != nil {
-		middle = errorStyle.Render(" Error: " + m.err.Error() + " ")
+		if uiErr, ok := m.err.(UIError); ok {
+			// For UI errors, show just the message in status bar
+			// Full details are shown in modal or form
+			middle = errorStyle.Render(" ❌ " + uiErr.Message + " ")
+		} else {
+			middle = errorStyle.Render(" Error: " + m.err.Error() + " ")
+		}
 	}
 	
 	leftStr := strings.Join(left, " • ")

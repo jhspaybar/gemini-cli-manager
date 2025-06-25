@@ -2,9 +2,11 @@ package cli
 
 import (
 	"fmt"
+	"time"
 	
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/bubbles/key"
+	"github.com/gemini-cli/manager/internal/profile"
 )
 
 // Additional key bindings
@@ -45,7 +47,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.windowWidth = msg.Width
 			m.windowHeight = msg.Height
 			// Update modal size
-			if modal, ok := m.modal.(SimpleLaunchModal); ok {
+			switch modal := m.modal.(type) {
+			case SimpleLaunchModal:
+				modal.SetSize(msg.Width, msg.Height)
+				m.modal = modal
+			case ProfileForm:
+				modal.SetSize(msg.Width, msg.Height)
+				m.modal = modal
+			case ExtensionInstallForm:
 				modal.SetSize(msg.Width, msg.Height)
 				m.modal = modal
 			}
@@ -65,6 +74,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				// Successfully launched - we could quit or show a success message
 				return m, tea.Quit
 			}
+		case installCompleteMsg:
+			if msg.err == nil {
+				// Success - close modal and refresh extensions
+				m.showingModal = false
+				m.modal = nil
+				// Reload extensions
+				m.extensions = m.extensionManager.List()
+			}
+			// If error, keep modal open to show error
 		}
 		
 		return m, cmd
@@ -81,6 +99,45 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case tea.KeyMsg:
+		// Handle search mode first
+		if m.searchActive {
+			switch msg.String() {
+			case "esc":
+				// Exit search
+				m.searchActive = false
+				m.searchBar.Blur()
+				m.searchBar.Clear()
+				// Reset filtered lists
+				m.filteredExtensions = m.extensions
+				m.filteredProfiles = m.profiles
+				return m, nil
+			case "enter":
+				// Apply search and exit search mode
+				m.searchActive = false
+				m.searchBar.Blur()
+				return m, nil
+			default:
+				// Update search bar
+				var cmd tea.Cmd
+				m.searchBar, cmd = m.searchBar.Update(msg)
+				
+				// Apply filters
+				query := m.searchBar.Value()
+				m.filteredExtensions = filterExtensions(m.extensions, query)
+				m.filteredProfiles = filterProfiles(m.profiles, query)
+				
+				// Reset cursors if they're out of bounds
+				if m.extensionsCursor >= len(m.filteredExtensions) {
+					m.extensionsCursor = 0
+				}
+				if m.profilesCursor >= len(m.filteredProfiles) {
+					m.profilesCursor = 0
+				}
+				
+				return m, cmd
+			}
+		}
+		
 		// Handle vim-style navigation and arrow keys
 		switch msg.String() {
 		case "q", "ctrl+c":
@@ -121,6 +178,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "L":
 			// Quick launch
 			return m.startLaunch()
+		case "/":
+			// Activate search
+			m.searchActive = true
+			return m, m.searchBar.Focus()
 		}
 		
 		// Handle pane-specific navigation
@@ -214,13 +275,13 @@ func (m Model) updateExtensions(msg tea.KeyMsg) (Model, tea.Cmd) {
 			m.extensionsCursor--
 		}
 	case "down", "j":
-		if m.extensionsCursor < len(m.extensions)-1 {
+		if m.extensionsCursor < len(m.filteredExtensions)-1 {
 			m.extensionsCursor++
 		}
 	case " ":
 		// Toggle extension
-		if m.extensionsCursor < len(m.extensions) {
-			ext := m.extensions[m.extensionsCursor]
+		if m.extensionsCursor < len(m.filteredExtensions) {
+			ext := m.filteredExtensions[m.extensionsCursor]
 			if ext.Enabled {
 				m.extensionManager.Disable(ext.ID)
 			} else {
@@ -233,8 +294,8 @@ func (m Model) updateExtensions(msg tea.KeyMsg) (Model, tea.Cmd) {
 		// TODO: Show extension details
 		return m, tea.Println("Extension details not yet implemented")
 	case "n":
-		// TODO: Add new extension
-		return m, tea.Println("Add extension not yet implemented")
+		// Add new extension
+		return m.showExtensionInstallForm()
 	case "d":
 		// TODO: Delete extension
 		return m, tea.Println("Delete extension not yet implemented")
@@ -249,24 +310,27 @@ func (m Model) updateProfiles(msg tea.KeyMsg) (Model, tea.Cmd) {
 			m.profilesCursor--
 		}
 	case "down", "j":
-		if m.profilesCursor < len(m.profiles)-1 {
+		if m.profilesCursor < len(m.filteredProfiles)-1 {
 			m.profilesCursor++
 		}
 	case "enter":
 		// Activate profile
-		if m.profilesCursor < len(m.profiles) {
-			profile := m.profiles[m.profilesCursor]
+		if m.profilesCursor < len(m.filteredProfiles) {
+			profile := m.filteredProfiles[m.profilesCursor]
 			if err := m.profileManager.SetActive(profile.ID); err == nil {
 				m.currentProfile = profile
 				return m, tea.Println("Profile activated: " + profile.Name)
 			}
 		}
 	case "n":
-		// TODO: Create new profile
-		return m, tea.Println("Create profile not yet implemented")
+		// Create new profile
+		return m.showProfileForm(nil, false)
 	case "e":
-		// TODO: Edit profile
-		return m, tea.Println("Edit profile not yet implemented")
+		// Edit profile
+		if m.profilesCursor < len(m.filteredProfiles) {
+			return m.showProfileForm(m.filteredProfiles[m.profilesCursor], true)
+		}
+		return m, nil
 	case "d":
 		// TODO: Delete profile
 		return m, tea.Println("Delete profile not yet implemented")
@@ -313,4 +377,107 @@ func (m Model) startLaunch() (Model, tea.Cmd) {
 	
 	// Initialize the modal
 	return m, modal.Init()
+}
+
+// showProfileForm shows the profile creation/edit form
+func (m Model) showProfileForm(prof *profile.Profile, isEdit bool) (Model, tea.Cmd) {
+	// Get list of extension IDs
+	extIDs := make([]string, 0, len(m.extensions))
+	for _, ext := range m.extensions {
+		extIDs = append(extIDs, ext.ID)
+	}
+	
+	// Create form
+	form := NewProfileForm(prof, extIDs, isEdit)
+	form.SetSize(m.windowWidth, m.windowHeight)
+	form.SetCallbacks(
+		func(p *profile.Profile) tea.Cmd {
+			// Save profile
+			var err error
+			if isEdit {
+				err = m.profileManager.Save(p)
+			} else {
+				err = m.profileManager.Create(p)
+			}
+			
+			if err != nil {
+				m.err = err
+			} else {
+				// Refresh profiles list
+				m.profiles = m.profileManager.List()
+				// If we created a new profile, select it
+				if !isEdit {
+					for i, prof := range m.profiles {
+						if prof.ID == p.ID {
+							m.profilesCursor = i
+							break
+						}
+					}
+				}
+			}
+			
+			// Close modal
+			m.showingModal = false
+			m.modal = nil
+			return nil
+		},
+		func() tea.Cmd {
+			// Cancel
+			m.showingModal = false
+			m.modal = nil
+			return nil
+		},
+	)
+	
+	m.showingModal = true
+	m.modal = form
+	m.err = nil // Clear any previous errors
+	
+	// Initialize the form
+	return m, form.Init()
+}
+
+// showExtensionInstallForm shows the extension installation form
+func (m Model) showExtensionInstallForm() (Model, tea.Cmd) {
+	// Create form
+	form := NewExtensionInstallForm()
+	form.SetSize(m.windowWidth, m.windowHeight)
+	form.SetCallbacks(
+		func(source string, isPath bool) tea.Cmd {
+			// Install extension
+			return func() tea.Msg {
+				// This would normally call the extension manager to install
+				// For now, we'll simulate the installation
+				// In real implementation, this would:
+				// 1. Download/copy the extension
+				// 2. Validate the extension
+				// 3. Install to the proper directory
+				// 4. Update the extension registry
+				
+				// Simulate installation progress
+				go func() {
+					time.Sleep(2 * time.Second)
+					// Would send progress updates here
+				}()
+				
+				// For now, return an error since we don't have the installer yet
+				return installCompleteMsg{
+					err: fmt.Errorf("extension installation not yet implemented"),
+				}
+			}
+		},
+		func() tea.Cmd {
+			// Cancel
+			m.showingModal = false
+			m.modal = nil
+			return nil
+		},
+	)
+	
+	m.showingModal = true
+	m.modal = form
+	m.err = nil
+	
+	// Initialize the form
+	return m, form.Init()
 }

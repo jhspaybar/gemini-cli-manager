@@ -58,6 +58,12 @@ type Model struct {
 	err          error
 	showingModal bool
 	modal        tea.Model
+	
+	// Search
+	searchBar        SearchBar
+	searchActive     bool
+	filteredExtensions []*extension.Extension
+	filteredProfiles   []*profile.Profile
 }
 
 // PaneType represents which pane is focused
@@ -161,6 +167,7 @@ func NewModel() Model {
 		launcher:         launcherInstance,
 		help:            help.New(),
 		keys:            keys,
+		searchBar:        NewSearchBar("Search extensions, profiles..."),
 	}
 	
 	// Load initial data
@@ -213,6 +220,10 @@ func (m *Model) loadData() {
 	}
 	
 	m.extensions = m.extensionManager.List()
+	
+	// Initialize filtered lists
+	m.filteredExtensions = m.extensions
+	m.filteredProfiles = m.profiles
 }
 
 // Init is the first function that will be called
