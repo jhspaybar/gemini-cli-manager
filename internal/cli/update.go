@@ -6,6 +6,7 @@ import (
 	
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/bubbles/key"
+	"github.com/gemini-cli/manager/internal/extension"
 	"github.com/gemini-cli/manager/internal/profile"
 )
 
@@ -16,6 +17,12 @@ type closeModalMsg struct{}
 type profileSavedMsg struct {
 	profile *profile.Profile
 	isNew   bool
+}
+
+// execGeminiMsg signals that we should exec Gemini after quitting
+type execGeminiMsg struct {
+	profile    *profile.Profile
+	extensions []*extension.Extension
 }
 
 // Additional key bindings
@@ -128,6 +135,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case UIError:
 			// Set error
 			m.err = msg
+		case execGeminiMsg:
+			// Store the launch info and quit
+			m.shouldExecGemini = true
+			m.execProfile = msg.profile
+			m.execExtensions = msg.extensions
+			m.showingModal = false
+			m.modal = nil
+			return m, tea.Quit
 		}
 		
 		return m, cmd

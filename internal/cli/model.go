@@ -64,6 +64,11 @@ type Model struct {
 	searchActive     bool
 	filteredExtensions []*extension.Extension
 	filteredProfiles   []*profile.Profile
+	
+	// Launch state
+	shouldExecGemini bool
+	execProfile      *profile.Profile
+	execExtensions   []*extension.Extension
 }
 
 // PaneType represents which pane is focused
@@ -236,3 +241,13 @@ func (m Model) GetCurrentView() ViewType { return m.currentView }
 func (m Model) GetFocusedPane() PaneType { return m.focusedPane }
 func (m Model) GetSidebarCursor() int { return m.sidebarCursor }
 func (m Model) GetExtensionsCursor() int { return m.extensionsCursor }
+
+// ShouldExecGemini returns true if we should exec Gemini after quitting
+func (m Model) ShouldExecGemini() bool {
+	return m.shouldExecGemini
+}
+
+// GetExecInfo returns the information needed to exec Gemini
+func (m Model) GetExecInfo() (*profile.Profile, []*extension.Extension, *launcher.SimpleLauncher) {
+	return m.execProfile, m.execExtensions, m.launcher
+}

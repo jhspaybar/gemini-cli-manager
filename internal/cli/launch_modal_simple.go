@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -144,6 +145,13 @@ func (m SimpleLaunchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, cmd
 
 	case launchStepMsg:
+		// Debug log
+		debugLog, _ := os.OpenFile("/tmp/gemini-cli-manager-debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+		if debugLog != nil {
+			fmt.Fprintf(debugLog, "Received launchStepMsg: step=%d, message=%s\n", msg.step, msg.message)
+			debugLog.Close()
+		}
+		
 		m.currentStep = msg.step
 		m.progress[msg.step].status = stepRunning
 		m.progress[msg.step].message = msg.message
@@ -167,11 +175,13 @@ func (m SimpleLaunchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, nil
 		} else {
 			m.state = launchStateSuccess
-			// Quit immediately after successful launch
-			if m.onComplete != nil {
-				return m, m.onComplete()
+			// Send a message to exec Gemini after quitting
+			return m, func() tea.Msg {
+				return execGeminiMsg{
+					profile:    m.profile,
+					extensions: m.extensions,
+				}
 			}
-			return m, tea.Quit
 		}
 	}
 
@@ -308,6 +318,14 @@ func (m SimpleLaunchModal) getStepStyle(status stepStatus) lipgloss.Style {
 // Launch process implementation
 
 func (m SimpleLaunchModal) startLaunch() tea.Cmd {
+	// Debug log
+	debugLog, _ := os.OpenFile("/tmp/gemini-cli-manager-debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if debugLog != nil {
+		fmt.Fprintf(debugLog, "\n=== Launch started at %s ===\n", time.Now().Format(time.RFC3339))
+		fmt.Fprintf(debugLog, "startLaunch() called\n")
+		debugLog.Close()
+	}
+	
 	return func() tea.Msg {
 		return launchStepMsg{
 			step:    0,
@@ -317,6 +335,13 @@ func (m SimpleLaunchModal) startLaunch() tea.Cmd {
 }
 
 func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
+	// Debug log
+	debugLog, _ := os.OpenFile("/tmp/gemini-cli-manager-debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if debugLog != nil {
+		fmt.Fprintf(debugLog, "continueNextStep() called, currentStep=%d\n", m.currentStep)
+		debugLog.Close()
+	}
+	
 	return func() tea.Msg {
 		start := time.Now()
 		
@@ -324,11 +349,22 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 		case 0: // Profile validation
 			time.Sleep(300 * time.Millisecond)
 			
-			return launchCompleteStepMsg{
-				step:     0,
-				status:   stepSuccess,
-				duration: time.Since(start),
-			}
+			// Need to return both the completion and the next step
+			return tea.Batch(
+				func() tea.Msg {
+					return launchCompleteStepMsg{
+						step:     0,
+						status:   stepSuccess,
+						duration: time.Since(start),
+					}
+				},
+				func() tea.Msg {
+					return launchStepMsg{
+						step:    1,
+						message: "Checking extensions...",
+					}
+				},
+			)()
 			
 		case 1: // Extension check
 			time.Sleep(500 * time.Millisecond)
@@ -369,27 +405,18 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 			)()
 			
 		case 3: // Launch Gemini
-			// Start the Gemini CLI process
-			err := m.launcher.Launch(m.profile, m.extensions)
-			if err != nil {
-				return tea.Batch(
-					func() tea.Msg {
-						return launchCompleteStepMsg{
-							step:     3,
-							status:   stepFailed,
-							duration: time.Since(start),
-							error:    err,
-						}
-					},
-					func() tea.Msg {
-						return LaunchCompleteMsg{
-							Error: err,
-						}
-					},
-				)()
+			// Don't actually launch here - just validate we can
+			// The actual exec needs to happen after Bubble Tea shuts down
+			
+			// Debug log
+			debugLog, _ := os.OpenFile("/tmp/gemini-cli-manager-debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+			if debugLog != nil {
+				fmt.Fprintf(debugLog, "\n=== Launch modal step 3 at %s ===\n", time.Now().Format(time.RFC3339))
+				fmt.Fprintf(debugLog, "Ready to launch after TUI exits\n")
+				debugLog.Close()
 			}
 			
-			// Success! The process has been started
+			// Just mark as successful and let the main app handle the actual exec
 			return tea.Batch(
 				func() tea.Msg {
 					return launchCompleteStepMsg{
@@ -399,11 +426,8 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 					}
 				},
 				func() tea.Msg {
-					// If we reach here, syscall.Exec didn't replace our process
-					// This should only happen if exec failed
-					return LaunchCompleteMsg{
-						Error: fmt.Errorf("failed to exec into Gemini CLI"),
-					}
+					time.Sleep(300 * time.Millisecond) // Brief pause to show success
+					return LaunchCompleteMsg{}
 				},
 			)()
 		}

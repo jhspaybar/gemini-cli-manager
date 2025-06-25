@@ -30,8 +30,22 @@ func main() {
 	}
 
 	// Create and run the program
-	p := tea.NewProgram(cli.NewModel(), tea.WithAltScreen())
-	if _, err := p.Run(); err != nil {
+	model := cli.NewModel()
+	p := tea.NewProgram(model, tea.WithAltScreen())
+	finalModel, err := p.Run()
+	if err != nil {
 		log.Fatal(err)
+	}
+	
+	// Check if we need to exec into Gemini
+	if m, ok := finalModel.(cli.Model); ok && m.ShouldExecGemini() {
+		profile, extensions, launcher := m.GetExecInfo()
+		if launcher != nil && profile != nil {
+			// Now we can safely exec from the main thread
+			if err := launcher.Launch(profile, extensions); err != nil {
+				fmt.Fprintf(os.Stderr, "Failed to launch Gemini: %v\n", err)
+				os.Exit(1)
+			}
+		}
 	}
 }
