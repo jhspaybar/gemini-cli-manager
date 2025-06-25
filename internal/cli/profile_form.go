@@ -105,12 +105,18 @@ func (f ProfileForm) Init() tea.Cmd {
 func (f ProfileForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
+		// Handle global keys first
 		switch msg.String() {
 		case "ctrl+c", "esc":
 			if f.onCancel != nil {
 				return f, f.onCancel()
 			}
 			return f, nil
+			
+		case "ctrl+s":
+			// Save from anywhere
+			cmd := f.save()
+			return f, cmd
 			
 		case "tab", "shift+tab":
 			// Navigate between form sections
@@ -136,46 +142,42 @@ func (f ProfileForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			
 			return f, nil
-			
-		case "up", "k":
-			if f.focusIndex == totalFields && f.extensionsCursor > 0 {
-				f.extensionsCursor--
+		}
+		
+		// Handle section-specific keys
+		if f.focusIndex == totalFields {
+			// Extension selection mode
+			switch msg.String() {
+			case "up", "k":
+				if f.extensionsCursor > 0 {
+					f.extensionsCursor--
+				}
+				return f, nil
+				
+			case "down", "j":
+				if f.extensionsCursor < len(f.availableExtensions)-1 {
+					f.extensionsCursor++
+				}
+				return f, nil
+				
+			case " ", "enter":
+				// Toggle extension selection
+				if len(f.availableExtensions) > 0 && f.extensionsCursor < len(f.availableExtensions) {
+					ext := f.availableExtensions[f.extensionsCursor]
+					f.selectedExtensions[ext] = !f.selectedExtensions[ext]
+				}
+				if msg.String() == "enter" {
+					// Enter also saves when on extensions
+					cmd := f.save()
+					return f, cmd
+				}
+				return f, nil
 			}
-			return f, nil
-			
-		case "down", "j":
-			if f.focusIndex == totalFields && f.extensionsCursor < len(f.availableExtensions)-1 {
-				f.extensionsCursor++
-			}
-			return f, nil
-			
-		case " ":
-			// Toggle extension selection
-			if f.focusIndex == totalFields && len(f.availableExtensions) > 0 {
-				ext := f.availableExtensions[f.extensionsCursor]
-				f.selectedExtensions[ext] = !f.selectedExtensions[ext]
-			}
-			return f, nil
-			
-		case "enter":
-			// Save only if we're on the last section or using Ctrl+S
-			if f.focusIndex == totalFields {
-				cmd := f.save()
-				return f, cmd
-			}
-			
-		case "ctrl+s":
-			// Save from anywhere
-			cmd := f.save()
+		} else {
+			// Text input mode - pass all keys to the input
+			var cmd tea.Cmd
+			f.inputs[f.focusIndex], cmd = f.inputs[f.focusIndex].Update(msg)
 			return f, cmd
-			
-		default:
-			// For text input fields, pass through the key event
-			if f.focusIndex < totalFields {
-				var cmd tea.Cmd
-				f.inputs[f.focusIndex], cmd = f.inputs[f.focusIndex].Update(msg)
-				return f, cmd
-			}
 		}
 	}
 	
