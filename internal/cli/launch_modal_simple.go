@@ -161,10 +161,15 @@ func (m SimpleLaunchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if msg.Error != nil {
 			m.state = launchStateFailed
 			m.error = msg.Error
+			return m, nil
 		} else {
 			m.state = launchStateSuccess
+			// Quit immediately after successful launch
+			if m.onComplete != nil {
+				return m, m.onComplete()
+			}
+			return m, tea.Quit
 		}
-		return m, nil
 	}
 
 	return m, nil
@@ -361,7 +366,7 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 			)()
 			
 		case 3: // Launch Gemini
-			// Actually launch the CLI
+			// Start the Gemini CLI process
 			err := m.launcher.Launch(m.profile, m.extensions)
 			if err != nil {
 				return tea.Batch(
@@ -381,7 +386,7 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 				)()
 			}
 			
-			// Success!
+			// Success! The process has been started
 			return tea.Batch(
 				func() tea.Msg {
 					return launchCompleteStepMsg{
@@ -391,7 +396,7 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 					}
 				},
 				func() tea.Msg {
-					time.Sleep(300 * time.Millisecond) // Brief pause
+					time.Sleep(300 * time.Millisecond) // Brief pause to show success
 					return LaunchCompleteMsg{}
 				},
 			)()

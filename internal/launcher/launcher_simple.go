@@ -3,8 +3,8 @@ package launcher
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/gemini-cli/manager/internal/extension"
@@ -37,14 +37,11 @@ func NewSimpleLauncher(pm *profile.Manager, em *extension.Manager, geminiPath st
 // Launch executes Gemini CLI with the current profile
 func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extension.Extension) error {
 	// Build command
-	args := []string{}
+	args := []string{l.geminiPath}
 	
 	// Add any profile-specific arguments
 	// For now, gemini CLI discovers extensions from ~/.gemini/extensions/
 	// and loads enabled ones automatically
-	
-	// Create command
-	cmd := exec.Command(l.geminiPath, args...)
 	
 	// Set up environment
 	env := os.Environ()
@@ -77,23 +74,9 @@ func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extensio
 		}
 	}
 	
-	cmd.Env = env
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	
-	// Run Gemini CLI in the foreground
-	// This will block until the process completes
-	if err := cmd.Run(); err != nil {
-		// Check if it's just an exit status
-		if _, ok := err.(*exec.ExitError); ok {
-			// Gemini CLI exited with non-zero status, but that's normal
-			return nil
-		}
-		return fmt.Errorf("running Gemini CLI: %w", err)
-	}
-	
-	return nil
+	// Use syscall.Exec to replace our process with Gemini CLI
+	// This is the cleanest way to hand over the terminal
+	return syscall.Exec(l.geminiPath, args, env)
 }
 
 // CreateLaunchScript generates a standalone launch script
