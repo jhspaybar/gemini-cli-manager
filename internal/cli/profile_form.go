@@ -156,12 +156,14 @@ func (f ProfileForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "enter":
 			// Save only if we're on the last section or using Ctrl+S
 			if f.focusIndex == totalFields {
-				return f, f.save()
+				cmd := f.save()
+				return f, cmd
 			}
 			
 		case "ctrl+s":
 			// Save from anywhere
-			return f, f.save()
+			cmd := f.save()
+			return f, cmd
 		}
 	}
 	
@@ -309,7 +311,7 @@ func (f ProfileForm) renderExtensions() string {
 }
 
 // save validates and saves the profile
-func (f ProfileForm) save() tea.Cmd {
+func (f *ProfileForm) save() tea.Cmd {
 	// Validate
 	name := strings.TrimSpace(f.inputs[nameField].Value())
 	if name == "" {

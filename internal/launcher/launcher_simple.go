@@ -82,13 +82,17 @@ func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extensio
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	
-	// Start Gemini CLI
-	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("starting Gemini CLI: %w", err)
+	// Run Gemini CLI in the foreground
+	// This will block until the process completes
+	if err := cmd.Run(); err != nil {
+		// Check if it's just an exit status
+		if _, ok := err.(*exec.ExitError); ok {
+			// Gemini CLI exited with non-zero status, but that's normal
+			return nil
+		}
+		return fmt.Errorf("running Gemini CLI: %w", err)
 	}
 	
-	// For interactive sessions, we don't wait
-	// The process will run in the foreground
 	return nil
 }
 

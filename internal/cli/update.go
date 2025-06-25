@@ -57,6 +57,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case ExtensionInstallForm:
 				modal.SetSize(msg.Width, msg.Height)
 				m.modal = modal
+			case ProfileQuickSwitchModal:
+				modal.SetSize(msg.Width, msg.Height)
+				m.modal = modal
 			}
 		}
 		
@@ -66,13 +69,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// Check if modal wants to close
 		switch msg := msg.(type) {
 		case LaunchCompleteMsg:
-			m.showingModal = false
-			m.modal = nil
 			if msg.Error != nil {
+				// Keep modal open to show error
 				m.err = msg.Error
 			} else {
-				// Successfully launched - we could quit or show a success message
-				return m, tea.Quit
+				// Successfully launched - the Gemini CLI is now running
+				// Don't quit immediately, let the modal handle it
 			}
 		case installCompleteMsg:
 			if msg.err == nil {
@@ -93,6 +95,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.windowWidth = msg.Width
 		m.windowHeight = msg.Height
 		m.help.Width = msg.Width
+		// Update search bar width
+		m.searchBar.SetWidth(msg.Width / 2)
 		if !m.ready {
 			m.ready = true
 		}
@@ -182,6 +186,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Activate search
 			m.searchActive = true
 			return m, m.searchBar.Focus()
+		case "ctrl+p":
+			// Quick switch profiles
+			return m.showProfileQuickSwitch()
 		}
 		
 		// Handle pane-specific navigation
@@ -289,6 +296,12 @@ func (m Model) updateExtensions(msg tea.KeyMsg) (Model, tea.Cmd) {
 			}
 			// Reload extensions
 			m.extensions = m.extensionManager.List()
+			// Reapply filters if search is active
+			if m.searchBar.Value() != "" {
+				m.filteredExtensions = filterExtensions(m.extensions, m.searchBar.Value())
+			} else {
+				m.filteredExtensions = m.extensions
+			}
 		}
 	case "enter":
 		// TODO: Show extension details
@@ -297,8 +310,27 @@ func (m Model) updateExtensions(msg tea.KeyMsg) (Model, tea.Cmd) {
 		// Add new extension
 		return m.showExtensionInstallForm()
 	case "d":
-		// TODO: Delete extension
-		return m, tea.Println("Delete extension not yet implemented")
+		// Delete extension
+		if m.extensionsCursor < len(m.filteredExtensions) {
+			ext := m.filteredExtensions[m.extensionsCursor]
+			// Move to trash instead of permanent delete
+			if err := m.extensionManager.MoveToTrash(ext.ID); err != nil {
+				m.err = NewFileSystemError("delete", ext.Name, err)
+			} else {
+				// Reload extensions
+				m.extensions = m.extensionManager.List()
+				// Reapply filters
+				if m.searchBar.Value() != "" {
+					m.filteredExtensions = filterExtensions(m.extensions, m.searchBar.Value())
+				} else {
+					m.filteredExtensions = m.extensions
+				}
+				// Adjust cursor if needed
+				if m.extensionsCursor >= len(m.filteredExtensions) && m.extensionsCursor > 0 {
+					m.extensionsCursor--
+				}
+			}
+		}
 	}
 	return m, nil
 }
@@ -332,8 +364,34 @@ func (m Model) updateProfiles(msg tea.KeyMsg) (Model, tea.Cmd) {
 		}
 		return m, nil
 	case "d":
-		// TODO: Delete profile
-		return m, tea.Println("Delete profile not yet implemented")
+		// Delete profile
+		if m.profilesCursor < len(m.filteredProfiles) {
+			prof := m.filteredProfiles[m.profilesCursor]
+			// Don't allow deleting default or active profile
+			if prof.ID == "default" {
+				m.err = NewValidationError("Cannot delete the default profile", "The default profile is protected")
+			} else if m.currentProfile != nil && prof.ID == m.currentProfile.ID {
+				m.err = NewValidationError("Cannot delete the active profile", "Switch to another profile first")
+			} else {
+				// Delete the profile
+				if err := m.profileManager.Delete(prof.ID); err != nil {
+					m.err = WrapError(err, "profile deletion")
+				} else {
+					// Reload profiles
+					m.profiles = m.profileManager.List()
+					// Reapply filters
+					if m.searchBar.Value() != "" {
+						m.filteredProfiles = filterProfiles(m.profiles, m.searchBar.Value())
+					} else {
+						m.filteredProfiles = m.profiles
+					}
+					// Adjust cursor if needed
+					if m.profilesCursor >= len(m.filteredProfiles) && m.profilesCursor > 0 {
+						m.profilesCursor--
+					}
+				}
+			}
+		}
 	}
 	return m, nil
 }
@@ -435,6 +493,47 @@ func (m Model) showProfileForm(prof *profile.Profile, isEdit bool) (Model, tea.C
 	
 	// Initialize the form
 	return m, form.Init()
+}
+
+// showProfileQuickSwitch shows the profile quick switch modal
+func (m Model) showProfileQuickSwitch() (Model, tea.Cmd) {
+	currentID := ""
+	if m.currentProfile != nil {
+		currentID = m.currentProfile.ID
+	}
+	
+	modal := NewProfileQuickSwitchModal(m.profiles, currentID)
+	modal.SetSize(m.windowWidth, m.windowHeight)
+	modal.SetCallbacks(
+		func(p *profile.Profile) tea.Cmd {
+			// Switch profile
+			if err := m.profileManager.SetActive(p.ID); err == nil {
+				m.currentProfile = p
+				// Refresh profile list to update active indicator
+				m.profiles = m.profileManager.List()
+				if m.searchBar.Value() != "" {
+					m.filteredProfiles = filterProfiles(m.profiles, m.searchBar.Value())
+				} else {
+					m.filteredProfiles = m.profiles
+				}
+			}
+			// Close modal
+			m.showingModal = false
+			m.modal = nil
+			return nil
+		},
+		func() tea.Cmd {
+			// Cancel
+			m.showingModal = false
+			m.modal = nil
+			return nil
+		},
+	)
+	
+	m.showingModal = true
+	m.modal = modal
+	
+	return m, modal.Init()
 }
 
 // showExtensionInstallForm shows the extension installation form

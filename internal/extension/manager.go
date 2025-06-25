@@ -214,6 +214,11 @@ func (m *Manager) Remove(id string) error {
 	return nil
 }
 
+// MoveToTrash is an alias for Remove
+func (m *Manager) MoveToTrash(id string) error {
+	return m.Remove(id)
+}
+
 // Update updates an extension to the latest version
 func (m *Manager) Update(id string) error {
 	// TODO: Implement update functionality
