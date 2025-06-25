@@ -121,14 +121,17 @@ func (m SimpleLaunchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		case "esc", "ctrl+c":
+		case "ctrl+c":
+			// Always allow Ctrl+C to quit
+			return m, tea.Quit
+		case "esc":
 			if m.state < launchStateLaunching {
 				if m.onCancel != nil {
 					return m, m.onCancel()
 				}
 			}
 		case "enter", " ":
-			if m.state == launchStateSuccess {
+			if m.state == launchStateSuccess || m.state == launchStateFailed {
 				if m.onComplete != nil {
 					return m, m.onComplete()
 				}

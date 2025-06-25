@@ -37,21 +37,43 @@ func NewSimpleLauncher(pm *profile.Manager, em *extension.Manager, geminiPath st
 
 // Launch executes Gemini CLI with the current profile
 func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extension.Extension) error {
+	// Open debug log file
+	debugLog, err := os.OpenFile("/tmp/gemini-cli-manager-debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err == nil {
+		defer debugLog.Close()
+		fmt.Fprintf(debugLog, "\n=== Launch attempt at %s ===\n", time.Now().Format(time.RFC3339))
+		fmt.Fprintf(debugLog, "Initial geminiPath: %s\n", l.geminiPath)
+	}
+	
 	// Find the full path to the gemini binary
 	geminiPath := l.geminiPath
 	
 	// If it's not an absolute path, search in PATH
 	if !strings.HasPrefix(geminiPath, "/") {
+		if debugLog != nil {
+			fmt.Fprintf(debugLog, "Searching for gemini in PATH...\n")
+		}
 		if fullPath, err := exec.LookPath(geminiPath); err == nil {
 			geminiPath = fullPath
+			if debugLog != nil {
+				fmt.Fprintf(debugLog, "Found gemini at: %s\n", fullPath)
+			}
 		} else {
+			if debugLog != nil {
+				fmt.Fprintf(debugLog, "ERROR: gemini not found in PATH: %v\n", err)
+			}
 			return fmt.Errorf("gemini binary not found in PATH: %w", err)
 		}
 	}
 	
 	// Verify the binary exists and is executable
-	if _, err := os.Stat(geminiPath); err != nil {
+	if info, err := os.Stat(geminiPath); err != nil {
+		if debugLog != nil {
+			fmt.Fprintf(debugLog, "ERROR: stat failed for %s: %v\n", geminiPath, err)
+		}
 		return fmt.Errorf("gemini binary not found at %s: %w", geminiPath, err)
+	} else if debugLog != nil {
+		fmt.Fprintf(debugLog, "Binary exists at %s, mode: %v\n", geminiPath, info.Mode())
 	}
 	
 	// Build command
@@ -93,13 +115,22 @@ func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extensio
 	}
 	
 	// Debug: Log what we're trying to exec
-	fmt.Fprintf(os.Stderr, "Attempting to exec: %s\n", geminiPath)
+	if debugLog != nil {
+		fmt.Fprintf(debugLog, "About to exec:\n")
+		fmt.Fprintf(debugLog, "  Path: %s\n", geminiPath)
+		fmt.Fprintf(debugLog, "  Args: %v\n", args)
+		fmt.Fprintf(debugLog, "  Profile: %s\n", profile.Name)
+		fmt.Fprintf(debugLog, "  Env vars added: GEMINI_PROFILE=%s, GEMINI_PROFILE_ID=%s\n", profile.Name, profile.ID)
+	}
 	
 	// Use syscall.Exec to replace our process with Gemini CLI
 	// This is the cleanest way to hand over the terminal
-	err := syscall.Exec(geminiPath, args, env)
+	err = syscall.Exec(geminiPath, args, env)
 	
 	// If we reach here, exec failed
+	if debugLog != nil {
+		fmt.Fprintf(debugLog, "ERROR: syscall.Exec failed: %v\n", err)
+	}
 	return fmt.Errorf("syscall.Exec failed for %s: %w", geminiPath, err)
 }
 

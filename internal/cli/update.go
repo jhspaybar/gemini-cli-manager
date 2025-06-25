@@ -50,6 +50,11 @@ var (
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// Handle modal updates first
 	if m.showingModal && m.modal != nil {
+		// Allow Ctrl+C to quit even in modals
+		if keyMsg, ok := msg.(tea.KeyMsg); ok && keyMsg.String() == "ctrl+c" {
+			return m, tea.Quit
+		}
+		
 		switch msg := msg.(type) {
 		case tea.WindowSizeMsg:
 			// Update main model size
