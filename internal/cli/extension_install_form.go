@@ -89,18 +89,26 @@ func (f ExtensionInstallForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if f.onCancel != nil {
 				return f, f.onCancel()
 			}
+			return f, nil
 			
 		case "enter":
 			// Start installation
-			return f, f.install()
+			cmd := f.install()
+			return f, cmd
 			
 		case "ctrl+v":
 			// Paste support would be nice but requires clipboard access
 			return f, nil
+			
+		default:
+			// Let text input handle other keys
+			var cmd tea.Cmd
+			f.inputs[f.focusIndex], cmd = f.inputs[f.focusIndex].Update(msg)
+			return f, cmd
 		}
 	}
 	
-	// Update text input
+	// For non-key messages, pass to text input
 	var cmd tea.Cmd
 	f.inputs[f.focusIndex], cmd = f.inputs[f.focusIndex].Update(msg)
 	
@@ -201,7 +209,7 @@ func (f ExtensionInstallForm) renderField(label string, index int) string {
 }
 
 // install validates and starts the installation
-func (f ExtensionInstallForm) install() tea.Cmd {
+func (f *ExtensionInstallForm) install() tea.Cmd {
 	source := strings.TrimSpace(f.inputs[sourceField].Value())
 	if source == "" {
 		f.err = fmt.Errorf("source path or URL is required")

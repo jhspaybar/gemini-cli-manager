@@ -9,6 +9,9 @@ import (
 	"github.com/gemini-cli/manager/internal/profile"
 )
 
+// closeModalMsg is sent when a modal wants to close
+type closeModalMsg struct{}
+
 // Additional key bindings
 var (
 	keyTab = key.NewBinding(
@@ -85,6 +88,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.extensions = m.extensionManager.List()
 			}
 			// If error, keep modal open to show error
+		case closeModalMsg:
+			// Close any open modal
+			m.showingModal = false
+			m.modal = nil
 		}
 		
 		return m, cmd
@@ -566,10 +573,10 @@ func (m Model) showExtensionInstallForm() (Model, tea.Cmd) {
 			}
 		},
 		func() tea.Cmd {
-			// Cancel
-			m.showingModal = false
-			m.modal = nil
-			return nil
+			// Cancel - return a command to close modal
+			return func() tea.Msg {
+				return closeModalMsg{}
+			}
 		},
 	)
 	
