@@ -3,6 +3,7 @@ package launcher
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 	"syscall"
 	"time"
@@ -36,8 +37,25 @@ func NewSimpleLauncher(pm *profile.Manager, em *extension.Manager, geminiPath st
 
 // Launch executes Gemini CLI with the current profile
 func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extension.Extension) error {
+	// Find the full path to the gemini binary
+	geminiPath := l.geminiPath
+	
+	// If it's not an absolute path, search in PATH
+	if !strings.HasPrefix(geminiPath, "/") {
+		if fullPath, err := exec.LookPath(geminiPath); err == nil {
+			geminiPath = fullPath
+		} else {
+			return fmt.Errorf("gemini binary not found in PATH: %w", err)
+		}
+	}
+	
+	// Verify the binary exists and is executable
+	if _, err := os.Stat(geminiPath); err != nil {
+		return fmt.Errorf("gemini binary not found at %s: %w", geminiPath, err)
+	}
+	
 	// Build command
-	args := []string{l.geminiPath}
+	args := []string{geminiPath}
 	
 	// Add any profile-specific arguments
 	// For now, gemini CLI discovers extensions from ~/.gemini/extensions/
@@ -74,9 +92,15 @@ func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extensio
 		}
 	}
 	
+	// Debug: Log what we're trying to exec
+	fmt.Fprintf(os.Stderr, "Attempting to exec: %s\n", geminiPath)
+	
 	// Use syscall.Exec to replace our process with Gemini CLI
 	// This is the cleanest way to hand over the terminal
-	return syscall.Exec(l.geminiPath, args, env)
+	err := syscall.Exec(geminiPath, args, env)
+	
+	// If we reach here, exec failed
+	return fmt.Errorf("syscall.Exec failed for %s: %w", geminiPath, err)
 }
 
 // CreateLaunchScript generates a standalone launch script

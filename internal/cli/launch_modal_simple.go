@@ -396,8 +396,11 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 					}
 				},
 				func() tea.Msg {
-					time.Sleep(300 * time.Millisecond) // Brief pause to show success
-					return LaunchCompleteMsg{}
+					// If we reach here, syscall.Exec didn't replace our process
+					// This should only happen if exec failed
+					return LaunchCompleteMsg{
+						Error: fmt.Errorf("failed to exec into Gemini CLI"),
+					}
 				},
 			)()
 		}
