@@ -12,6 +12,12 @@ import (
 // closeModalMsg is sent when a modal wants to close
 type closeModalMsg struct{}
 
+// profileSavedMsg is sent when a profile is successfully saved
+type profileSavedMsg struct {
+	profile *profile.Profile
+	isNew   bool
+}
+
 // Additional key bindings
 var (
 	keyTab = key.NewBinding(
@@ -92,6 +98,31 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Close any open modal
 			m.showingModal = false
 			m.modal = nil
+		case profileSavedMsg:
+			// Profile was saved successfully
+			m.showingModal = false
+			m.modal = nil
+			
+			// Refresh profiles list
+			m.profiles = m.profileManager.List()
+			if m.searchBar.Value() != "" {
+				m.filteredProfiles = filterProfiles(m.profiles, m.searchBar.Value())
+			} else {
+				m.filteredProfiles = m.profiles
+			}
+			
+			// If we created a new profile, select it
+			if msg.isNew {
+				for i, prof := range m.profiles {
+					if prof.ID == msg.profile.ID {
+						m.profilesCursor = i
+						break
+					}
+				}
+			}
+		case UIError:
+			// Set error
+			m.err = msg
 		}
 		
 		return m, cmd
@@ -457,40 +488,33 @@ func (m Model) showProfileForm(prof *profile.Profile, isEdit bool) (Model, tea.C
 	form.SetSize(m.windowWidth, m.windowHeight)
 	form.SetCallbacks(
 		func(p *profile.Profile) tea.Cmd {
-			// Save profile
-			var err error
-			if isEdit {
-				err = m.profileManager.Save(p)
-			} else {
-				err = m.profileManager.Create(p)
-			}
-			
-			if err != nil {
-				m.err = err
-			} else {
-				// Refresh profiles list
-				m.profiles = m.profileManager.List()
-				// If we created a new profile, select it
-				if !isEdit {
-					for i, prof := range m.profiles {
-						if prof.ID == p.ID {
-							m.profilesCursor = i
-							break
-						}
+			// Save profile and close modal
+			return func() tea.Msg {
+				var err error
+				if isEdit {
+					err = m.profileManager.Save(p)
+				} else {
+					err = m.profileManager.Create(p)
+				}
+				
+				if err != nil {
+					// Return error message
+					return UIError{
+						Type:    ErrorTypeFileSystem,
+						Message: fmt.Sprintf("Failed to save profile"),
+						Details: err.Error(),
 					}
 				}
+				
+				// Return success message to trigger refresh
+				return profileSavedMsg{profile: p, isNew: !isEdit}
 			}
-			
-			// Close modal
-			m.showingModal = false
-			m.modal = nil
-			return nil
 		},
 		func() tea.Cmd {
-			// Cancel
-			m.showingModal = false
-			m.modal = nil
-			return nil
+			// Cancel - return a command to close modal
+			return func() tea.Msg {
+				return closeModalMsg{}
+			}
 		},
 	)
 	

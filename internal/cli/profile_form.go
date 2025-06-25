@@ -110,6 +110,7 @@ func (f ProfileForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if f.onCancel != nil {
 				return f, f.onCancel()
 			}
+			return f, nil
 			
 		case "tab", "shift+tab":
 			// Navigate between form sections
@@ -140,11 +141,13 @@ func (f ProfileForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if f.focusIndex == totalFields && f.extensionsCursor > 0 {
 				f.extensionsCursor--
 			}
+			return f, nil
 			
 		case "down", "j":
 			if f.focusIndex == totalFields && f.extensionsCursor < len(f.availableExtensions)-1 {
 				f.extensionsCursor++
 			}
+			return f, nil
 			
 		case " ":
 			// Toggle extension selection
@@ -152,6 +155,7 @@ func (f ProfileForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				ext := f.availableExtensions[f.extensionsCursor]
 				f.selectedExtensions[ext] = !f.selectedExtensions[ext]
 			}
+			return f, nil
 			
 		case "enter":
 			// Save only if we're on the last section or using Ctrl+S
@@ -164,16 +168,18 @@ func (f ProfileForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Save from anywhere
 			cmd := f.save()
 			return f, cmd
+			
+		default:
+			// For text input fields, pass through the key event
+			if f.focusIndex < totalFields {
+				var cmd tea.Cmd
+				f.inputs[f.focusIndex], cmd = f.inputs[f.focusIndex].Update(msg)
+				return f, cmd
+			}
 		}
 	}
 	
-	// Update text inputs
-	var cmd tea.Cmd
-	if f.focusIndex < totalFields {
-		f.inputs[f.focusIndex], cmd = f.inputs[f.focusIndex].Update(msg)
-	}
-	
-	return f, cmd
+	return f, nil
 }
 
 // View renders the form
