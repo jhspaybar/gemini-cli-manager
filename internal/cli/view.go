@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
@@ -14,6 +13,8 @@ import (
 
 // View renders the entire application UI
 func (m Model) View() string {
+	LogDebug("Model.View called, ready=%v, loading=%v, showingModal=%v", m.ready, m.loading, m.showingModal)
+	
 	if !m.ready {
 		return "\n  Initializing..."
 	}
@@ -25,7 +26,10 @@ func (m Model) View() string {
 
 	// If showing modal, render it on top
 	if m.showingModal && m.modal != nil {
-		return m.modal.View()
+		LogDebug("View: Rendering modal, type: %T", m.modal)
+		modalView := m.modal.View()
+		LogDebug("View: Modal rendered, length: %d", len(modalView))
+		return modalView
 	}
 
 	// Calculate dimensions
@@ -111,6 +115,8 @@ func (m Model) renderTabBar() string {
 
 // renderContent renders the main content area
 func (m Model) renderContent(width, height int) string {
+	LogDebug("renderContent called, view=%v, width=%d, height=%d", m.currentView, width, height)
+	
 	var content string
 	
 	// Calculate inner width accounting for padding
@@ -126,8 +132,11 @@ func (m Model) renderContent(width, height int) string {
 	case ViewHelp:
 		content = m.renderHelp(innerWidth, height)
 	case ViewExtensionDetail:
+		LogDebug("Calling renderExtensionDetail")
 		content = m.renderExtensionDetail(innerWidth, height)
 	}
+	
+	LogDebug("renderContent returning, content length=%d", len(content))
 	
 	// Simple content styling without borders
 	return lipgloss.NewStyle().
@@ -229,6 +238,11 @@ func (m Model) renderExtensionCard(ext *extension.Extension, isSelected bool, wi
 			BorderStyle(lipgloss.ThickBorder())
 	}
 	
+	// Clean extension data
+	cleanName := stripANSI(ext.Name)
+	cleanVersion := stripANSI(ext.Version)
+	cleanDescription := stripANSI(ext.Description)
+	
 	// Extension name and version on same line
 	nameStyle := textStyle
 	if isSelected {
@@ -239,15 +253,15 @@ func (m Model) renderExtensionCard(ext *extension.Extension, isSelected bool, wi
 	textWidth := width - 6  // 2 for borders, 4 for padding
 	
 	// Calculate space for name and version
-	versionText := fmt.Sprintf("v%s", ext.Version)
+	versionText := fmt.Sprintf("v%s", cleanVersion)
 	nameWidth := textWidth - lipgloss.Width(versionText) - 2 // 2 for spacing
 	
-	name := nameStyle.MaxWidth(nameWidth).Render(ext.Name)
+	name := nameStyle.MaxWidth(nameWidth).Render(cleanName)
 	version := textDimStyle.Render(versionText)
 	header := lipgloss.JoinHorizontal(lipgloss.Top, name, "  ", version)
 	
 	// Description on second line
-	desc := textDimStyle.MaxWidth(textWidth).Render(ext.Description)
+	desc := textDimStyle.MaxWidth(textWidth).Render(cleanDescription)
 	
 	// MCP servers info if present
 	var content []string
@@ -566,97 +580,287 @@ func (m Model) renderHelp(width, height int) string {
 
 // renderExtensionDetail renders the detailed view of an extension
 func (m Model) renderExtensionDetail(width, height int) string {
+	LogDebug("renderExtensionDetail called, width=%d, height=%d", width, height)
+	
 	if m.selectedExtension == nil {
+		LogDebug("No extension selected")
 		return "No extension selected"
 	}
 	
 	var lines []string
 	ext := m.selectedExtension
+	LogDebug("Rendering detail for extension: %s", ext.Name)
 	
-	// Header with back navigation hint
-	header := h1Style.Render(fmt.Sprintf("📦 %s", ext.Name))
-	lines = append(lines, header)
-	lines = append(lines, textDimStyle.Render("Press Esc to go back"))
+	// Clean all extension data of ANSI sequences
+	cleanName := stripANSI(ext.Name)
+	cleanVersion := stripANSI(ext.Version)
+	cleanDescription := stripANSI(ext.Description)
+	
+	// Header section with cleaner layout
+	headerBox := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(colorAccent).
+		Padding(1).
+		Width(width-2).
+		MarginBottom(1)
+	
+	headerContent := lipgloss.JoinVertical(
+		lipgloss.Left,
+		h1Style.Copy().MarginBottom(0).Render(fmt.Sprintf("📦 %s", cleanName)),
+		lipgloss.JoinHorizontal(
+			lipgloss.Top,
+			accentStyle.Bold(true).Render(fmt.Sprintf("v%s", cleanVersion)),
+			textDimStyle.Render(" • "),
+			textDimStyle.Render(cleanDescription),
+		),
+	)
+	
+	lines = append(lines, headerBox.Render(headerContent))
+	lines = append(lines, textDimStyle.Copy().MarginLeft(2).Render("← Press Esc to go back"))
 	lines = append(lines, "")
 	
-	// Basic info section
-	lines = append(lines, h2Style.Render("📋 Basic Information"))
+	// Create two-column layout for basic info and MCP servers
+	leftColumn := m.renderExtDetailLeftColumn(ext, (width-4)/2)
+	rightColumn := m.renderExtDetailRightColumn(ext, (width-4)/2)
+	
+	// Join columns
+	columns := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		leftColumn,
+		"  ", // spacing
+		rightColumn,
+	)
+	
+	lines = append(lines, columns)
+	lines = append(lines, "")
+	
+	// Context file section - full width
+	contextSection := m.renderContextFileSection(ext, width-2)
+	lines = append(lines, contextSection)
+	lines = append(lines, "")
+	
+	// Action buttons at bottom
+	actionBar := m.renderExtDetailActions(width-2)
+	lines = append(lines, actionBar)
+	
+	return strings.Join(lines, "\n")
+}
+
+// renderExtDetailLeftColumn renders the left column of extension details
+func (m Model) renderExtDetailLeftColumn(ext *extension.Extension, width int) string {
+	var content strings.Builder
+	
+	// Basic Information
+	content.WriteString(h2Style.Render("📋 Basic Information"))
+	content.WriteString("\n\n")
+	
+	infoItems := []struct {
+		label string
+		value string
+		icon  string
+	}{
+		{"ID", ext.ID, "🔑"},
+		{"Path", ext.Path, "📁"},
+		{"Type", "Extension", "🧩"},
+	}
+	
 	infoBox := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(colorBorder).
 		Padding(1).
-		Width(width-2).
-		Render(strings.Join([]string{
-			fmt.Sprintf("ID:          %s", ext.ID),
-			fmt.Sprintf("Name:        %s", ext.Name),
-			fmt.Sprintf("Version:     %s", ext.Version),
-			fmt.Sprintf("Description: %s", ext.Description),
-			fmt.Sprintf("Path:        %s", ext.Path),
-		}, "\n"))
-	lines = append(lines, infoBox)
-	lines = append(lines, "")
+		Width(width)
 	
-	// MCP Servers section if present
-	if ext.MCPServers != nil && len(ext.MCPServers) > 0 {
-		lines = append(lines, h2Style.Render("⚡ MCP Servers"))
-		for name, config := range ext.MCPServers {
-			serverBox := lipgloss.NewStyle().
-				Border(lipgloss.RoundedBorder()).
-				BorderForeground(colorAccent).
-				Padding(1).
-				Width(width-2).
-				Render(strings.Join([]string{
-					fmt.Sprintf("Server: %s", name),
-					fmt.Sprintf("Command: %s", config.Command),
-					fmt.Sprintf("Args: %v", config.Args),
-					fmt.Sprintf("Env: %v", config.Env),
-				}, "\n"))
-			lines = append(lines, serverBox)
+	var infoContent strings.Builder
+	for i, item := range infoItems {
+		if i > 0 {
+			infoContent.WriteString("\n\n")
 		}
-		lines = append(lines, "")
+		
+		// Label
+		infoContent.WriteString(textDimStyle.Render(item.label))
+		infoContent.WriteString("\n")
+		
+		// Value with icon
+		valueText := fmt.Sprintf("%s %s", item.icon, item.value)
+		// Truncate long paths
+		if item.label == "Path" && len(valueText) > width-4 {
+			valueText = "..." + valueText[len(valueText)-(width-7):]
+		}
+		infoContent.WriteString(textStyle.Render(valueText))
 	}
 	
-	// Context file display
-	lines = append(lines, h2Style.Render("📄 Context File"))
+	content.WriteString(infoBox.Render(infoContent.String()))
+	
+	return content.String()
+}
+
+// renderExtDetailRightColumn renders the right column of extension details
+func (m Model) renderExtDetailRightColumn(ext *extension.Extension, width int) string {
+	var content strings.Builder
+	
+	// MCP Servers
+	content.WriteString(h2Style.Render("⚡ MCP Servers"))
+	content.WriteString("\n\n")
+	
+	if ext.MCPServers != nil && len(ext.MCPServers) > 0 {
+		mcpBox := lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(colorAccent).
+			Padding(1).
+			Width(width)
+		
+		var mcpContent strings.Builder
+		serverIdx := 0
+		for name, config := range ext.MCPServers {
+			if serverIdx > 0 {
+				mcpContent.WriteString("\n\n")
+			}
+			
+			// Server name
+			mcpContent.WriteString(accentStyle.Bold(true).Render(name))
+			mcpContent.WriteString("\n")
+			
+			// Command
+			cmdText := fmt.Sprintf("📟 %s", config.Command)
+			if len(cmdText) > width-6 {
+				cmdText = cmdText[:width-9] + "..."
+			}
+			mcpContent.WriteString(textStyle.Render(cmdText))
+			
+			// Show args count if present
+			if len(config.Args) > 0 {
+				mcpContent.WriteString("\n")
+				mcpContent.WriteString(textDimStyle.Render(fmt.Sprintf("   %d args", len(config.Args))))
+			}
+			
+			serverIdx++
+		}
+		
+		content.WriteString(mcpBox.Render(mcpContent.String()))
+	} else {
+		// No servers box
+		noServersBox := lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(colorBorder).
+			Padding(1).
+			Width(width).
+			Align(lipgloss.Center)
+		
+		noServersContent := lipgloss.JoinVertical(
+			lipgloss.Center,
+			textDimStyle.Render("No MCP servers"),
+			textDimStyle.Render("configured"),
+		)
+		
+		content.WriteString(noServersBox.Render(noServersContent))
+	}
+	
+	return content.String()
+}
+
+// renderContextFileSection renders the context file section
+func (m Model) renderContextFileSection(ext *extension.Extension, width int) string {
+	var content strings.Builder
+	
+	content.WriteString(h2Style.Render("📄 Context File"))
+	content.WriteString("\n\n")
+	
 	contextFileName := ext.ContextFileName
 	if contextFileName == "" {
 		contextFileName = "GEMINI.md"
 	}
-	lines = append(lines, textDimStyle.Render("File: " + contextFileName))
 	
 	// Try to read and display context file content
 	contextPath := filepath.Join(ext.Path, contextFileName)
-	if content, err := os.ReadFile(contextPath); err == nil && len(content) > 0 {
-		// Create a markdown renderer
-		renderer, err := glamour.NewTermRenderer(
-			glamour.WithAutoStyle(),
-			glamour.WithWordWrap(width-10),
-		)
-		if err == nil {
-			// Render markdown content
-			rendered, err := renderer.Render(string(content))
+	LogDebug("Checking context file at: %s", contextPath)
+	
+	contextBox := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(colorBorder).
+		Padding(1).
+		Width(width).
+		MaxHeight(12) // Limit height
+	
+	if fileContent, err := os.ReadFile(contextPath); err == nil && len(fileContent) > 0 {
+		LogDebug("Context file found, size: %d bytes", len(fileContent))
+		
+		// File info header
+		fileInfo := fmt.Sprintf("📝 %s (%d bytes)", contextFileName, len(fileContent))
+		content.WriteString(textDimStyle.Render(fileInfo))
+		content.WriteString("\n\n")
+		
+		// Render content
+		if m.markdownRenderer != nil {
+			LogDebug("Using cached glamour renderer")
+			rendered, err := m.markdownRenderer.Render(string(fileContent))
 			if err == nil {
-				lines = append(lines, "")
-				// Create a box for the rendered content
-				contentBox := lipgloss.NewStyle().
-					Border(lipgloss.RoundedBorder()).
-					BorderForeground(colorBorder).
-					Padding(1).
-					Width(width-2).
-					MaxHeight(15). // Limit height to avoid taking too much space
-					Render(rendered)
-				lines = append(lines, contentBox)
+				content.WriteString(contextBox.Render(rendered))
+			} else {
+				// Fallback to plain text
+				plainText := string(fileContent)
+				if len(plainText) > 500 {
+					plainText = plainText[:500] + "\n\n... (truncated)"
+				}
+				content.WriteString(contextBox.Render(plainText))
 			}
+		} else {
+			// No renderer, show plain text
+			plainText := string(fileContent)
+			if len(plainText) > 500 {
+				plainText = plainText[:500] + "\n\n... (truncated)"
+			}
+			content.WriteString(contextBox.Render(plainText))
 		}
 	} else {
-		lines = append(lines, textDimStyle.Render("No context file found"))
+		// No file found
+		content.WriteString(textDimStyle.Render(fmt.Sprintf("📝 %s", contextFileName)))
+		content.WriteString("\n\n")
+		
+		noFileContent := lipgloss.JoinVertical(
+			lipgloss.Center,
+			"",
+			textDimStyle.Render("No context file found"),
+			"",
+			textDimStyle.Render("Create a "+contextFileName+" file to add"),
+			textDimStyle.Render("documentation for this extension"),
+			"",
+		)
+		
+		content.WriteString(contextBox.Copy().Align(lipgloss.Center).Render(noFileContent))
 	}
-	lines = append(lines, "")
 	
-	// Help text
-	lines = append(lines, keyDescStyle.Render("Esc: Back • d: Delete • e: Edit"))
+	return content.String()
+}
+
+// renderExtDetailActions renders the action bar for extension details
+func (m Model) renderExtDetailActions(width int) string {
+	actions := []struct {
+		key   string
+		label string
+		style lipgloss.Style
+	}{
+		{"Esc", "Back", keyStyle},
+		{"e", "Edit", keyStyle},
+		{"d", "Delete", keyStyle.Copy().Foreground(colorError)},
+	}
 	
-	return strings.Join(lines, "\n")
+	var actionItems []string
+	for _, action := range actions {
+		item := lipgloss.JoinHorizontal(
+			lipgloss.Top,
+			action.style.Render(action.key),
+			textDimStyle.Render(": "),
+			textDimStyle.Render(action.label),
+		)
+		actionItems = append(actionItems, item)
+	}
+	
+	actionBar := lipgloss.NewStyle().
+		Width(width).
+		Align(lipgloss.Center).
+		Render(strings.Join(actionItems, "  •  "))
+	
+	return actionBar
 }
 
 // renderLoading renders the loading screen

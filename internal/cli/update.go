@@ -122,10 +122,15 @@ var (
 
 // Update handles all messages and updates the model accordingly
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	LogMessage("Model.Update", msg)
+	
 	// Handle modal updates first
 	if m.showingModal && m.modal != nil {
+		LogDebug("Modal is showing, type: %T", m.modal)
+		
 		// Allow Ctrl+C to quit even in modals
 		if keyMsg, ok := msg.(tea.KeyMsg); ok && keyMsg.String() == "ctrl+c" {
+			LogDebug("Ctrl+C pressed in modal, quitting")
 			return m, tea.Quit
 		}
 		
@@ -154,7 +159,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 		
+		LogDebug("Calling modal.Update with message: %T", msg)
 		updatedModal, cmd := m.modal.Update(msg)
+		LogDebug("Modal.Update returned, cmd: %v", cmd)
 		m.modal = updatedModal
 		
 		// Check if modal wants to close
@@ -527,7 +534,9 @@ func (m Model) updateExtensions(msg tea.KeyMsg) (Model, tea.Cmd) {
 	case " ", "enter":
 		// View extension details
 		if m.extensionsCursor < len(m.filteredExtensions) {
-			m.selectedExtension = m.filteredExtensions[m.extensionsCursor]
+			ext := m.filteredExtensions[m.extensionsCursor]
+			LogDebug("Selected extension: %s, switching to detail view", ext.Name)
+			m.selectedExtension = ext
 			m.currentView = ViewExtensionDetail
 			m.err = nil // Clear any errors
 			return m, nil
@@ -609,9 +618,12 @@ func (m Model) updateHelp(msg tea.KeyMsg) (Model, tea.Cmd) {
 }
 
 func (m Model) updateExtensionDetail(msg tea.KeyMsg) (Model, tea.Cmd) {
+	LogDebug("updateExtensionDetail: key=%s", msg.String())
+	
 	switch msg.String() {
 	case "esc":
 		// Go back to extensions list
+		LogDebug("ESC pressed, going back to extensions list")
 		m.currentView = ViewExtensions
 		m.selectedExtension = nil
 		return m, nil
@@ -619,6 +631,7 @@ func (m Model) updateExtensionDetail(msg tea.KeyMsg) (Model, tea.Cmd) {
 		// Delete the extension
 		if m.selectedExtension != nil {
 			extID := m.selectedExtension.ID
+			LogDebug("Delete extension: %s", extID)
 			// Go back to list first
 			m.currentView = ViewExtensions
 			m.selectedExtension = nil
@@ -628,8 +641,10 @@ func (m Model) updateExtensionDetail(msg tea.KeyMsg) (Model, tea.Cmd) {
 	case "e":
 		// Edit extension
 		if m.selectedExtension != nil {
+			LogDebug("Edit extension requested: %s", m.selectedExtension.Name)
 			return m.showExtensionEditForm(m.selectedExtension)
 		}
+		LogDebug("No extension selected for editing")
 		return m, nil
 	}
 	return m, nil
@@ -861,8 +876,11 @@ func (m Model) activateProfileCmd(prof *profile.Profile) tea.Cmd {
 
 // showExtensionEditForm shows the extension edit form
 func (m Model) showExtensionEditForm(ext *extension.Extension) (Model, tea.Cmd) {
+	LogDebug("showExtensionEditForm called for extension: %s", ext.Name)
+	
 	// Create form
 	form := NewExtensionEditForm(ext)
+	LogDebug("Created form, setting size to %dx%d", m.windowWidth, m.windowHeight)
 	form.SetSize(m.windowWidth, m.windowHeight)
 	form.SetCallbacks(
 		func(e *extension.Extension) tea.Cmd {
@@ -883,6 +901,9 @@ func (m Model) showExtensionEditForm(ext *extension.Extension) (Model, tea.Cmd) 
 	m.modal = &form
 	m.err = nil
 	
+	LogDebug("Modal set, showingModal=%v, calling Init", m.showingModal)
 	// Initialize the form
-	return m, form.Init()
+	initCmd := form.Init()
+	LogDebug("Init returned cmd: %v", initCmd)
+	return m, initCmd
 }

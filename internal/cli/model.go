@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/glamour"
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 	"github.com/jhspaybar/gemini-cli-manager/internal/launcher"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
@@ -76,6 +77,9 @@ type Model struct {
 	
 	// Detail view state
 	selectedExtension *extension.Extension
+	
+	// Cached glamour renderer
+	markdownRenderer *glamour.TermRenderer
 }
 
 // PaneType represents which pane is focused
@@ -185,6 +189,15 @@ func NewModel() Model {
 	
 	// Data will be loaded asynchronously in Init()
 	m.loading = true
+	
+	// Create markdown renderer once
+	renderer, err := glamour.NewTermRenderer(
+		glamour.WithAutoStyle(),
+		glamour.WithWordWrap(80),
+	)
+	if err == nil {
+		m.markdownRenderer = renderer
+	}
 	
 	return m
 }
