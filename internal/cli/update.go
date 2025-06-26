@@ -148,6 +148,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case ProfileQuickSwitchModal:
 				modal.SetSize(msg.Width, msg.Height)
 				m.modal = modal
+			case ExtensionEditForm:
+				modal.SetSize(msg.Width, msg.Height)
+				m.modal = modal
 			}
 		}
 		
@@ -230,13 +233,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 		
-		// Don't return early for certain messages that need to be handled globally
-		switch msg.(type) {
-		case profileSwitchMsg, profileActivatedMsg, profilesLoadedMsg, extensionsLoadedMsg, extensionDeletedMsg:
-			// Continue processing these messages outside modal context
-		default:
-			return m, cmd
-		}
+		// Return with the command from modal update
+		return m, cmd
 	}
 	
 	switch msg := msg.(type) {

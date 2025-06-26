@@ -82,8 +82,9 @@ func NewExtensionEditForm(ext *extension.Extension) ExtensionEditForm {
 	ta := textarea.New()
 	ta.Placeholder = "Enter content..."
 	ta.CharLimit = 50000
-	ta.SetWidth(60)
-	ta.SetHeight(15)
+	ta.SetWidth(80)
+	ta.SetHeight(20)
+	ta.Focus() // Ensure focus for better UX
 	
 	// Create markdown renderer
 	renderer, _ := glamour.NewTermRenderer(
@@ -119,7 +120,11 @@ func NewExtensionEditForm(ext *extension.Extension) ExtensionEditForm {
 
 // Init initializes the form
 func (f ExtensionEditForm) Init() tea.Cmd {
-	return textinput.Blink
+	// Return blink command for whichever component has focus
+	if f.mode == EditModeConfig {
+		return textinput.Blink
+	}
+	return textarea.Blink
 }
 
 // Update handles form updates
@@ -206,8 +211,26 @@ func (f ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		f.width = msg.Width
 		f.height = msg.Height
-		f.textarea.SetWidth(min(msg.Width-10, 80))
-		f.textarea.SetHeight(min(msg.Height-15, 20))
+		// Update textarea size based on window size
+		f.textarea.SetWidth(min(msg.Width-8, 120))
+		f.textarea.SetHeight(min(msg.Height-10, 30))
+		// Pass the resize to textarea as well
+		var cmd tea.Cmd
+		f.textarea, cmd = f.textarea.Update(msg)
+		return f, cmd
+		
+	default:
+		// Pass through to textarea in edit modes
+		if f.mode == EditModeContext || f.mode == EditModeJSON {
+			var cmd tea.Cmd
+			f.textarea, cmd = f.textarea.Update(msg)
+			return f, cmd
+		}
+		// Pass through to inputs in config mode
+		if f.mode == EditModeConfig {
+			cmd := f.updateInputs(msg)
+			return f, cmd
+		}
 	}
 	
 	return f, nil
@@ -215,13 +238,9 @@ func (f ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View renders the form
 func (f ExtensionEditForm) View() string {
-	// Form container
-	formStyle := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(colorBorder).
-		Padding(1, 2).
-		Width(min(f.width-4, 100)).
-		MaxWidth(f.width - 4)
+	// Use full width and height
+	contentWidth := f.width
+	contentHeight := f.height
 	
 	// Title with mode indicator
 	modeStr := "Configuration"
@@ -239,6 +258,9 @@ func (f ExtensionEditForm) View() string {
 	content.WriteString(title)
 	content.WriteString("\n\n")
 	
+	// Calculate available space for content
+	availableHeight := contentHeight - 6 // Title, spacing, help text
+	
 	switch f.mode {
 	case EditModeConfig:
 		content.WriteString(f.renderConfigForm())
@@ -247,35 +269,40 @@ func (f ExtensionEditForm) View() string {
 		if f.previewActive {
 			content.WriteString(f.renderMarkdownPreview())
 		} else {
+			// Set textarea to use more space
+			f.textarea.SetWidth(contentWidth - 8)
+			f.textarea.SetHeight(availableHeight - 4)
 			content.WriteString(f.renderTextarea())
 		}
 		
 	case EditModeJSON:
+		// Set textarea to use more space
+		f.textarea.SetWidth(contentWidth - 8)
+		f.textarea.SetHeight(availableHeight - 4)
 		content.WriteString(f.renderTextarea())
 	}
 	
-	// Mode switching help
+	// Mode switching help at bottom
 	content.WriteString("\n\n")
-	content.WriteString(keyDescStyle.Render("Ctrl+T: Switch Mode • Ctrl+S: Save • Esc: Cancel"))
-	
+	helpText := "Ctrl+T: Switch Mode • Ctrl+S: Save • Esc: Cancel"
 	if f.mode == EditModeContext {
-		content.WriteString("\n")
-		content.WriteString(keyDescStyle.Render("Ctrl+P: Toggle Preview"))
+		helpText += " • Ctrl+P: Toggle Preview"
 	}
+	content.WriteString(keyDescStyle.Render(helpText))
 	
 	// Error display
 	if f.err != nil {
-		content.WriteString("\n\n")
+		content.WriteString("\n")
 		content.WriteString(errorStyle.Render(f.err.Error()))
 	}
 	
-	// Center the form
-	form := formStyle.Render(content.String())
-	return lipgloss.Place(
-		f.width, f.height,
-		lipgloss.Center, lipgloss.Center,
-		form,
-	)
+	// Use full screen with minimal padding
+	formStyle := lipgloss.NewStyle().
+		Padding(1, 2).
+		Width(contentWidth).
+		Height(contentHeight)
+	
+	return formStyle.Render(content.String())
 }
 
 // renderConfigForm renders the configuration form fields
@@ -445,8 +472,9 @@ func (f ExtensionEditForm) save() tea.Cmd {
 func (f *ExtensionEditForm) SetSize(width, height int) {
 	f.width = width
 	f.height = height
-	f.textarea.SetWidth(min(width-10, 80))
-	f.textarea.SetHeight(min(height-15, 20))
+	// Set textarea to use most of the available space
+	f.textarea.SetWidth(width - 8)
+	f.textarea.SetHeight(height - 10)
 }
 
 // SetCallbacks sets the form callbacks
