@@ -10,20 +10,22 @@ import (
 
 // Manager handles extension lifecycle operations
 type Manager struct {
-	basePath   string
-	extensions map[string]*Extension
-	mu         sync.RWMutex
-	validator  *Validator
-	loader     *Loader
+	basePath      string
+	extensionsDir string // Same as basePath, needed for installer
+	extensions    map[string]*Extension
+	mu            sync.RWMutex
+	validator     *Validator
+	loader        *Loader
 }
 
 // NewManager creates a new extension manager
 func NewManager(basePath string) *Manager {
 	return &Manager{
-		basePath:   basePath,
-		extensions: make(map[string]*Extension),
-		validator:  NewValidator(),
-		loader:     NewLoader(),
+		basePath:      basePath,
+		extensionsDir: basePath,
+		extensions:    make(map[string]*Extension),
+		validator:     NewValidator(),
+		loader:        NewLoader(),
 	}
 }
 
@@ -175,12 +177,43 @@ func (m *Manager) Disable(id string) error {
 }
 
 // Install adds a new extension from a source
-func (m *Manager) Install(source string) error {
-	// TODO: Implement installation from various sources
-	// - Local directory
-	// - Git repository
-	// - Archive file
-	return fmt.Errorf("install not yet implemented")
+func (m *Manager) Install(source string, isPath bool) (*Extension, error) {
+	installer := NewInstaller(m.extensionsDir)
+	
+	// Install the extension
+	ext, err := installer.Install(source, isPath)
+	if err != nil {
+		return nil, err
+	}
+	
+	// Rescan to pick up the new extension
+	if err := m.Scan(); err != nil {
+		// Try to clean up
+		os.RemoveAll(ext.Path)
+		return nil, fmt.Errorf("rescanning after install: %w", err)
+	}
+	
+	return ext, nil
+}
+
+// InstallWithProgress installs an extension with progress callback
+func (m *Manager) InstallWithProgress(source string, isPath bool, callback InstallProgressCallback) (*Extension, error) {
+	installer := NewInstaller(m.extensionsDir)
+	
+	// Install the extension with progress
+	ext, err := installer.InstallWithProgress(source, isPath, callback)
+	if err != nil {
+		return nil, err
+	}
+	
+	// Rescan to pick up the new extension
+	if err := m.Scan(); err != nil {
+		// Try to clean up
+		os.RemoveAll(ext.Path)
+		return nil, fmt.Errorf("rescanning after install: %w", err)
+	}
+	
+	return ext, nil
 }
 
 // Remove deletes an extension

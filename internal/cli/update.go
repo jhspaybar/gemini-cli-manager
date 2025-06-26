@@ -596,23 +596,44 @@ func (m Model) showExtensionInstallForm() (Model, tea.Cmd) {
 		func(source string, isPath bool) tea.Cmd {
 			// Install extension
 			return func() tea.Msg {
-				// This would normally call the extension manager to install
-				// For now, we'll simulate the installation
-				// In real implementation, this would:
-				// 1. Download/copy the extension
-				// 2. Validate the extension
-				// 3. Install to the proper directory
-				// 4. Update the extension registry
+				// Create a progress channel for updates
+				progressChan := make(chan extension.InstallProgress, 10)
 				
-				// Simulate installation progress
+				// Start progress monitoring in a goroutine
 				go func() {
-					time.Sleep(2 * time.Second)
-					// Would send progress updates here
+					for progress := range progressChan {
+						// Would send progress updates to the UI here
+						// For now, just log them
+						fmt.Printf("Install progress: %s - %s (%d%%)\n", 
+							progress.Stage, progress.Message, progress.Percent)
+					}
 				}()
 				
-				// For now, return an error since we don't have the installer yet
+				// Install the extension
+				ext, err := m.extensionManager.InstallWithProgress(source, isPath, 
+					func(stage, message string, percent int) {
+						select {
+						case progressChan <- extension.InstallProgress{
+							Stage:   stage,
+							Message: message,
+							Percent: percent,
+						}:
+						default:
+							// Don't block if channel is full
+						}
+					})
+				
+				close(progressChan)
+				
+				if err != nil {
+					return installCompleteMsg{
+						err: err,
+					}
+				}
+				
 				return installCompleteMsg{
-					err: fmt.Errorf("extension installation not yet implemented"),
+					extension: ext,
+					err:       nil,
 				}
 			}
 		},
