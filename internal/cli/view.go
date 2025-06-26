@@ -180,7 +180,7 @@ func (m Model) renderExtensions(width, height int) string {
 	if m.searchBar.Value() != "" {
 		count = fmt.Sprintf("%d of %d extensions (filtered)", len(m.filteredExtensions), len(m.extensions))
 	} else {
-		count = fmt.Sprintf("%d extensions found", len(m.extensions))
+		count = fmt.Sprintf("%d extensions found", len(m.filteredExtensions))
 	}
 	lines = append(lines, bodySmallStyle.Render(count), "")
 	

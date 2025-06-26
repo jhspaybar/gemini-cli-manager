@@ -103,6 +103,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.modal = nil
 				// Reload extensions
 				m.extensions = m.extensionManager.List()
+				// Update filtered list too
+				if m.searchBar.Value() != "" {
+					m.filteredExtensions = filterExtensions(m.extensions, m.searchBar.Value())
+				} else {
+					m.filteredExtensions = m.extensions
+				}
 			}
 			// If error, keep modal open to show error
 		case closeModalMsg:
