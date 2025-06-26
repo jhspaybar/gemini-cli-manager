@@ -1,0 +1,15 @@
+{
+  "name": "Invalid-Extension-Name!",
+  "version": "1.0.0.0",
+  "description": "",
+  "author": {
+    "name": ""
+  },
+  "mcp": {
+    "servers": {
+      "bad-server": {
+        "args": ["missing-command.js"]
+      }
+    }
+  }
+}

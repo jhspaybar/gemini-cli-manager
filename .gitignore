@@ -47,3 +47,8 @@ temp/
 
 # Generated files
 dist/
+
+# Test artifacts
+tests/examples/extensions/*.zip
+tests/examples/extensions/*.tar.gz
+.gemini-test/

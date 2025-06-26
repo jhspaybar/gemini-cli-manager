@@ -1,0 +1,17 @@
+{
+  "id": "web-dev",
+  "name": "Web Development",
+  "description": "Profile for web development with Node.js and React",
+  "environment": {
+    "NODE_ENV": "development",
+    "GEMINI_THEME": "dark",
+    "GEMINI_AUTO_COMPLETE": "true",
+    "EDITOR": "code"
+  },
+  "extensions": [
+    "simple-extension",
+    "mcp-extension"
+  ],
+  "created_at": "2024-01-15T10:00:00Z",
+  "updated_at": "2024-01-15T10:00:00Z"
+}

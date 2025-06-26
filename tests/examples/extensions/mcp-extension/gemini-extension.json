@@ -1,0 +1,54 @@
+{
+  "name": "MCP Test Extension",
+  "version": "2.1.0",
+  "description": "Extension with MCP server configuration for testing",
+  "author": {
+    "name": "Gemini Test Suite",
+    "email": "test@gemini-cli.example"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gemini-cli/test-mcp-extension"
+  },
+  "engines": {
+    "gemini-cli": ">=1.0.0"
+  },
+  "categories": ["testing", "mcp"],
+  "keywords": ["test", "mcp", "server"],
+  "mcp": {
+    "servers": {
+      "test-echo-server": {
+        "command": "node",
+        "args": ["./servers/echo-server.js"],
+        "env": {
+          "PORT": "3000",
+          "LOG_LEVEL": "debug"
+        }
+      },
+      "test-math-server": {
+        "command": "python",
+        "args": ["-m", "servers.math_server"],
+        "env": {
+          "PYTHON_PATH": "./servers"
+        }
+      }
+    }
+  },
+  "contributes": {
+    "configuration": {
+      "title": "MCP Test Extension",
+      "properties": {
+        "mcp-test.enableLogging": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable debug logging for MCP servers"
+        },
+        "mcp-test.timeout": {
+          "type": "number",
+          "default": 5000,
+          "description": "Server response timeout in milliseconds"
+        }
+      }
+    }
+  }
+}

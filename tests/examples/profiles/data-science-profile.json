@@ -1,0 +1,16 @@
+{
+  "id": "data-science",
+  "name": "Data Science",
+  "description": "Profile for data science and machine learning work",
+  "environment": {
+    "PYTHON_ENV": "conda",
+    "JUPYTER_THEME": "lab-dark",
+    "GEMINI_MEMORY_LIMIT": "8G",
+    "CUDA_VISIBLE_DEVICES": "0"
+  },
+  "extensions": [
+    "mcp-extension"
+  ],
+  "created_at": "2024-01-15T10:00:00Z",
+  "updated_at": "2024-01-15T10:00:00Z"
+}

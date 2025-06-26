@@ -1,0 +1,14 @@
+{
+  "name": "Simple Test Extension",
+  "version": "1.0.0",
+  "description": "A minimal extension for testing basic installation",
+  "author": {
+    "name": "Gemini Test Suite",
+    "email": "test@gemini-cli.example"
+  },
+  "engines": {
+    "gemini-cli": ">=1.0.0"
+  },
+  "categories": ["testing"],
+  "keywords": ["test", "simple", "minimal"]
+}
