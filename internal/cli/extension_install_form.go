@@ -136,15 +136,15 @@ func (f ExtensionInstallForm) View() string {
 	if f.installing {
 		// Show installation progress
 		b.WriteString("\n")
-		b.WriteString(bodyStyle.Render("Installing..."))
+		b.WriteString(textStyle.Render("Installing..."))
 		b.WriteString("\n\n")
 		if f.progress != "" {
-			b.WriteString(mutedStyle.Render(f.progress))
+			b.WriteString(textMutedStyle.Render(f.progress))
 			b.WriteString("\n")
 		}
 	} else {
 		// Show form
-		b.WriteString(mutedStyle.Render("Install from a local path or remote URL"))
+		b.WriteString(textMutedStyle.Render("Install from a local path or remote URL"))
 		b.WriteString("\n\n")
 		
 		// Source field
@@ -152,15 +152,15 @@ func (f ExtensionInstallForm) View() string {
 		b.WriteString("\n\n")
 		
 		// Examples
-		b.WriteString(helpDescStyle.Render("Examples:"))
+		b.WriteString(helpStyle.Render("Examples:"))
 		b.WriteString("\n")
-		b.WriteString(mutedStyle.Render("  • /Users/me/my-extension"))
+		b.WriteString(textMutedStyle.Render("  • /Users/me/my-extension"))
 		b.WriteString("\n")
-		b.WriteString(mutedStyle.Render("  • ~/Documents/extensions/my-tool"))
+		b.WriteString(textMutedStyle.Render("  • ~/Documents/extensions/my-tool"))
 		b.WriteString("\n")
-		b.WriteString(mutedStyle.Render("  • https://github.com/user/gemini-extension"))
+		b.WriteString(textMutedStyle.Render("  • https://github.com/user/gemini-extension"))
 		b.WriteString("\n")
-		b.WriteString(mutedStyle.Render("  • git@github.com:user/gemini-extension.git"))
+		b.WriteString(textMutedStyle.Render("  • git@github.com:user/gemini-extension.git"))
 		b.WriteString("\n\n")
 		
 		// Help text
@@ -168,7 +168,7 @@ func (f ExtensionInstallForm) View() string {
 			"Enter: Install",
 			"Esc: Cancel",
 		}
-		b.WriteString(helpDescStyle.Render(strings.Join(helpText, " • ")))
+		b.WriteString(keyDescStyle.Render(strings.Join(helpText, " • ")))
 		
 		// Error display
 		if f.err != nil {
@@ -188,9 +188,9 @@ func (f ExtensionInstallForm) View() string {
 
 // renderField renders a form field
 func (f ExtensionInstallForm) renderField(label string, index int) string {
-	labelStyle := bodyStyle.Copy()
+	labelStyle := textStyle.Copy()
 	if f.focusIndex == index {
-		labelStyle = labelStyle.Foreground(colorPrimary).Bold(true)
+		labelStyle = labelStyle.Foreground(colorAccent).Bold(true)
 	}
 	
 	fieldStyle := lipgloss.NewStyle().
@@ -199,7 +199,7 @@ func (f ExtensionInstallForm) renderField(label string, index int) string {
 		Padding(0, 1)
 		
 	if f.focusIndex == index {
-		fieldStyle = fieldStyle.BorderForeground(colorFocused)
+		fieldStyle = fieldStyle.BorderForeground(colorBorderFocus)
 	}
 	
 	return fmt.Sprintf("%s\n%s",
@@ -265,11 +265,7 @@ func (f *ExtensionInstallForm) SetCallbacks(onInstall func(source string, isPath
 	f.onCancel = onCancel
 }
 
-// Message types for installation progress
-type installProgressMsg struct {
-	message string
-}
-
+// installCompleteMsg is used for installation completion
 type installCompleteMsg struct {
 	extension *extension.Extension
 	err       error

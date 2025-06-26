@@ -1,101 +1,172 @@
 package cli
 
 import (
+	"strings"
+	
 	"github.com/charmbracelet/lipgloss"
 )
 
-// Neutral, readable color scheme
+// Simple, clean color scheme
 var (
-	// Base colors - softer and more neutral
-	colorBackground   = lipgloss.Color("235") // Dark gray
-	colorSurface      = lipgloss.Color("237") // Slightly lighter gray
-	colorBorder       = lipgloss.Color("240") // Subtle border
+	// Base colors
+	colorBg        = lipgloss.Color("235")
+	colorText      = lipgloss.Color("252")
+	colorTextDim   = lipgloss.Color("246")
+	colorTextMuted = lipgloss.Color("241")
 	
-	// Text colors - better contrast
-	colorTextPrimary   = lipgloss.Color("252") // Almost white
-	colorTextSecondary = lipgloss.Color("246") // Light gray
-	colorTextMuted     = lipgloss.Color("241") // Muted gray
+	// Accent colors
+	colorAccent  = lipgloss.Color("39")
+	colorSuccess = lipgloss.Color("42")
+	colorError   = lipgloss.Color("196")
 	
-	// Accent colors - more subtle
-	colorPrimary  = lipgloss.Color("39")  // Soft blue
-	colorSuccess  = lipgloss.Color("42")  // Soft green
-	colorWarning  = lipgloss.Color("214") // Soft orange
-	colorError    = lipgloss.Color("203") // Soft red
-	
-	// State colors
-	colorSelected = lipgloss.Color("240") // Subtle highlight
-	colorFocused  = lipgloss.Color("33")  // Blue for focused items
+	// UI colors
+	colorBorder      = lipgloss.Color("240")
+	colorBorderFocus = lipgloss.Color("33")
 )
 
-// Styles - cleaner and more minimal
+// Text styles
 var (
-	// Base styles
-	baseStyle = lipgloss.NewStyle().
-		Foreground(colorTextPrimary)
+	// Headers
+	titleStyle = lipgloss.NewStyle().
+		Bold(true).
+		Foreground(colorText)
 	
-	// Headers - less aggressive
 	h1Style = lipgloss.NewStyle().
 		Bold(true).
-		Foreground(colorTextPrimary).
+		Foreground(colorText).
 		MarginBottom(1)
 	
 	h2Style = lipgloss.NewStyle().
-		Foreground(colorTextPrimary)
+		Bold(true).
+		Foreground(colorText)
 	
 	// Body text
-	bodyStyle = lipgloss.NewStyle().
-		Foreground(colorTextPrimary)
+	textStyle = lipgloss.NewStyle().
+		Foreground(colorText)
 	
-	bodySmallStyle = lipgloss.NewStyle().
-		Foreground(colorTextSecondary)
+	textDimStyle = lipgloss.NewStyle().
+		Foreground(colorTextDim)
 	
-	mutedStyle = lipgloss.NewStyle().
+	textMutedStyle = lipgloss.NewStyle().
 		Foreground(colorTextMuted)
 	
-	// UI elements - cleaner borders
+	// Emphasis
+	accentStyle = lipgloss.NewStyle().
+		Foreground(colorAccent)
+	
+	successStyle = lipgloss.NewStyle().
+		Foreground(colorSuccess)
+	
+	errorStyle = lipgloss.NewStyle().
+		Foreground(colorError).
+		Bold(true)
+)
+
+// Layout components
+var (
+	// Sidebar
 	sidebarStyle = lipgloss.NewStyle().
 		Border(lipgloss.NormalBorder(), false, true, false, false).
 		BorderForeground(colorBorder).
 		Padding(1)
 	
+	sidebarFocusedStyle = sidebarStyle.Copy().
+		BorderForeground(colorBorderFocus).
+		BorderStyle(lipgloss.ThickBorder())
+	
+	// Content
 	contentStyle = lipgloss.NewStyle().
 		Padding(1)
 	
+	contentFocusedStyle = contentStyle.Copy().
+		Border(lipgloss.ThickBorder()).
+		BorderForeground(colorBorderFocus)
+	
+	// Status bar
 	statusBarStyle = lipgloss.NewStyle().
 		Border(lipgloss.NormalBorder(), true, false, false, false).
 		BorderForeground(colorBorder).
-		Foreground(colorTextSecondary).
+		Foreground(colorTextDim).
 		Padding(0, 1)
-	
-	// Interactive elements - clearer selection
+)
+
+// Interactive elements
+var (
+	// Menu items
 	menuItemStyle = lipgloss.NewStyle().
 		PaddingLeft(2)
 	
-	selectedMenuItemStyle = lipgloss.NewStyle().
-		Foreground(colorTextPrimary).
-		Background(colorSelected).
+	menuItemSelectedStyle = lipgloss.NewStyle().
+		Foreground(colorText).
+		Background(lipgloss.Color("237")).
 		PaddingLeft(1).
 		PaddingRight(1)
 	
-	focusedItemStyle = lipgloss.NewStyle().
-		Foreground(colorFocused).
-		Bold(true)
+	menuItemActiveStyle = lipgloss.NewStyle().
+		Foreground(colorAccent).
+		Bold(true).
+		PaddingLeft(2)
+)
+
+// Form elements
+var (
+	// Modal
+	modalStyle = lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(colorBorder).
+		Padding(2).
+		Background(colorBg)
 	
-	// Status indicators
-	enabledStyle = lipgloss.NewStyle().
-		Foreground(colorSuccess)
+	modalTitleStyle = lipgloss.NewStyle().
+		Bold(true).
+		Foreground(colorText).
+		MarginBottom(1)
 	
-	disabledStyle = lipgloss.NewStyle().
-		Foreground(colorTextMuted)
+	// Input
+	inputStyle = lipgloss.NewStyle().
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(colorBorder)
+	
+	inputFocusedStyle = inputStyle.Copy().
+		BorderForeground(colorBorderFocus)
+	
+	// Labels
+	labelStyle = lipgloss.NewStyle().
+		Foreground(colorTextDim)
 	
 	// Help text
-	helpKeyStyle = lipgloss.NewStyle().
-		Foreground(colorPrimary)
-	
-	helpDescStyle = lipgloss.NewStyle().
-		Foreground(colorTextSecondary)
-	
-	// Error style
-	errorStyle = lipgloss.NewStyle().
-		Foreground(colorError)
+	helpStyle = lipgloss.NewStyle().
+		Foreground(colorTextMuted).
+		Italic(true)
 )
+
+// Special components
+var (
+	// Spinner
+	spinnerStyle = lipgloss.NewStyle().
+		Foreground(colorAccent)
+	
+	// Key bindings
+	keyStyle = lipgloss.NewStyle().
+		Foreground(colorAccent).
+		Bold(true)
+	
+	keyDescStyle = lipgloss.NewStyle().
+		Foreground(colorTextDim)
+	
+	// Form
+	formStyle = lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(colorBorder).
+		Padding(2)
+)
+
+// Helper functions
+func renderKeyHelp(bindings [][2]string) string {
+	var parts []string
+	for _, binding := range bindings {
+		part := keyStyle.Render(binding[0]) + " " + keyDescStyle.Render(binding[1])
+		parts = append(parts, part)
+	}
+	return strings.Join(parts, " • ")
+}

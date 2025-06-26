@@ -20,6 +20,7 @@ const (
 	ViewProfiles
 	ViewSettings
 	ViewHelp
+	ViewExtensionDetail
 )
 
 // Model represents the application state
@@ -69,6 +70,12 @@ type Model struct {
 	shouldExecGemini bool
 	execProfile      *profile.Profile
 	execExtensions   []*extension.Extension
+	
+	// Temporary state for async operations
+	newProfileID string // ID of newly created profile for cursor positioning
+	
+	// Detail view state
+	selectedExtension *extension.Extension
 }
 
 // PaneType represents which pane is focused
@@ -176,8 +183,8 @@ func NewModel() Model {
 		searchBar:        NewSearchBar("Search extensions, profiles..."),
 	}
 	
-	// Load initial data
-	m.loadData()
+	// Data will be loaded asynchronously in Init()
+	m.loading = true
 	
 	return m
 }
@@ -234,7 +241,14 @@ func (m *Model) loadData() {
 
 // Init is the first function that will be called
 func (m Model) Init() tea.Cmd {
-	return nil
+	// Set loading state
+	m.loading = true
+	
+	// Return batch of initialization commands
+	return tea.Batch(
+		m.initializeManagersCmd(),
+		tea.EnterAltScreen,
+	)
 }
 
 // Getter methods for testing
@@ -275,4 +289,73 @@ func (m Model) getProfileExtensions(prof *profile.Profile) []*extension.Extensio
 	}
 	
 	return profileExts
+}
+
+// Initialization commands
+
+// initializeManagersCmd initializes the profile and extension managers
+func (m Model) initializeManagersCmd() tea.Cmd {
+	return func() tea.Msg {
+		// Initialize profile manager
+		if err := m.profileManager.Initialize(); err != nil {
+			return managersInitializedMsg{err: err}
+		}
+		
+		// Scan for extensions
+		if err := m.extensionManager.Scan(); err != nil {
+			return managersInitializedMsg{err: err}
+		}
+		
+		return managersInitializedMsg{err: nil}
+	}
+}
+
+// loadInitialDataCmd loads profiles and extensions after managers are initialized
+func (m Model) loadInitialDataCmd() tea.Cmd {
+	return tea.Batch(
+		m.loadProfilesCmd(),
+		m.loadExtensionsCmd(),
+		m.checkActiveProfileCmd(),
+	)
+}
+
+// checkActiveProfileCmd checks and sets the active profile
+func (m Model) checkActiveProfileCmd() tea.Cmd {
+	return func() tea.Msg {
+		// Get current profile
+		if current, err := m.profileManager.GetActive(); err == nil {
+			return profileActivatedMsg{profile: current, err: nil}
+		}
+		
+		// No active profile, try to activate default
+		profiles := m.profileManager.List()
+		if len(profiles) > 0 {
+			// Look for a profile named "default" or just use the first one
+			var defaultProfile *profile.Profile
+			for _, p := range profiles {
+				if p.ID == "default" || p.Name == "Default" {
+					defaultProfile = p
+					break
+				}
+			}
+			if defaultProfile == nil {
+				// Just use the first profile
+				defaultProfile = profiles[0]
+			}
+			
+			// Set it as active
+			if err := m.profileManager.SetActive(defaultProfile.ID); err == nil {
+				return profileActivatedMsg{profile: defaultProfile, err: nil}
+			}
+		}
+		
+		// No profiles available
+		return profileActivatedMsg{profile: nil, err: nil}
+	}
+}
+
+// checkInitComplete checks if all initialization tasks are complete
+func (m Model) checkInitComplete() bool {
+	// Check that all data has been loaded
+	return m.extensions != nil && m.profiles != nil && (m.currentProfile != nil || len(m.profiles) == 0)
 }

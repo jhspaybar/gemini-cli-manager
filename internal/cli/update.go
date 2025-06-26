@@ -18,10 +18,73 @@ type profileSavedMsg struct {
 	isNew   bool
 }
 
+// profileSwitchMsg is sent when switching to a different profile
+type profileSwitchMsg struct {
+	profile *profile.Profile
+}
+
 // execGeminiMsg signals that we should exec Gemini after quitting
 type execGeminiMsg struct {
 	profile    *profile.Profile
 	extensions []*extension.Extension
+}
+
+// installStartMsg is sent to start extension installation
+type installStartMsg struct {
+	source string
+	isPath bool
+}
+
+// installProgressMsg is sent for installation progress updates
+type installProgressMsg struct {
+	stage   string
+	message string
+	percent int
+}
+
+// extensionsLoadedMsg is sent when extensions are loaded
+type extensionsLoadedMsg struct {
+	extensions []*extension.Extension
+	err        error
+}
+
+// extensionDeletedMsg is sent when an extension is deleted
+type extensionDeletedMsg struct {
+	extensionID string
+	err         error
+}
+
+// profilesLoadedMsg is sent when profiles are loaded
+type profilesLoadedMsg struct {
+	profiles []*profile.Profile
+	err      error
+}
+
+// profileDeletedMsg is sent when a profile is deleted
+type profileDeletedMsg struct {
+	profileID string
+	err       error
+}
+
+// profileActivatedMsg is sent when a profile is activated
+type profileActivatedMsg struct {
+	profile *profile.Profile
+	err     error
+}
+
+// extensionSelectedMsg is sent when an extension is selected for details
+type extensionSelectedMsg struct {
+	extension *extension.Extension
+}
+
+// initCompleteMsg is sent when initialization is complete
+type initCompleteMsg struct {
+	err error
+}
+
+// managersInitializedMsg is sent when managers are initialized
+type managersInitializedMsg struct {
+	err error
 }
 
 // Additional key bindings
@@ -96,21 +159,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				// Successfully launched - the Gemini CLI is now running
 				// Don't quit immediately, let the modal handle it
 			}
+		case installStartMsg:
+			// Start the installation process
+			return m, m.performInstallation(msg.source, msg.isPath)
+		case installProgressMsg:
+			// Update the modal with progress if it's an ExtensionInstallForm
+			if form, ok := m.modal.(ExtensionInstallForm); ok {
+				form.progress = fmt.Sprintf("%s: %s (%d%%)", msg.stage, msg.message, msg.percent)
+				m.modal = form
+			}
+			return m, nil
 		case installCompleteMsg:
 			if msg.err == nil {
 				// Success - close modal and refresh extensions
 				m.showingModal = false
 				m.modal = nil
-				// Reload extensions
-				m.extensions = m.extensionManager.List()
-				// Update filtered list too
-				if m.searchBar.Value() != "" {
-					m.filteredExtensions = filterExtensions(m.extensions, m.searchBar.Value())
-				} else {
-					m.filteredExtensions = m.extensions
-				}
+				// Reload extensions asynchronously
+				return m, m.loadExtensionsCmd()
+			} else {
+				// If error, keep modal open to show error
+				m.err = msg.err
 			}
-			// If error, keep modal open to show error
 		case closeModalMsg:
 			// Close any open modal
 			m.showingModal = false
@@ -120,23 +189,19 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.showingModal = false
 			m.modal = nil
 			
-			// Refresh profiles list
-			m.profiles = m.profileManager.List()
-			if m.searchBar.Value() != "" {
-				m.filteredProfiles = filterProfiles(m.profiles, m.searchBar.Value())
-			} else {
-				m.filteredProfiles = m.profiles
+			// Store the new profile info for cursor positioning
+			if msg.isNew {
+				m.newProfileID = msg.profile.ID
 			}
 			
-			// If we created a new profile, select it
-			if msg.isNew {
-				for i, prof := range m.profiles {
-					if prof.ID == msg.profile.ID {
-						m.profilesCursor = i
-						break
-					}
-				}
-			}
+			// Refresh profiles list asynchronously
+			return m, m.loadProfilesCmd()
+		case profileSwitchMsg:
+			// Close modal first
+			m.showingModal = false
+			m.modal = nil
+			// Switch to the selected profile asynchronously
+			return m, m.activateProfileCmd(msg.profile)
 		case UIError:
 			// Set error
 			m.err = msg
@@ -150,7 +215,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 		
-		return m, cmd
+		// Don't return early for certain messages that need to be handled globally
+		switch msg.(type) {
+		case profileSwitchMsg, profileActivatedMsg, profilesLoadedMsg, extensionsLoadedMsg, extensionDeletedMsg:
+			// Continue processing these messages outside modal context
+		default:
+			return m, cmd
+		}
 	}
 	
 	switch msg := msg.(type) {
@@ -162,6 +233,110 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.searchBar.SetWidth(msg.Width / 2)
 		if !m.ready {
 			m.ready = true
+		}
+		return m, nil
+		
+	case extensionsLoadedMsg:
+		if msg.err != nil {
+			m.err = msg.err
+		} else {
+			m.extensions = msg.extensions
+			// Update filtered list too
+			if m.searchBar.Value() != "" {
+				m.filteredExtensions = filterExtensions(m.extensions, m.searchBar.Value())
+			} else {
+				m.filteredExtensions = m.extensions
+			}
+		}
+		// Check if initialization is complete
+		if m.loading && m.checkInitComplete() {
+			m.loading = false
+		}
+		return m, nil
+		
+	case extensionDeletedMsg:
+		if msg.err != nil {
+			m.err = NewFileSystemError("delete", msg.extensionID, msg.err)
+		} else {
+			// Reload extensions after successful deletion
+			return m, m.loadExtensionsCmd()
+		}
+		
+	case profilesLoadedMsg:
+		if msg.err != nil {
+			m.err = msg.err
+		} else {
+			m.profiles = msg.profiles
+			// Update filtered list too
+			if m.searchBar.Value() != "" {
+				m.filteredProfiles = filterProfiles(m.profiles, m.searchBar.Value())
+			} else {
+				m.filteredProfiles = m.profiles
+			}
+			
+			// If we just created a new profile, position cursor on it
+			if m.newProfileID != "" {
+				for i, prof := range m.profiles {
+					if prof.ID == m.newProfileID {
+						m.profilesCursor = i
+						break
+					}
+				}
+				m.newProfileID = "" // Clear after use
+			}
+		}
+		// Check if initialization is complete
+		if m.loading && m.checkInitComplete() {
+			m.loading = false
+		}
+		return m, nil
+		
+	case profileDeletedMsg:
+		if msg.err != nil {
+			m.err = WrapError(msg.err, "profile deletion")
+		} else {
+			// Reload profiles after successful deletion
+			// Adjust cursor if needed
+			if m.profilesCursor >= len(m.filteredProfiles)-1 && m.profilesCursor > 0 {
+				m.profilesCursor--
+			}
+			return m, m.loadProfilesCmd()
+		}
+		return m, nil
+		
+	case profileActivatedMsg:
+		if msg.err != nil {
+			m.err = msg.err
+		} else {
+			m.currentProfile = msg.profile
+			// During initialization, check if we're done loading
+			if m.loading {
+				// Check if initialization is complete
+				if m.checkInitComplete() {
+					return m, func() tea.Msg {
+						return initCompleteMsg{err: nil}
+					}
+				}
+			} else {
+				// Normal profile activation - reload profiles to update active indicator
+				return m, m.loadProfilesCmd()
+			}
+		}
+		return m, nil
+		
+	case managersInitializedMsg:
+		if msg.err != nil {
+			m.err = msg.err
+			m.loading = false
+			return m, nil
+		}
+		// Managers initialized, now load data
+		return m, m.loadInitialDataCmd()
+		
+	case initCompleteMsg:
+		m.loading = false
+		if msg.err != nil {
+			m.err = msg.err
 		}
 		return m, nil
 
@@ -217,48 +392,72 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 			return m, nil
 		case "tab":
-			// Switch between sidebar and content
-			if m.focusedPane == PaneSidebar {
-				m.focusedPane = PaneContent
-			} else {
-				m.focusedPane = PaneSidebar
+			// Cycle through tabs (skip if in detail view)
+			if m.currentView != ViewExtensionDetail {
+				switch m.currentView {
+				case ViewExtensions:
+					m.currentView = ViewProfiles
+				case ViewProfiles:
+					m.currentView = ViewSettings
+				case ViewSettings:
+					m.currentView = ViewHelp
+				case ViewHelp:
+					m.currentView = ViewExtensions
+				}
 			}
 			return m, nil
 		case "left", "h":
-			// Move focus to sidebar
-			if m.focusedPane == PaneContent {
-				m.focusedPane = PaneSidebar
+			// Previous tab (skip if in detail view)
+			if m.currentView != ViewExtensionDetail {
+				switch m.currentView {
+				case ViewExtensions:
+					m.currentView = ViewHelp
+				case ViewProfiles:
+					m.currentView = ViewExtensions
+				case ViewSettings:
+					m.currentView = ViewProfiles
+				case ViewHelp:
+					m.currentView = ViewSettings
+				}
 			}
 			return m, nil
 		case "right", "l":
-			// Move focus to content
-			if m.focusedPane == PaneSidebar {
-				m.focusedPane = PaneContent
+			// Next tab (skip if in detail view)
+			if m.currentView != ViewExtensionDetail {
+				switch m.currentView {
+				case ViewExtensions:
+					m.currentView = ViewProfiles
+				case ViewProfiles:
+					m.currentView = ViewSettings
+				case ViewSettings:
+					m.currentView = ViewHelp
+				case ViewHelp:
+					m.currentView = ViewExtensions
+				}
 			}
 			return m, nil
 		case "esc":
-			// Escape returns to sidebar
-			if m.focusedPane == PaneContent {
-				m.focusedPane = PaneSidebar
+			// Handle escape based on current view
+			if m.currentView == ViewExtensionDetail {
+				// In detail view, go back to extensions
+				m.currentView = ViewExtensions
+				m.selectedExtension = nil
 			}
+			// Otherwise, escape does nothing in main navigation
 			return m, nil
 		case "L":
 			// Quick launch
 			return m.startLaunch()
 		case "/":
-			// Activate search
-			m.searchActive = true
-			return m, m.searchBar.Focus()
+			// Activate search (not in detail views)
+			if m.currentView != ViewExtensionDetail {
+				m.searchActive = true
+				return m, m.searchBar.Focus()
+			}
+			return m, nil
 		case "ctrl+p":
 			// Quick switch profiles
 			return m.showProfileQuickSwitch()
-		}
-		
-		// Handle pane-specific navigation
-		if m.focusedPane == PaneSidebar {
-			return m.updateSidebar(msg)
-		} else {
-			return m.updateContent(msg)
 		}
 		
 		// Fallback to key matching for any keys we missed
@@ -272,56 +471,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.currentView = ViewHelp
 			}
 			return m, nil
-		case key.Matches(msg, keyTab):
-			// Switch between sidebar and content
-			if m.focusedPane == PaneSidebar {
-				m.focusedPane = PaneContent
-			} else {
-				m.focusedPane = PaneSidebar
-			}
-			return m, nil
 		case key.Matches(msg, keyLaunch):
 			// Quick launch
-			return m, tea.Println("Launching Gemini CLI with current profile...")
-		}
-
-		// Handle pane-specific navigation
-		if m.focusedPane == PaneSidebar {
-			return m.updateSidebar(msg)
-		} else {
-			return m.updateContent(msg)
-		}
-	}
-
-	return m, nil
-}
-
-// updateSidebar handles navigation in the sidebar
-func (m Model) updateSidebar(msg tea.KeyMsg) (Model, tea.Cmd) {
-	totalItems := len(m.sidebarItems) + 1 // +1 for Launch button
-	
-	switch msg.String() {
-	case "up", "k":
-		if m.sidebarCursor > 0 {
-			m.sidebarCursor--
-		}
-	case "down", "j":
-		if m.sidebarCursor < totalItems-1 {
-			m.sidebarCursor++
-		}
-	case "enter":
-		if m.sidebarCursor < len(m.sidebarItems) {
-			// Navigate to view but keep focus on sidebar
-			m.currentView = m.sidebarItems[m.sidebarCursor].View
-			// Don't auto-switch focus - let user decide with arrow keys
-		} else {
-			// Launch button
 			return m.startLaunch()
 		}
+
+		// Handle view-specific navigation
+		return m.updateContent(msg)
 	}
-	
+
 	return m, nil
 }
+
 
 // updateContent handles navigation in the content area
 func (m Model) updateContent(msg tea.KeyMsg) (Model, tea.Cmd) {
@@ -334,6 +495,8 @@ func (m Model) updateContent(msg tea.KeyMsg) (Model, tea.Cmd) {
 		return m.updateSettings(msg)
 	case ViewHelp:
 		return m.updateHelp(msg)
+	case ViewExtensionDetail:
+		return m.updateExtensionDetail(msg)
 	}
 	return m, nil
 }
@@ -349,11 +512,12 @@ func (m Model) updateExtensions(msg tea.KeyMsg) (Model, tea.Cmd) {
 			m.extensionsCursor++
 		}
 	case " ", "enter":
-		// View extension details (TODO: implement detail view)
+		// View extension details
 		if m.extensionsCursor < len(m.filteredExtensions) {
-			// For now, just show a message
-			ext := m.filteredExtensions[m.extensionsCursor]
-			return m, tea.Println(fmt.Sprintf("Extension: %s v%s - %s", ext.Name, ext.Version, ext.Description))
+			m.selectedExtension = m.filteredExtensions[m.extensionsCursor]
+			m.currentView = ViewExtensionDetail
+			m.err = nil // Clear any errors
+			return m, nil
 		}
 	case "n":
 		// Add new extension
@@ -362,23 +526,8 @@ func (m Model) updateExtensions(msg tea.KeyMsg) (Model, tea.Cmd) {
 		// Delete extension
 		if m.extensionsCursor < len(m.filteredExtensions) {
 			ext := m.filteredExtensions[m.extensionsCursor]
-			// Move to trash instead of permanent delete
-			if err := m.extensionManager.MoveToTrash(ext.ID); err != nil {
-				m.err = NewFileSystemError("delete", ext.Name, err)
-			} else {
-				// Reload extensions
-				m.extensions = m.extensionManager.List()
-				// Reapply filters
-				if m.searchBar.Value() != "" {
-					m.filteredExtensions = filterExtensions(m.extensions, m.searchBar.Value())
-				} else {
-					m.filteredExtensions = m.extensions
-				}
-				// Adjust cursor if needed
-				if m.extensionsCursor >= len(m.filteredExtensions) && m.extensionsCursor > 0 {
-					m.extensionsCursor--
-				}
-			}
+			// Delete asynchronously
+			return m, m.deleteExtensionCmd(ext.ID)
 		}
 	}
 	return m, nil
@@ -398,10 +547,7 @@ func (m Model) updateProfiles(msg tea.KeyMsg) (Model, tea.Cmd) {
 		// Activate profile
 		if m.profilesCursor < len(m.filteredProfiles) {
 			profile := m.filteredProfiles[m.profilesCursor]
-			if err := m.profileManager.SetActive(profile.ID); err == nil {
-				m.currentProfile = profile
-				return m, tea.Println("Profile activated: " + profile.Name)
-			}
+			return m, m.activateProfileCmd(profile)
 		}
 	case "n":
 		// Create new profile
@@ -422,23 +568,12 @@ func (m Model) updateProfiles(msg tea.KeyMsg) (Model, tea.Cmd) {
 			} else if m.currentProfile != nil && prof.ID == m.currentProfile.ID {
 				m.err = NewValidationError("Cannot delete the active profile", "Switch to another profile first")
 			} else {
-				// Delete the profile
-				if err := m.profileManager.Delete(prof.ID); err != nil {
-					m.err = WrapError(err, "profile deletion")
-				} else {
-					// Reload profiles
-					m.profiles = m.profileManager.List()
-					// Reapply filters
-					if m.searchBar.Value() != "" {
-						m.filteredProfiles = filterProfiles(m.profiles, m.searchBar.Value())
-					} else {
-						m.filteredProfiles = m.profiles
-					}
-					// Adjust cursor if needed
-					if m.profilesCursor >= len(m.filteredProfiles) && m.profilesCursor > 0 {
-						m.profilesCursor--
-					}
+				// Delete the profile asynchronously
+				// Adjust cursor before deletion
+				if m.profilesCursor >= len(m.filteredProfiles)-1 && m.profilesCursor > 0 {
+					m.profilesCursor--
 				}
+				return m, m.deleteProfileCmd(prof.ID)
 			}
 		}
 	}
@@ -457,6 +592,38 @@ func (m Model) updateSettings(msg tea.KeyMsg) (Model, tea.Cmd) {
 func (m Model) updateHelp(msg tea.KeyMsg) (Model, tea.Cmd) {
 	// Any key returns to previous view
 	m.currentView = ViewExtensions
+	return m, nil
+}
+
+func (m Model) updateExtensionDetail(msg tea.KeyMsg) (Model, tea.Cmd) {
+	switch msg.String() {
+	case "esc":
+		// Go back to extensions list
+		m.currentView = ViewExtensions
+		m.selectedExtension = nil
+		return m, nil
+	case "d":
+		// Delete the extension
+		if m.selectedExtension != nil {
+			extID := m.selectedExtension.ID
+			// Go back to list first
+			m.currentView = ViewExtensions
+			m.selectedExtension = nil
+			// Then delete
+			return m, m.deleteExtensionCmd(extID)
+		}
+	case "e":
+		// Edit extension - for now just show a message
+		// TODO: Implement extension editing
+		if m.selectedExtension != nil {
+			m.err = UIError{
+				Type:    ErrorTypeInfo,
+				Message: "Extension editing not yet implemented",
+				Details: "This feature is coming soon",
+			}
+		}
+		return m, nil
+	}
 	return m, nil
 }
 
@@ -551,27 +718,16 @@ func (m Model) showProfileQuickSwitch() (Model, tea.Cmd) {
 	modal.SetSize(m.windowWidth, m.windowHeight)
 	modal.SetCallbacks(
 		func(p *profile.Profile) tea.Cmd {
-			// Switch profile
-			if err := m.profileManager.SetActive(p.ID); err == nil {
-				m.currentProfile = p
-				// Refresh profile list to update active indicator
-				m.profiles = m.profileManager.List()
-				if m.searchBar.Value() != "" {
-					m.filteredProfiles = filterProfiles(m.profiles, m.searchBar.Value())
-				} else {
-					m.filteredProfiles = m.profiles
-				}
+			// Switch profile - return profile switch message
+			return func() tea.Msg {
+				return profileSwitchMsg{profile: p}
 			}
-			// Close modal
-			m.showingModal = false
-			m.modal = nil
-			return nil
 		},
 		func() tea.Cmd {
-			// Cancel
-			m.showingModal = false
-			m.modal = nil
-			return nil
+			// Cancel - return close modal message
+			return func() tea.Msg {
+				return closeModalMsg{}
+			}
 		},
 	)
 	
@@ -588,46 +744,11 @@ func (m Model) showExtensionInstallForm() (Model, tea.Cmd) {
 	form.SetSize(m.windowWidth, m.windowHeight)
 	form.SetCallbacks(
 		func(source string, isPath bool) tea.Cmd {
-			// Install extension
+			// Return a message to start the installation
 			return func() tea.Msg {
-				// Create a progress channel for updates
-				progressChan := make(chan extension.InstallProgress, 10)
-				
-				// Start progress monitoring in a goroutine
-				go func() {
-					for progress := range progressChan {
-						// Would send progress updates to the UI here
-						// For now, just log them
-						fmt.Printf("Install progress: %s - %s (%d%%)\n", 
-							progress.Stage, progress.Message, progress.Percent)
-					}
-				}()
-				
-				// Install the extension
-				ext, err := m.extensionManager.InstallWithProgress(source, isPath, 
-					func(stage, message string, percent int) {
-						select {
-						case progressChan <- extension.InstallProgress{
-							Stage:   stage,
-							Message: message,
-							Percent: percent,
-						}:
-						default:
-							// Don't block if channel is full
-						}
-					})
-				
-				close(progressChan)
-				
-				if err != nil {
-					return installCompleteMsg{
-						err: err,
-					}
-				}
-				
-				return installCompleteMsg{
-					extension: ext,
-					err:       nil,
+				return installStartMsg{
+					source: source,
+					isPath: isPath,
 				}
 			}
 		},
@@ -645,4 +766,87 @@ func (m Model) showExtensionInstallForm() (Model, tea.Cmd) {
 	
 	// Initialize the form
 	return m, form.Init()
+}
+
+// performInstallation performs the extension installation without goroutines
+func (m Model) performInstallation(source string, isPath bool) tea.Cmd {
+	return func() tea.Msg {
+		// For now, use the regular Install method without progress
+		// We'll refactor the extension manager to support non-blocking progress later
+		ext, err := m.extensionManager.Install(source, isPath)
+		
+		if err != nil {
+			return installCompleteMsg{
+				err: err,
+			}
+		}
+		
+		return installCompleteMsg{
+			extension: ext,
+			err:       nil,
+		}
+	}
+}
+
+// Command functions for async operations
+
+// loadExtensionsCmd loads the list of extensions
+func (m Model) loadExtensionsCmd() tea.Cmd {
+	return func() tea.Msg {
+		extensions := m.extensionManager.List()
+		return extensionsLoadedMsg{
+			extensions: extensions,
+			err:        nil,
+		}
+	}
+}
+
+// deleteExtensionCmd deletes an extension
+func (m Model) deleteExtensionCmd(extID string) tea.Cmd {
+	return func() tea.Msg {
+		err := m.extensionManager.MoveToTrash(extID)
+		return extensionDeletedMsg{
+			extensionID: extID,
+			err:         err,
+		}
+	}
+}
+
+// loadProfilesCmd loads the list of profiles
+func (m Model) loadProfilesCmd() tea.Cmd {
+	return func() tea.Msg {
+		profiles := m.profileManager.List()
+		return profilesLoadedMsg{
+			profiles: profiles,
+			err:      nil,
+		}
+	}
+}
+
+// deleteProfileCmd deletes a profile
+func (m Model) deleteProfileCmd(profID string) tea.Cmd {
+	return func() tea.Msg {
+		err := m.profileManager.Delete(profID)
+		return profileDeletedMsg{
+			profileID: profID,
+			err:       err,
+		}
+	}
+}
+
+// activateProfileCmd activates a profile
+func (m Model) activateProfileCmd(prof *profile.Profile) tea.Cmd {
+	return func() tea.Msg {
+		err := m.profileManager.SetActive(prof.ID)
+		if err != nil {
+			return profileActivatedMsg{
+				profile: nil,
+				err:     err,
+			}
+		}
+		return profileActivatedMsg{
+			profile: prof,
+			err:     nil,
+		}
+	}
 }

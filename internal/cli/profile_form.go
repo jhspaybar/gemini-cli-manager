@@ -225,7 +225,7 @@ func (f ProfileForm) View() string {
 		"Ctrl+S: Save",
 		"Esc: Cancel",
 	}
-	b.WriteString(helpDescStyle.Render(strings.Join(helpText, " • ")))
+	b.WriteString(keyDescStyle.Render(strings.Join(helpText, " • ")))
 	
 	// Error display
 	if f.err != nil {
@@ -244,9 +244,9 @@ func (f ProfileForm) View() string {
 
 // renderField renders a form field
 func (f ProfileForm) renderField(label string, index int) string {
-	labelStyle := bodyStyle.Copy()
+	labelStyle := textStyle.Copy()
 	if f.focusIndex == index {
-		labelStyle = labelStyle.Foreground(colorPrimary).Bold(true)
+		labelStyle = labelStyle.Foreground(colorAccent).Bold(true)
 	}
 	
 	fieldStyle := lipgloss.NewStyle().
@@ -255,7 +255,7 @@ func (f ProfileForm) renderField(label string, index int) string {
 		Padding(0, 1)
 		
 	if f.focusIndex == index {
-		fieldStyle = fieldStyle.BorderForeground(colorFocused)
+		fieldStyle = fieldStyle.BorderForeground(colorBorderFocus)
 	}
 	
 	return fmt.Sprintf("%s\n%s",
@@ -266,9 +266,9 @@ func (f ProfileForm) renderField(label string, index int) string {
 
 // renderExtensions renders the extensions selection
 func (f ProfileForm) renderExtensions() string {
-	labelStyle := bodyStyle.Copy()
+	labelStyle := textStyle.Copy()
 	if f.focusIndex == totalFields {
-		labelStyle = labelStyle.Foreground(colorPrimary).Bold(true)
+		labelStyle = labelStyle.Foreground(colorAccent).Bold(true)
 	}
 	
 	var b strings.Builder
@@ -276,7 +276,7 @@ func (f ProfileForm) renderExtensions() string {
 	b.WriteString("\n")
 	
 	if len(f.availableExtensions) == 0 {
-		b.WriteString(mutedStyle.Render("  No extensions available"))
+		b.WriteString(textMutedStyle.Render("  No extensions available"))
 		return b.String()
 	}
 	
@@ -288,7 +288,7 @@ func (f ProfileForm) renderExtensions() string {
 		Width(42)
 		
 	if f.focusIndex == totalFields {
-		boxStyle = boxStyle.BorderForeground(colorFocused)
+		boxStyle = boxStyle.BorderForeground(colorBorderFocus)
 	}
 	
 	var extLines []string
@@ -305,7 +305,7 @@ func (f ProfileForm) renderExtensions() string {
 		
 		line := fmt.Sprintf("%s%s %s", prefix, checkbox, ext)
 		
-		lineStyle := bodyStyle
+		lineStyle := textStyle
 		if f.focusIndex == totalFields && i == f.extensionsCursor {
 			lineStyle = lineStyle.Bold(true)
 		}

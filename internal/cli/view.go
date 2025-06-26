@@ -5,12 +5,19 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
+	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
 )
 
 // View renders the entire application UI
 func (m Model) View() string {
 	if !m.ready {
 		return "\n  Initializing..."
+	}
+	
+	// Show loading screen while data is being loaded
+	if m.loading {
+		return m.renderLoading()
 	}
 
 	// If showing modal, render it on top
@@ -19,139 +26,112 @@ func (m Model) View() string {
 	}
 
 	// Calculate dimensions
-	sidebarWidth := 20
-	contentWidth := m.windowWidth - sidebarWidth - 1 // -1 for border
-	contentHeight := m.windowHeight - 3 // -3 for status bar
+	contentHeight := m.windowHeight - 4 // -4 for tab bar and status bar
 	
 	// Render components
-	sidebar := m.renderSidebar(sidebarWidth, contentHeight)
-	content := m.renderContent(contentWidth, contentHeight)
+	tabBar := m.renderTabBar()
+	content := m.renderContent(m.windowWidth, contentHeight)
 	statusBar := m.renderStatusBar()
 	
-	// Combine sidebar and content
-	main := lipgloss.JoinHorizontal(
-		lipgloss.Top,
-		sidebar,
-		content,
-	)
-	
-	// Add status bar
+	// Combine all elements
 	return lipgloss.JoinVertical(
 		lipgloss.Left,
-		main,
+		tabBar,
+		content,
 		statusBar,
 	)
 }
 
-// renderSidebar renders the navigation sidebar
-func (m Model) renderSidebar(width, height int) string {
-	var items []string
-	
-	// Title with focus indicator
-	title := "Gemini CLI Manager"
-	if m.focusedPane == PaneSidebar {
-		title = "◀ " + title
+// renderTabBar renders the top navigation tabs
+func (m Model) renderTabBar() string {
+	// Don't show tabs in detail view
+	if m.currentView == ViewExtensionDetail {
+		return lipgloss.NewStyle().
+			Width(m.windowWidth).
+			Height(1).
+			Render("")
 	}
-	items = append(items, h2Style.Render(title), "")
 	
-	// Profile info
-	profileInfo := bodySmallStyle.Render(fmt.Sprintf("Profile: %s", m.getProfileName()))
-	items = append(items, profileInfo, "")
+	tabs := []struct {
+		title string
+		icon  string
+		view  ViewType
+	}{
+		{"Extensions", "🧩", ViewExtensions},
+		{"Profiles", "👥", ViewProfiles},
+		{"Settings", "⚙️", ViewSettings},
+		{"Help", "❓", ViewHelp},
+	}
 	
-	// Menu items
-	for i, item := range m.sidebarItems {
-		var style lipgloss.Style
-		prefix := "  "
+	var tabStrings []string
+	
+	for i, tab := range tabs {
+		var tabStyle lipgloss.Style
 		
-		// Show current view differently
-		if item.View == m.currentView {
-			if m.focusedPane == PaneSidebar && i == m.sidebarCursor {
-				// Focused and selected
-				style = focusedItemStyle
-				prefix = "▶ "
-			} else {
-				// Current view but not focused
-				style = menuItemStyle.Foreground(colorPrimary)
-				prefix = "• "
-			}
-		} else if m.focusedPane == PaneSidebar && i == m.sidebarCursor {
-			// Focused but not current
-			style = menuItemStyle.Background(colorSelected)
-			prefix = "  "
+		if tab.view == m.currentView {
+			// Active tab - clean look with bottom highlight
+			tabStyle = lipgloss.NewStyle().
+				Bold(true).
+				Foreground(colorAccent).
+				Background(lipgloss.Color("236")).
+				Padding(0, 3).
+				MarginRight(1)
 		} else {
-			// Normal item
-			style = menuItemStyle
+			// Inactive tab
+			tabStyle = lipgloss.NewStyle().
+				Foreground(colorTextDim).
+				Background(lipgloss.Color("235")).
+				Padding(0, 3).
+				MarginRight(1)
 		}
 		
-		line := fmt.Sprintf("%s%s %s", prefix, item.Icon, item.Title)
-		items = append(items, style.Render(line))
+		// Add left margin for first tab
+		if i == 0 {
+			tabStyle = tabStyle.MarginLeft(2)
+		}
+		
+		tabContent := fmt.Sprintf("%s %s", tab.icon, tab.title)
+		tabStrings = append(tabStrings, tabStyle.Render(tabContent))
 	}
 	
-	// Launch button
-	items = append(items, "", "")
-	launchStyle := menuItemStyle
-	if m.focusedPane == PaneSidebar && m.sidebarCursor >= len(m.sidebarItems) {
-		launchStyle = focusedItemStyle
-	}
-	launchBtn := launchStyle.Render("  ▶ Launch Gemini")
-	items = append(items, launchBtn)
+	// Create tab row
+	tabRow := lipgloss.JoinHorizontal(lipgloss.Top, tabStrings...)
 	
-	// Navigation help
-	items = append(items, "")
-	if m.focusedPane == PaneSidebar {
-		items = append(items, helpDescStyle.Render("→/l: Focus content"))
-		items = append(items, helpKeyStyle.Render("Enter: Select"))
-	} else {
-		items = append(items, helpDescStyle.Render("←/h: Back to sidebar"))
-	}
-	
-	content := lipgloss.JoinVertical(lipgloss.Left, items...)
-	
-	// Apply sidebar styling
-	style := sidebarStyle
-	if m.focusedPane == PaneSidebar {
-		style = style.BorderForeground(colorFocused).
-			BorderStyle(lipgloss.ThickBorder())
-	}
-	
-	return style.
-		Width(width).
-		Height(height).
-		Render(content)
+	// Create full-width container with bottom border
+	return lipgloss.NewStyle().
+		Width(m.windowWidth).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderBottom(true).
+		BorderForeground(colorBorder).
+		Render(tabRow)
 }
 
 // renderContent renders the main content area
 func (m Model) renderContent(width, height int) string {
 	var content string
 	
+	// Calculate inner width accounting for padding
+	innerWidth := width - 4  // 4 for left and right padding (2 each side)
+	
 	switch m.currentView {
 	case ViewExtensions:
-		content = m.renderExtensions(width, height)
+		content = m.renderExtensions(innerWidth, height)
 	case ViewProfiles:
-		content = m.renderProfiles(width, height)
+		content = m.renderProfiles(innerWidth, height)
 	case ViewSettings:
-		content = m.renderSettings(width, height)
+		content = m.renderSettings(innerWidth, height)
 	case ViewHelp:
-		content = m.renderHelp(width, height)
+		content = m.renderHelp(innerWidth, height)
+	case ViewExtensionDetail:
+		content = m.renderExtensionDetail(innerWidth, height)
 	}
 	
-	style := contentStyle.
-		BorderStyle(lipgloss.NormalBorder()).
-		BorderTop(true).
-		BorderLeft(false).
-		BorderRight(true).
-		BorderBottom(true)
-	
-	if m.focusedPane == PaneContent {
-		style = style.BorderForeground(colorFocused).
-			BorderStyle(lipgloss.ThickBorder())
-	} else {
-		style = style.BorderForeground(colorBorder)
-	}
-	
-	return style.
+	// Simple content styling without borders
+	return lipgloss.NewStyle().
+		Padding(1, 2).
 		Width(width).
 		Height(height).
+		MaxWidth(width).
 		Render(content)
 }
 
@@ -159,73 +139,125 @@ func (m Model) renderContent(width, height int) string {
 func (m Model) renderExtensions(width, height int) string {
 	var lines []string
 	
-	// Header with focus indicator
-	focusIndicator := ""
-	if m.focusedPane == PaneContent {
-		focusIndicator = " ▸"
-	}
-	header := h1Style.Render("Extensions" + focusIndicator)
+	// Header
+	header := h1Style.Render("Extensions")
+	lines = append(lines, header)
 	
 	// Show search bar if active or has query
 	if m.searchActive || m.searchBar.Value() != "" {
-		lines = append(lines, header)
-		lines = append(lines, m.searchBar.View())
 		lines = append(lines, "")
-	} else {
-		lines = append(lines, header)
+		searchBox := lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(colorBorderFocus).
+			Padding(0, 1).
+			Width(60).
+			Render(m.searchBar.View())
+		lines = append(lines, searchBox)
 	}
 	
-	// Show count with filter indication
+	lines = append(lines, "")
+	
+	// Show count
 	var count string
 	if m.searchBar.Value() != "" {
 		count = fmt.Sprintf("%d of %d extensions (filtered)", len(m.filteredExtensions), len(m.extensions))
 	} else {
 		count = fmt.Sprintf("%d extensions found", len(m.filteredExtensions))
 	}
-	lines = append(lines, bodySmallStyle.Render(count), "")
+	lines = append(lines, textDimStyle.Render(count), "")
 	
 	if len(m.filteredExtensions) == 0 {
-		if m.searchBar.Value() != "" {
-			lines = append(lines, mutedStyle.Render("No extensions match your search."))
-		} else {
-			lines = append(lines, mutedStyle.Render("No extensions installed."))
-			lines = append(lines, "", bodyStyle.Render("Press 'n' to add a new extension."))
-		}
+		// Empty state
+		emptyBox := lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(colorBorder).
+			Padding(2, 4).
+			Width(50).
+			Align(lipgloss.Center).
+			Render(
+				lipgloss.JoinVertical(
+					lipgloss.Center,
+					"📦",
+					"",
+					"No extensions installed",
+					textDimStyle.Render("Press 'n' to install your first extension"),
+				),
+			)
+		lines = append(lines, "")
+		lines = append(lines, lipgloss.NewStyle().Width(width-4).Align(lipgloss.Center).Render(emptyBox))
 	} else {
-		// Extension list
+		// Extension list with cards
 		for i, ext := range m.filteredExtensions {
-			var line string
-			cursor := "  "
-			style := bodyStyle
-			
-			if i == m.extensionsCursor {
-				cursor = "▶ "
-				style = style.Bold(true)
-			}
-			
-			// Version indicator
-			version := mutedStyle.Render(fmt.Sprintf("v%s", ext.Version))
-			
-			line = fmt.Sprintf("%s%-30s %s", cursor, ext.Name, version)
-			lines = append(lines, style.Render(line))
-			
-			// Show description for selected item
-			if i == m.extensionsCursor {
-				desc := bodySmallStyle.Render("  " + ext.Description)
-				lines = append(lines, desc)
+			isSelected := i == m.extensionsCursor
+			card := m.renderExtensionCard(ext, isSelected, width-4)
+			lines = append(lines, card)
+			if i < len(m.filteredExtensions)-1 {
+				lines = append(lines, "") // Spacing between cards
 			}
 		}
 		
 		// Help text
-		lines = append(lines, "")
-		helpText := "Enter: Details • n: Install New • d: Delete"
-		if !m.searchActive {
-			helpText += " • /: Search"
-		}
-		lines = append(lines, helpDescStyle.Render(helpText))
+		lines = append(lines, "", "")
+		helpText := renderKeyHelp([][2]string{
+			{"↵", "Details"},
+			{"n", "Install"},
+			{"d", "Delete"},
+			{"/", "Search"},
+			{"Tab", "Next"},
+		})
+		lines = append(lines, helpText)
 	}
 	
 	return strings.Join(lines, "\n")
+}
+
+// renderExtensionCard renders a single extension as a card
+func (m Model) renderExtensionCard(ext *extension.Extension, isSelected bool, width int) string {
+	// Card styling - more compact
+	cardStyle := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(colorBorder).
+		Padding(0, 1).
+		Width(width)
+	
+	if isSelected {
+		cardStyle = cardStyle.
+			BorderForeground(colorAccent).
+			BorderStyle(lipgloss.ThickBorder())
+	}
+	
+	// Extension name and version on same line
+	nameStyle := textStyle
+	if isSelected {
+		nameStyle = nameStyle.Bold(true).Foreground(colorAccent)
+	}
+	
+	// Calculate available width for text (accounting for padding and borders)
+	textWidth := width - 6  // 2 for borders, 4 for padding
+	
+	// Calculate space for name and version
+	versionText := fmt.Sprintf("v%s", ext.Version)
+	nameWidth := textWidth - lipgloss.Width(versionText) - 2 // 2 for spacing
+	
+	name := nameStyle.MaxWidth(nameWidth).Render(ext.Name)
+	version := textDimStyle.Render(versionText)
+	header := lipgloss.JoinHorizontal(lipgloss.Top, name, "  ", version)
+	
+	// Description on second line
+	desc := textDimStyle.MaxWidth(textWidth).Render(ext.Description)
+	
+	// MCP servers info if present
+	var content []string
+	content = append(content, header)
+	content = append(content, desc)
+	
+	if ext.MCPServers != nil && len(ext.MCPServers) > 0 {
+		count := len(ext.MCPServers)
+		info := accentStyle.Render(fmt.Sprintf("⚡ %d MCP server%s", count, pluralize(count)))
+		content = append(content, info)
+	}
+	
+	return cardStyle.Render(strings.Join(content, "\n"))
 }
 
 // renderProfiles renders the profiles view
@@ -234,75 +266,149 @@ func (m Model) renderProfiles(width, height int) string {
 	
 	// Header
 	header := h1Style.Render("Profiles")
+	lines = append(lines, header)
 	
-	// Show search bar if active or has query
+	// Active profile indicator
+	activeProfile := "None"
+	if m.currentProfile != nil {
+		activeProfile = m.currentProfile.Name
+	}
+	// Constrain badge width to prevent overflow
+	badgeText := fmt.Sprintf("● Active: %s", activeProfile)
+	activeBadge := lipgloss.NewStyle().
+		Background(colorSuccess).
+		Foreground(lipgloss.Color("0")).
+		Bold(true).
+		Padding(0, 1).
+		MaxWidth(width - 4).
+		Render(badgeText)
+	lines = append(lines, "", activeBadge)
+	
+	// Show search bar if active
 	if m.searchActive || m.searchBar.Value() != "" {
-		lines = append(lines, header)
-		lines = append(lines, m.searchBar.View())
 		lines = append(lines, "")
-	} else {
-		lines = append(lines, header)
+		searchBox := lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(colorBorderFocus).
+			Padding(0, 1).
+			Width(60).
+			Render(m.searchBar.View())
+		lines = append(lines, searchBox)
 	}
 	
-	// Active profile and count
-	current := fmt.Sprintf("Active: %s", m.getProfileName())
-	lines = append(lines, bodySmallStyle.Render(current))
+	lines = append(lines, "")
 	
-	// Show count with filter indication
+	// Show count
 	var count string
 	if m.searchBar.Value() != "" {
 		count = fmt.Sprintf("%d of %d profiles (filtered)", len(m.filteredProfiles), len(m.profiles))
 	} else {
 		count = fmt.Sprintf("%d profiles", len(m.profiles))
 	}
-	lines = append(lines, bodySmallStyle.Render(count), "")
+	lines = append(lines, textDimStyle.Render(count), "")
 	
 	if len(m.filteredProfiles) == 0 {
-		if m.searchBar.Value() != "" {
-			lines = append(lines, mutedStyle.Render("No profiles match your search."))
-		} else {
-			lines = append(lines, mutedStyle.Render("No profiles configured."))
-			lines = append(lines, "", bodyStyle.Render("Press 'n' to create a new profile."))
-		}
+		// Empty state
+		emptyBox := lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(colorBorder).
+			Padding(2, 4).
+			Width(50).
+			Align(lipgloss.Center).
+			Render(
+				lipgloss.JoinVertical(
+					lipgloss.Center,
+					"👤",
+					"",
+					"No profiles configured",
+					textDimStyle.Render("Press 'n' to create your first profile"),
+				),
+			)
+		lines = append(lines, "")
+		lines = append(lines, lipgloss.NewStyle().Width(width-4).Align(lipgloss.Center).Render(emptyBox))
 	} else {
 		// Profile list
 		for i, prof := range m.filteredProfiles {
-			var line string
-			cursor := "  "
-			style := bodyStyle
-			
-			if i == m.profilesCursor {
-				cursor = "▶ "
-				style = style.Bold(true)
-			}
-			
-			// Active indicator
-			indicator := "  "
-			if m.currentProfile != nil && prof.ID == m.currentProfile.ID {
-				indicator = "● "
-				style = style.Foreground(colorSuccess)
-			}
-			
-			line = fmt.Sprintf("%s%s%s", cursor, indicator, prof.Name)
-			lines = append(lines, style.Render(line))
-			
-			// Show description for selected item
-			if i == m.profilesCursor && prof.Description != "" {
-				desc := bodySmallStyle.Render("  " + prof.Description)
-				lines = append(lines, desc)
+			isSelected := i == m.profilesCursor
+			isActive := m.currentProfile != nil && prof.ID == m.currentProfile.ID
+			card := m.renderProfileCard(prof, isSelected, isActive, width-4)
+			lines = append(lines, card)
+			if i < len(m.filteredProfiles)-1 {
+				lines = append(lines, "")
 			}
 		}
 		
 		// Help text
-		lines = append(lines, "")
-		helpText := "Enter: Activate • n: New • e: Edit • d: Delete"
-		if !m.searchActive {
-			helpText += " • /: Search"
-		}
-		lines = append(lines, helpDescStyle.Render(helpText))
+		lines = append(lines, "", "")
+		helpText := renderKeyHelp([][2]string{
+			{"↵", "Activate"},
+			{"n", "New"},
+			{"e", "Edit"},
+			{"d", "Delete"},
+			{"/", "Search"},
+		})
+		lines = append(lines, helpText)
 	}
 	
 	return strings.Join(lines, "\n")
+}
+
+// renderProfileCard renders a single profile as a card
+func (m Model) renderProfileCard(prof *profile.Profile, isSelected, isActive bool, width int) string {
+	// Card styling - more compact
+	cardStyle := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(colorBorder).
+		Padding(0, 1).
+		Width(width)
+	
+	if isActive {
+		cardStyle = cardStyle.BorderForeground(colorSuccess)
+	} else if isSelected {
+		cardStyle = cardStyle.
+			BorderForeground(colorAccent).
+			BorderStyle(lipgloss.ThickBorder())
+	}
+	
+	// Profile name with active indicator
+	nameStyle := textStyle
+	if isSelected {
+		nameStyle = nameStyle.Bold(true)
+	}
+	if isActive {
+		nameStyle = nameStyle.Foreground(colorSuccess)
+	}
+	
+	statusIcon := "  "
+	if isActive {
+		statusIcon = "● "
+	}
+	
+	// Build content lines
+	var content []string
+	
+	// Calculate available width for text (accounting for padding and borders)
+	textWidth := width - 6  // 2 for borders, 4 for padding
+	
+	// First line: status + name
+	// Apply style only to the name, not the status icon
+	styledName := nameStyle.MaxWidth(textWidth - lipgloss.Width(statusIcon)).Render(prof.Name)
+	nameText := statusIcon + styledName
+	content = append(content, nameText)
+	
+	// Second line: description (if exists)
+	if prof.Description != "" {
+		desc := textDimStyle.MaxWidth(textWidth).Render(prof.Description)
+		content = append(content, desc)
+	}
+	
+	// Third line: extension count
+	if len(prof.Extensions) > 0 {
+		extInfo := accentStyle.MaxWidth(textWidth).Render(fmt.Sprintf("📦 %d extension%s", len(prof.Extensions), pluralize(len(prof.Extensions))))
+		content = append(content, extInfo)
+	}
+	
+	return cardStyle.Render(strings.Join(content, "\n"))
 }
 
 // renderSettings renders the settings view
@@ -312,26 +418,70 @@ func (m Model) renderSettings(width, height int) string {
 	header := h1Style.Render("Settings")
 	lines = append(lines, header, "")
 	
-	// Settings items
+	// Settings in a more compact table-like format
 	settings := []struct {
-		label string
-		value string
+		section string
+		icon    string
+		items   []struct {
+			label string
+			value string
+		}
 	}{
-		{"Gemini CLI Path", "/usr/local/bin/gemini"},
-		{"Extensions Directory", "~/.gemini/extensions"},
-		{"Profiles Directory", "~/.gemini/profiles"},
-		{"Auto-update Extensions", "Enabled"},
-		{"Theme", "GitHub Dark"},
+		{
+			"General",
+			"🔧",
+			[]struct {
+				label string
+				value string
+			}{
+				{"Gemini CLI Path", "/usr/local/bin/gemini"},
+				{"Config Directory", "~/.gemini-cli-manager"},
+			},
+		},
+		{
+			"Extensions",
+			"📦",
+			[]struct {
+				label string
+				value string
+			}{
+				{"Extensions Directory", "~/.gemini/extensions"},
+				{"Auto-update", "Enabled"},
+			},
+		},
+		{
+			"Appearance",
+			"🎨",
+			[]struct {
+				label string
+				value string
+			}{
+				{"Theme", "Dark Modern"},
+				{"Tab Position", "Top"},
+			},
+		},
 	}
 	
-	for _, setting := range settings {
-		label := bodyStyle.Render(fmt.Sprintf("%-25s", setting.label))
-		value := bodySmallStyle.Render(setting.value)
-		lines = append(lines, fmt.Sprintf("%s %s", label, value))
+	// Calculate column widths
+	labelWidth := 25
+	
+	for _, group := range settings {
+		// Section header with icon
+		sectionHeader := fmt.Sprintf("%s %s", group.icon, group.section)
+		lines = append(lines, h2Style.Render(sectionHeader))
+		
+		// Items in the section
+		for _, item := range group.items {
+			label := textDimStyle.Width(labelWidth).Render(item.label)
+			value := accentStyle.Render(item.value)
+			line := fmt.Sprintf("  %s  %s", label, value)
+			lines = append(lines, line)
+		}
+		lines = append(lines, "") // Space between sections
 	}
 	
-	lines = append(lines, "")
-	lines = append(lines, helpDescStyle.Render("Press 'e' to edit settings"))
+	// Help at bottom
+	lines = append(lines, keyDescStyle.Render("Press 'e' to edit settings"))
 	
 	return strings.Join(lines, "\n")
 }
@@ -343,116 +493,253 @@ func (m Model) renderHelp(width, height int) string {
 	header := h1Style.Render("Help")
 	lines = append(lines, header, "")
 	
-	// Navigation
-	lines = append(lines, h2Style.Render("Navigation"), "")
-	navHelp := []struct {
-		key  string
-		desc string
+	// Two-column layout for keyboard shortcuts
+	shortcuts := []struct {
+		category string
+		icon     string
+		items    [][2]string
 	}{
-		{"←/h", "Focus sidebar"},
-		{"→/l", "Focus content"},
-		{"↑/k", "Move up in current pane"},
-		{"↓/j", "Move down in current pane"},
-		{"Enter", "Select/Navigate"},
-		{"Esc", "Back to sidebar"},
-		{"Tab", "Switch panes"},
-		{"?", "Toggle this help"},
-		{"q", "Quit application"},
+		{
+			"Navigation",
+			"🧭",
+			[][2]string{
+				{"Tab", "Next tab"},
+				{"←/h", "Previous tab"},
+				{"→/l", "Next tab"},
+				{"↑/k", "Move up"},
+				{"↓/j", "Move down"},
+				{"Enter", "Select"},
+			},
+		},
+		{
+			"Actions",
+			"⚡",
+			[][2]string{
+				{"n", "New item"},
+				{"e", "Edit item"},
+				{"d", "Delete item"},
+				{"/", "Search"},
+				{"L", "Launch Gemini"},
+				{"?", "Toggle help"},
+			},
+		},
+		{
+			"Global",
+			"🌐",
+			[][2]string{
+				{"Ctrl+P", "Quick switch profile"},
+				{"Esc", "Cancel/Back"},
+				{"q", "Quit"},
+			},
+		},
 	}
 	
-	for _, item := range navHelp {
-		key := helpKeyStyle.Render(fmt.Sprintf("%-10s", item.key))
-		desc := helpDescStyle.Render(item.desc)
-		lines = append(lines, fmt.Sprintf("  %s %s", key, desc))
+	// Render shortcuts in columns
+	for _, section := range shortcuts {
+		lines = append(lines, h2Style.Render(fmt.Sprintf("%s %s", section.icon, section.category)))
+		
+		for _, item := range section.items {
+			key := keyStyle.Width(10).Render(item[0])
+			desc := textDimStyle.Render(item[1])
+			lines = append(lines, fmt.Sprintf("  %s  %s", key, desc))
+		}
+		lines = append(lines, "")
 	}
 	
-	// View-specific
-	lines = append(lines, "", h2Style.Render("View-Specific Actions"), "")
-	viewHelp := []struct {
-		key  string
-		desc string
-	}{
-		{"Space", "Toggle extension on/off (Extensions view)"},
-		{"n", "Create new item"},
-		{"e", "Edit selected item"},
-		{"d", "Delete selected item"},
-		{"L", "Launch Gemini CLI (any view)"},
+	// Tips section
+	lines = append(lines, h2Style.Render("💡 Tips"))
+	tips := []string{
+		"• Use Tab to quickly cycle through all views",
+		"• Press / to search in any list view",
+		"• Create profiles for different workflows",
+		"• Extensions can be installed from URLs or local paths",
 	}
-	
-	for _, item := range viewHelp {
-		key := helpKeyStyle.Render(fmt.Sprintf("%-10s", item.key))
-		desc := helpDescStyle.Render(item.desc)
-		lines = append(lines, fmt.Sprintf("  %s %s", key, desc))
+	for _, tip := range tips {
+		lines = append(lines, textDimStyle.Render(tip))
 	}
-	
-	lines = append(lines, "", mutedStyle.Render("Press any key to return"))
 	
 	return strings.Join(lines, "\n")
 }
 
+// renderExtensionDetail renders the detailed view of an extension
+func (m Model) renderExtensionDetail(width, height int) string {
+	if m.selectedExtension == nil {
+		return "No extension selected"
+	}
+	
+	var lines []string
+	ext := m.selectedExtension
+	
+	// Header with back navigation hint
+	header := h1Style.Render(fmt.Sprintf("📦 %s", ext.Name))
+	lines = append(lines, header)
+	lines = append(lines, textDimStyle.Render("Press Esc to go back"))
+	lines = append(lines, "")
+	
+	// Basic info section
+	lines = append(lines, h2Style.Render("📋 Basic Information"))
+	infoBox := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(colorBorder).
+		Padding(1).
+		Width(width-2).
+		Render(strings.Join([]string{
+			fmt.Sprintf("ID:          %s", ext.ID),
+			fmt.Sprintf("Name:        %s", ext.Name),
+			fmt.Sprintf("Version:     %s", ext.Version),
+			fmt.Sprintf("Description: %s", ext.Description),
+			fmt.Sprintf("Path:        %s", ext.Path),
+		}, "\n"))
+	lines = append(lines, infoBox)
+	lines = append(lines, "")
+	
+	// MCP Servers section if present
+	if ext.MCPServers != nil && len(ext.MCPServers) > 0 {
+		lines = append(lines, h2Style.Render("⚡ MCP Servers"))
+		for name, config := range ext.MCPServers {
+			serverBox := lipgloss.NewStyle().
+				Border(lipgloss.RoundedBorder()).
+				BorderForeground(colorAccent).
+				Padding(1).
+				Width(width-2).
+				Render(strings.Join([]string{
+					fmt.Sprintf("Server: %s", name),
+					fmt.Sprintf("Command: %s", config.Command),
+					fmt.Sprintf("Args: %v", config.Args),
+					fmt.Sprintf("Env: %v", config.Env),
+				}, "\n"))
+			lines = append(lines, serverBox)
+		}
+		lines = append(lines, "")
+	}
+	
+	// TODO: Add context file support when Extension struct includes it
+	// For now, just show that context files can exist
+	lines = append(lines, h2Style.Render("📄 Context File"))
+	lines = append(lines, textDimStyle.Render("Context file name: " + func() string {
+		if ext.ContextFileName != "" {
+			return ext.ContextFileName
+		}
+		return "GEMINI.md (default)"
+	}()))
+	lines = append(lines, "")
+	
+	// Help text
+	lines = append(lines, keyDescStyle.Render("Esc: Back • d: Delete • e: Edit (coming soon)"))
+	
+	return strings.Join(lines, "\n")
+}
+
+// renderLoading renders the loading screen
+func (m Model) renderLoading() string {
+	width := m.windowWidth
+	height := m.windowHeight
+	
+	// Center the loading message
+	loadingBox := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(colorAccent).
+		Padding(2, 4).
+		Render(lipgloss.JoinVertical(
+			lipgloss.Center,
+			"🚀 Gemini CLI Manager",
+			"",
+			"Loading extensions and profiles...",
+			"",
+			"Please wait",
+		))
+	
+	// Center in viewport
+	return lipgloss.Place(
+		width,
+		height,
+		lipgloss.Center,
+		lipgloss.Center,
+		loadingBox,
+	)
+}
+
 // renderStatusBar renders the bottom status bar
 func (m Model) renderStatusBar() string {
-	var left []string
-	var right []string
+	var parts []string
 	
-	// Left side - context info
+	// Profile indicator
+	if m.currentProfile != nil {
+		parts = append(parts, fmt.Sprintf("👤 %s", m.currentProfile.Name))
+	} else {
+		parts = append(parts, "👤 No Profile")
+	}
+	
+	// Extension count
 	enabledCount := 0
 	if m.currentProfile != nil {
-		// Count enabled extensions in current profile
 		for _, extRef := range m.currentProfile.Extensions {
 			if extRef.Enabled {
 				enabledCount++
 			}
 		}
 	}
-	left = append(left, fmt.Sprintf("Extensions: %d/%d", enabledCount, len(m.extensions)))
+	parts = append(parts, fmt.Sprintf("🧩 %d/%d", enabledCount, len(m.extensions)))
 	
-	if m.currentProfile != nil {
-		left = append(left, fmt.Sprintf("Profile: %s", m.currentProfile.Name))
-	}
+	// Key hints based on context
+	var hints []string
+	hints = append(hints, "Tab: Switch")
+	hints = append(hints, "L: Launch")
+	hints = append(hints, "?: Help")
+	hints = append(hints, "q: Quit")
 	
-	// Right side - shortcuts
-	if m.focusedPane == PaneSidebar {
-		right = append(right, "→: Content")
-		right = append(right, "Enter: Select")
-	} else {
-		right = append(right, "←: Sidebar")
-		right = append(right, "Space: Toggle")
-	}
-	right = append(right, "?: Help")
-	right = append(right, "q: Quit")
-	
-	// Error in the middle if present
-	middle := ""
+	// Error/Info display
+	errorMsg := ""
 	if m.err != nil {
 		if uiErr, ok := m.err.(UIError); ok {
-			// For UI errors, show just the message in status bar
-			// Full details are shown in modal or form
-			middle = errorStyle.Render(" ❌ " + uiErr.Message + " ")
+			if uiErr.Type == ErrorTypeInfo {
+				// Info message - use different styling
+				errorMsg = accentStyle.Render(fmt.Sprintf(" ℹ️  %s ", uiErr.Message))
+				if uiErr.Details != "" {
+					errorMsg += textDimStyle.Render(fmt.Sprintf(" - %s", uiErr.Details))
+				}
+			} else {
+				errorMsg = errorStyle.Render(fmt.Sprintf(" ❌ %s ", uiErr.Message))
+			}
 		} else {
-			middle = errorStyle.Render(" Error: " + m.err.Error() + " ")
+			errorMsg = errorStyle.Render(fmt.Sprintf(" ❌ %s ", m.err.Error()))
 		}
 	}
 	
-	leftStr := strings.Join(left, " • ")
-	rightStr := strings.Join(right, " • ")
+	// Build status bar
+	left := strings.Join(parts, " • ")
+	right := strings.Join(hints, " • ")
 	
 	// Calculate spacing
-	totalWidth := m.windowWidth
-	leftWidth := lipgloss.Width(leftStr)
-	rightWidth := lipgloss.Width(rightStr)
-	middleWidth := lipgloss.Width(middle)
+	leftWidth := lipgloss.Width(left)
+	rightWidth := lipgloss.Width(right)
+	errorWidth := lipgloss.Width(errorMsg)
+	availableWidth := m.windowWidth - 2 // Account for padding
 	
-	spacing := totalWidth - leftWidth - rightWidth - middleWidth - 2
-	if spacing < 0 {
-		spacing = 1
+	// If content is too wide, truncate the left side (profile name)
+	totalContentWidth := leftWidth + rightWidth + errorWidth + 4 // min spacing
+	if totalContentWidth > availableWidth {
+		// Truncate left side to fit
+		maxLeftWidth := availableWidth - rightWidth - errorWidth - 4
+		if maxLeftWidth > 0 {
+			left = lipgloss.NewStyle().MaxWidth(maxLeftWidth).Render(left)
+			leftWidth = lipgloss.Width(left)
+		}
 	}
 	
-	status := leftStr + strings.Repeat(" ", spacing/2) + middle + strings.Repeat(" ", spacing/2) + rightStr
+	spacingTotal := availableWidth - leftWidth - rightWidth - errorWidth
+	if spacingTotal < 2 {
+		spacingTotal = 2
+	}
+	
+	spacing1 := spacingTotal / 2
+	spacing2 := spacingTotal - spacing1
+	
+	content := left + strings.Repeat(" ", spacing1) + errorMsg + strings.Repeat(" ", spacing2) + right
 	
 	return statusBarStyle.
 		Width(m.windowWidth).
-		Render(status)
+		Render(content)
 }
 
 // Helper methods
@@ -463,3 +750,9 @@ func (m Model) getProfileName() string {
 	return "None"
 }
 
+func pluralize(count int) string {
+	if count == 1 {
+		return ""
+	}
+	return "s"
+}

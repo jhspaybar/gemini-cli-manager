@@ -198,25 +198,6 @@ func (m *Manager) Install(source string, isPath bool) (*Extension, error) {
 	return ext, nil
 }
 
-// InstallWithProgress installs an extension with progress callback
-func (m *Manager) InstallWithProgress(source string, isPath bool, callback InstallProgressCallback) (*Extension, error) {
-	installer := NewInstaller(m.extensionsDir)
-	
-	// Install the extension with progress
-	ext, err := installer.InstallWithProgress(source, isPath, callback)
-	if err != nil {
-		return nil, err
-	}
-	
-	// Rescan to pick up the new extension
-	if err := m.Scan(); err != nil {
-		// Try to clean up
-		os.RemoveAll(ext.Path)
-		return nil, fmt.Errorf("rescanning after install: %w", err)
-	}
-	
-	return ext, nil
-}
 
 // Remove deletes an extension
 func (m *Manager) Remove(id string) error {

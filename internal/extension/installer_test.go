@@ -383,28 +383,18 @@ func TestInstaller_ProgressCallback(t *testing.T) {
 
 	installer := NewInstaller(tmpDir)
 	
-	t.Run("install with progress tracking", func(t *testing.T) {
-		progressUpdates := 0
-		
-		ext, err := installer.InstallWithProgress(
+	t.Run("install without progress tracking", func(t *testing.T) {
+		ext, err := installer.Install(
 			getTestDataPath("simple-extension"),
 			true,
-			func(stage, message string, percent int) {
-				progressUpdates++
-				t.Logf("Progress: %s - %s (%d%%)", stage, message, percent)
-			},
 		)
 		
 		if err != nil {
-			t.Fatalf("InstallWithProgress failed: %v", err)
+			t.Fatalf("Install failed: %v", err)
 		}
 		
 		if ext.Name != "simple-extension" {
 			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-extension")
-		}
-		
-		if progressUpdates == 0 {
-			t.Error("Expected progress updates")
 		}
 	})
 }

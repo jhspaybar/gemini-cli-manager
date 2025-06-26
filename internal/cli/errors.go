@@ -17,6 +17,7 @@ const (
 	ErrorTypeNotFound
 	ErrorTypeConflict
 	ErrorTypeSystem
+	ErrorTypeInfo // For informational messages
 )
 
 // UIError represents an error with user-friendly formatting
@@ -41,12 +42,12 @@ func (e UIError) Format() string {
 	
 	// Details if available
 	if e.Details != "" {
-		parts = append(parts, mutedStyle.Render("  "+e.Details))
+		parts = append(parts, textMutedStyle.Render("  "+e.Details))
 	}
 	
 	// Hint if available
 	if e.Hint != "" {
-		parts = append(parts, helpDescStyle.Render("  💡 "+e.Hint))
+		parts = append(parts, helpStyle.Render("  💡 "+e.Hint))
 	}
 	
 	return strings.Join(parts, "\n")

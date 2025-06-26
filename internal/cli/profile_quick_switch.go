@@ -66,6 +66,7 @@ func (m ProfileQuickSwitchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.onCancel != nil {
 				return m, m.onCancel()
 			}
+			return m, func() tea.Msg { return closeModalMsg{} }
 			
 		case "enter":
 			if len(m.filteredProfiles) > 0 && m.cursor < len(m.filteredProfiles) {
@@ -74,6 +75,7 @@ func (m ProfileQuickSwitchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					return m, m.onSelect(selected)
 				}
 			}
+			return m, nil
 			
 		case "up", "ctrl+p":
 			if m.cursor > 0 {
@@ -137,7 +139,7 @@ func (m ProfileQuickSwitchModal) View() string {
 	
 	// Profile list
 	if len(m.filteredProfiles) == 0 {
-		content.WriteString(mutedStyle.Render("No profiles match your search"))
+		content.WriteString(textMutedStyle.Render("No profiles match your search"))
 	} else {
 		// Show up to 10 profiles
 		visibleCount := len(m.filteredProfiles)
@@ -163,11 +165,11 @@ func (m ProfileQuickSwitchModal) View() string {
 			p := m.filteredProfiles[i]
 			
 			prefix := "  "
-			style := bodyStyle
+			style := textStyle
 			
 			if i == m.cursor {
 				prefix = "▶ "
-				style = style.Bold(true).Foreground(colorPrimary)
+				style = style.Bold(true).Foreground(colorAccent)
 			}
 			
 			// Current profile indicator
@@ -183,7 +185,7 @@ func (m ProfileQuickSwitchModal) View() string {
 			// Show description for selected item
 			if i == m.cursor && p.Description != "" {
 				content.WriteString("\n")
-				content.WriteString(bodySmallStyle.Render("  " + p.Description))
+				content.WriteString(textDimStyle.Render("  " + p.Description))
 			}
 			
 			if i < end-1 {
@@ -194,13 +196,13 @@ func (m ProfileQuickSwitchModal) View() string {
 		// Scroll indicator
 		if len(m.filteredProfiles) > visibleCount {
 			content.WriteString("\n")
-			content.WriteString(mutedStyle.Render(fmt.Sprintf("  (%d/%d profiles)", m.cursor+1, len(m.filteredProfiles))))
+			content.WriteString(textMutedStyle.Render(fmt.Sprintf("  (%d/%d profiles)", m.cursor+1, len(m.filteredProfiles))))
 		}
 	}
 	
 	// Help
 	content.WriteString("\n\n")
-	content.WriteString(helpDescStyle.Render("Enter: Switch • ↑/↓: Navigate • Esc: Cancel"))
+	content.WriteString(keyDescStyle.Render("Enter: Switch • ↑/↓: Navigate • Esc: Cancel"))
 	
 	// Center the modal
 	modal := modalStyle.Render(content.String())

@@ -85,7 +85,7 @@ type SimpleLaunchModal struct {
 func NewSimpleLaunchModal(p *profile.Profile, exts []*extension.Extension, l *launcher.SimpleLauncher) SimpleLaunchModal {
 	s := spinner.New()
 	s.Spinner = spinner.Dot
-	s.Style = lipgloss.NewStyle().Foreground(colorPrimary)
+	s.Style = lipgloss.NewStyle().Foreground(colorAccent)
 
 	return SimpleLaunchModal{
 		profile:    p,
@@ -206,14 +206,14 @@ func (m SimpleLaunchModal) View() string {
 		
 		line := fmt.Sprintf("%s %s", icon, step.name)
 		if step.duration > 0 {
-			line += bodySmallStyle.Render(fmt.Sprintf(" (%dms)", step.duration.Milliseconds()))
+			line += textDimStyle.Render(fmt.Sprintf(" (%dms)", step.duration.Milliseconds()))
 		}
 		
 		content.WriteString(style.Render(line))
 		
 		if step.message != "" && (step.status == stepRunning || step.status == stepFailed) {
 			content.WriteString("\n")
-			content.WriteString(bodySmallStyle.Render("   " + step.message))
+			content.WriteString(textDimStyle.Render("   " + step.message))
 		}
 		
 		if i < len(m.progress)-1 {
@@ -227,19 +227,19 @@ func (m SimpleLaunchModal) View() string {
 	case launchStateChecking, launchStatePreparing, launchStateStartingServers:
 		content.WriteString(m.spinner.View())
 		content.WriteString(" ")
-		content.WriteString(mutedStyle.Render("Preparing launch..."))
+		content.WriteString(textMutedStyle.Render("Preparing launch..."))
 		content.WriteString("\n")
-		content.WriteString(helpDescStyle.Render("Press Esc to cancel"))
+		content.WriteString(keyDescStyle.Render("Press Esc to cancel"))
 		
 	case launchStateLaunching:
 		content.WriteString(m.spinner.View())
 		content.WriteString(" ")
-		content.WriteString(bodyStyle.Render("Launching Gemini CLI..."))
+		content.WriteString(textStyle.Render("Launching Gemini CLI..."))
 		
 	case launchStateSuccess:
-		content.WriteString(enabledStyle.Render("✓ Successfully launched!"))
+		content.WriteString(successStyle.Render("✓ Successfully launched!"))
 		content.WriteString("\n")
-		content.WriteString(helpDescStyle.Render("Gemini CLI is now running"))
+		content.WriteString(keyDescStyle.Render("Gemini CLI is now running"))
 		
 	case launchStateFailed:
 		content.WriteString(errorStyle.Render("✗ Launch failed"))
@@ -248,7 +248,7 @@ func (m SimpleLaunchModal) View() string {
 			content.WriteString(errorStyle.Render(m.error.Error()))
 		}
 		content.WriteString("\n")
-		content.WriteString(helpDescStyle.Render("Press Enter to close"))
+		content.WriteString(keyDescStyle.Render("Press Enter to close"))
 	}
 	
 	// Center the modal
@@ -294,17 +294,17 @@ func (m SimpleLaunchModal) getStepIcon(status stepStatus) string {
 func (m SimpleLaunchModal) getStepStyle(status stepStatus) lipgloss.Style {
 	switch status {
 	case stepPending:
-		return mutedStyle
+		return textMutedStyle
 	case stepRunning:
-		return bodyStyle.Bold(true)
+		return textStyle.Bold(true)
 	case stepSuccess:
-		return enabledStyle
+		return successStyle
 	case stepFailed:
 		return errorStyle
 	case stepSkipped:
-		return mutedStyle
+		return textMutedStyle
 	default:
-		return bodyStyle
+		return textStyle
 	}
 }
 

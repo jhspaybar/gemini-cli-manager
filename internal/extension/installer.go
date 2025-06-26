@@ -611,33 +611,3 @@ func (i *Installer) findExtensionDir(rootDir string) (string, error) {
 
 // InstallProgressCallback is a function that receives installation progress
 type InstallProgressCallback func(stage, message string, percent int)
-
-// InstallWithProgress installs an extension with progress callback
-func (i *Installer) InstallWithProgress(source string, isPath bool, callback InstallProgressCallback) (*Extension, error) {
-	// Create a progress channel
-	progressChan := make(chan InstallProgress, 10)
-	i.SetProgressChannel(progressChan)
-	defer close(progressChan)
-	
-	// Start a goroutine to handle progress updates
-	done := make(chan bool)
-	go func() {
-		for {
-			select {
-			case progress, ok := <-progressChan:
-				if !ok {
-					return
-				}
-				callback(progress.Stage, progress.Message, progress.Percent)
-			case <-done:
-				return
-			}
-		}
-	}()
-	
-	// Perform installation
-	ext, err := i.Install(source, isPath)
-	done <- true
-	
-	return ext, err
-}

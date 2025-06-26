@@ -97,133 +97,484 @@ go mod tidy
 
 ## Bubble Tea TUI Framework
 
-### Core Architecture
+### 🎯 Core Principles
 
+Bubble Tea follows **The Elm Architecture** with three core components:
+1. **Model** - Your application state
+2. **Update** - Handle messages and update state
+3. **View** - Render the UI based on the model
+
+**Critical Rules:**
+- ⚠️ **NEVER use goroutines** within a Bubble Tea program
+- ⚠️ **Use commands for ALL I/O operations**
+- ⚠️ **Keep Update() and View() methods fast** - offload expensive work to commands
+- ⚠️ **State is immutable** - always return a new model from Update()
+
+### 🏗️ Architecture Patterns
+
+#### 1. Multi-View Applications
+
+For complex applications with multiple screens, use one of these patterns:
+
+##### Pattern A: Root Navigator Pattern (Recommended)
 ```go
-type model struct {
-    // View state
-    currentView  viewType
-    windowWidth  int
-    windowHeight int
-    
-    // Business logic
-    extensions []Extension
-    prompts    []Prompt
-    tools      []Tool
-    
-    // UI components
-    list       list.Model
-    textInput  textinput.Model
-    viewport   viewport.Model
-    help       help.Model
-    
-    // State
-    loading    bool
-    err        error
+// Root model manages view switching
+type RootModel struct {
+    currentView ViewType
+    views       map[ViewType]tea.Model
+    shared      *SharedState // Shared between views
 }
 
-func (m model) Init() tea.Cmd {
+func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    // Handle global messages first
+    switch msg := msg.(type) {
+    case tea.WindowSizeMsg:
+        m.shared.Width = msg.Width
+        m.shared.Height = msg.Height
+        // Broadcast to all views
+        var cmds []tea.Cmd
+        for _, view := range m.views {
+            _, cmd := view.Update(msg)
+            cmds = append(cmds, cmd)
+        }
+        return m, tea.Batch(cmds...)
+    
+    case SwitchViewMsg:
+        m.currentView = msg.View
+        return m, m.views[m.currentView].Init()
+    }
+    
+    // Route to current view
+    newView, cmd := m.views[m.currentView].Update(msg)
+    m.views[m.currentView] = newView
+    return m, cmd
+}
+
+func (m RootModel) View() string {
+    return m.views[m.currentView].View()
+}
+```
+
+##### Pattern B: State Machine Pattern
+```go
+type AppState int
+
+const (
+    StateMenu AppState = iota
+    StateExtensionList
+    StateExtensionDetail
+    StateProfileList
+)
+
+type Model struct {
+    state    AppState
+    previous AppState
+    
+    // Sub-models for each state
+    menu      MenuModel
+    extList   ExtensionListModel
+    extDetail ExtensionDetailModel
+    profiles  ProfileListModel
+}
+
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    switch m.state {
+    case StateMenu:
+        menu, cmd := m.menu.Update(msg)
+        m.menu = menu
+        // Handle state transitions
+        if menu.Selected != "" {
+            m.previous = m.state
+            m.state = // ... next state based on selection
+        }
+        return m, cmd
+    // ... other states
+    }
+}
+```
+
+#### 2. Component Composition
+
+Each component should be self-contained:
+
+```go
+// Component interface
+type Component interface {
+    Init() tea.Cmd
+    Update(tea.Msg) (Component, tea.Cmd)
+    View() string
+}
+
+// Example: Reusable list component
+type ListComponent struct {
+    items    []string
+    cursor   int
+    selected map[int]bool
+    focused  bool
+}
+
+func (l ListComponent) Update(msg tea.Msg) (Component, tea.Cmd) {
+    if !l.focused {
+        return l, nil
+    }
+    
+    switch msg := msg.(type) {
+    case tea.KeyMsg:
+        switch msg.String() {
+        case "up", "k":
+            if l.cursor > 0 {
+                l.cursor--
+            }
+        case "down", "j":
+            if l.cursor < len(l.items)-1 {
+                l.cursor++
+            }
+        case "enter", " ":
+            l.selected[l.cursor] = !l.selected[l.cursor]
+            return l, SelectedMsg{Index: l.cursor}
+        }
+    }
+    return l, nil
+}
+```
+
+#### 3. Message Passing
+
+Define clear message types for communication:
+
+```go
+// Navigation messages
+type (
+    // Navigation
+    BackMsg struct{}
+    SwitchViewMsg struct{ View ViewType }
+    
+    // Data events
+    ItemSelectedMsg struct{ ID string }
+    ItemDeletedMsg struct{ ID string }
+    DataLoadedMsg struct{ 
+        Data interface{}
+        Err  error
+    }
+    
+    // UI events
+    FocusChangedMsg struct{ Component string }
+)
+
+// Message routing in parent
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    // First, try to handle in parent
+    switch msg := msg.(type) {
+    case BackMsg:
+        return m.navigateBack()
+    }
+    
+    // Then route to child
+    child, cmd := m.currentView.Update(msg)
+    m.currentView = child
+    
+    // Check if child emitted a message we need to handle
+    if cmd != nil {
+        // You can inspect the command's message here if needed
+    }
+    
+    return m, cmd
+}
+```
+
+### 📋 Command Best Practices
+
+#### DO: Use Commands for All I/O
+```go
+// ✅ GOOD: Async file operation
+func loadConfigCmd() tea.Cmd {
+    return func() tea.Msg {
+        data, err := os.ReadFile("config.json")
+        if err != nil {
+            return ErrorMsg{err}
+        }
+        
+        var config Config
+        if err := json.Unmarshal(data, &config); err != nil {
+            return ErrorMsg{err}
+        }
+        
+        return ConfigLoadedMsg{config}
+    }
+}
+
+// ❌ BAD: Blocking I/O in Update
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    data, err := os.ReadFile("config.json") // BLOCKS THE UI!
+    // ...
+}
+```
+
+#### DON'T: Use Commands Just for Messages
+```go
+// ❌ ANTI-PATTERN: Command that just returns a message
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    return m, func() tea.Msg {
+        return SomeMsg{} // Just use the message directly!
+    }
+}
+
+// ✅ BETTER: Return message directly or update state
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    m.someField = newValue
+    return m, nil
+}
+```
+
+#### Batch Operations
+```go
+// Run multiple commands in parallel
+func (m Model) Init() tea.Cmd {
     return tea.Batch(
-        m.loadInitialData(),
-        textinput.Blink,
+        loadConfigCmd(),
+        loadExtensionsCmd(),
+        checkForUpdatesCmd(),
     )
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    switch msg := msg.(type) {
-    case tea.KeyMsg:
-        return m.handleKeyPress(msg)
-    case tea.WindowSizeMsg:
-        return m.handleResize(msg)
-    case dataLoadedMsg:
-        return m.handleDataLoaded(msg)
-    }
-    return m, nil
-}
-
-func (m model) View() string {
-    if m.loading {
-        return m.loadingView()
-    }
-    
-    switch m.currentView {
-    case viewExtensions:
-        return m.extensionsView()
-    case viewPrompts:
-        return m.promptsView()
-    case viewTools:
-        return m.toolsView()
-    default:
-        return m.mainMenuView()
-    }
+// Sequential commands
+func (m Model) performInstall() tea.Cmd {
+    return tea.Sequence(
+        downloadCmd(),
+        extractCmd(),
+        validateCmd(),
+        installCmd(),
+    )
 }
 ```
 
-### State Management Pattern
+### 🎨 View Best Practices
 
+#### 1. Keep Views Pure
 ```go
-type viewType int
+// ✅ GOOD: Pure view function
+func (m Model) View() string {
+    if m.width < 40 {
+        return m.compactView()
+    }
+    return m.fullView()
+}
 
-const (
-    viewMainMenu viewType = iota
-    viewExtensions
-    viewPrompts
-    viewTools
-    viewDetails
-    viewEdit
+// ❌ BAD: Side effects in view
+func (m Model) View() string {
+    m.updateSomething() // NO! Views should not modify state
+    go fetchData()      // NO! No goroutines!
+    return m.render()
+}
+```
+
+#### 2. Use Lipgloss for Styling
+```go
+var (
+    titleStyle = lipgloss.NewStyle().
+        Bold(true).
+        Foreground(lipgloss.Color("39"))
+    
+    selectedStyle = lipgloss.NewStyle().
+        Background(lipgloss.Color("237")).
+        Foreground(lipgloss.Color("255"))
 )
 
-func (m model) switchView(view viewType) (model, tea.Cmd) {
-    m.currentView = view
-    
-    // Initialize view-specific state
-    switch view {
-    case viewExtensions:
-        return m, m.loadExtensions()
-    case viewPrompts:
-        return m, m.loadPrompts()
-    case viewTools:
-        return m, m.loadTools()
+func (m Model) renderItem(item string, selected bool) string {
+    if selected {
+        return selectedStyle.Render("> " + item)
+    }
+    return "  " + item
+}
+```
+
+### 🐛 Debugging Techniques
+
+#### 1. Message Logging
+```go
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    // Log all messages to a file
+    if f, err := os.OpenFile("debug.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644); err == nil {
+        defer f.Close()
+        fmt.Fprintf(f, "[%s] %T: %+v\n", time.Now().Format("15:04:05"), msg, msg)
     }
     
+    // Regular update logic...
+}
+```
+
+#### 2. State Inspection
+```go
+// Add debug view toggle
+func (m Model) View() string {
+    if m.debugMode {
+        return m.debugView()
+    }
+    return m.normalView()
+}
+
+func (m Model) debugView() string {
+    return fmt.Sprintf(`
+DEBUG MODE
+==========
+State: %v
+Cursor: %d
+Selected: %v
+Error: %v
+
+Press 'd' to toggle debug mode
+`, m.state, m.cursor, m.selected, m.err)
+}
+```
+
+### ⚡ Performance Guidelines
+
+#### 1. Efficient Updates
+```go
+// ✅ GOOD: Only update what changed
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    switch msg := msg.(type) {
+    case CursorMovedMsg:
+        m.cursor = msg.Position
+        // Only update cursor, not entire state
+        return m, nil
+    }
+}
+
+// ❌ BAD: Recreating everything
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    // Don't reload everything on every update!
+    m.items = loadAllItems()
+    m.profiles = loadAllProfiles()
     return m, nil
 }
 ```
 
-### Command Patterns for Async Operations
+#### 2. View Caching
+```go
+type Model struct {
+    // Cache rendered components
+    cachedHeader string
+    headerDirty  bool
+    
+    items       []Item
+    itemsDirty  bool
+    cachedItems string
+}
+
+func (m Model) View() string {
+    if m.headerDirty || m.cachedHeader == "" {
+        m.cachedHeader = m.renderHeader()
+        m.headerDirty = false
+    }
+    
+    if m.itemsDirty || m.cachedItems == "" {
+        m.cachedItems = m.renderItems()
+        m.itemsDirty = false
+    }
+    
+    return m.cachedHeader + "\n" + m.cachedItems
+}
+```
+
+### 🚨 Common Pitfalls
+
+1. **Modifying receivers**: Use pointer receivers when needed
+```go
+// ❌ Value receiver can't modify model
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    m.count++ // This change is lost!
+    return m, nil
+}
+
+// ✅ Return modified copy
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    m.count++ // This works because we return m
+    return m, nil
+}
+```
+
+2. **Message ordering**: Messages may not arrive in order
+```go
+// ❌ Assuming order
+case Step1CompleteMsg:
+    m.step = 2 // Step2CompleteMsg might arrive first!
+
+// ✅ Check state
+case StepCompleteMsg:
+    if msg.Step == m.expectedStep {
+        m.expectedStep++
+    }
+```
+
+3. **Terminal state**: Always restore terminal on exit
+```go
+func main() {
+    p := tea.NewProgram(Model{})
+    
+    // Restore terminal on panic
+    defer func() {
+        if r := recover(); r != nil {
+            p.ReleaseTerminal()
+            panic(r)
+        }
+    }()
+    
+    if _, err := p.Run(); err != nil {
+        log.Fatal(err)
+    }
+}
+```
+
+### 📚 Testing Strategies
 
 ```go
-// Message types
-type extensionsLoadedMsg struct {
-    extensions []Extension
-    err        error
+// Use teatest for component testing
+func TestListNavigation(t *testing.T) {
+    tm := teatest.NewTestModel(t, 
+        NewListModel([]string{"a", "b", "c"}),
+    )
+    
+    // Send key events
+    tm.Send(tea.KeyMsg{Type: tea.KeyDown})
+    tm.Send(tea.KeyMsg{Type: tea.KeyDown})
+    tm.Send(tea.KeyMsg{Type: tea.KeyEnter})
+    
+    // Wait for result
+    teatest.WaitFor(t, tm, func(b []byte) bool {
+        return bytes.Contains(b, []byte("selected: c"))
+    })
 }
+```
 
-// Command functions
-func loadExtensionsCmd(path string) tea.Cmd {
-    return func() tea.Msg {
-        extensions, err := loadExtensionsFromDisk(path)
-        return extensionsLoadedMsg{
-            extensions: extensions,
-            err:        err,
-        }
-    }
-}
+### 🎯 When to Use What Pattern
 
-// Handle in Update
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    switch msg := msg.(type) {
-    case extensionsLoadedMsg:
-        if msg.err != nil {
-            m.err = msg.err
-            return m, nil
-        }
-        m.extensions = msg.extensions
-        m.loading = false
-        return m, nil
-    }
-    // ... other cases
-}
+| Scenario | Pattern | Why |
+|----------|---------|-----|
+| Simple list selection | Single Model | Low complexity |
+| Multiple screens/views | Root Navigator | Clean separation |
+| Complex workflows | State Machine | Clear transitions |
+| Reusable UI elements | Component Pattern | Modularity |
+| Modal dialogs | Overlay Pattern | Temporary state |
+
+### 📁 Recommended Project Structure
+
+```
+internal/
+├── tui/
+│   ├── app.go           # Root application model
+│   ├── views/           # View-specific models
+│   │   ├── menu.go
+│   │   ├── extensions.go
+│   │   └── profiles.go
+│   ├── components/      # Reusable components
+│   │   ├── list.go
+│   │   ├── form.go
+│   │   └── modal.go
+│   ├── styles/          # Lipgloss styles
+│   │   └── theme.go
+│   └── messages/        # Message definitions
+│       └── types.go
 ```
 
 ## Project Structure

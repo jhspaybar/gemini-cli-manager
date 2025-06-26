@@ -56,7 +56,7 @@ func (s SearchBar) View() string {
 		Padding(0, 1)
 		
 	if s.active {
-		style = style.BorderForeground(colorFocused)
+		style = style.BorderForeground(colorBorderFocus)
 	}
 	
 	return style.Render(s.textInput.View())
