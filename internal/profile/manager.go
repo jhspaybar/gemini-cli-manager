@@ -7,24 +7,30 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gemini-cli/manager/internal/state"
 	"gopkg.in/yaml.v3"
 )
 
 // Manager handles profile operations
 type Manager struct {
-	basePath    string
-	profiles    map[string]*Profile
-	activeID    string
-	mu          sync.RWMutex
-	validator   *Validator
+	basePath     string
+	profiles     map[string]*Profile
+	activeID     string
+	mu           sync.RWMutex
+	validator    *Validator
+	stateManager *state.Manager
 }
 
 // NewManager creates a new profile manager
 func NewManager(basePath string) *Manager {
+	// Get parent directory for state
+	parentDir := filepath.Dir(basePath)
+	
 	return &Manager{
-		basePath:  basePath,
-		profiles:  make(map[string]*Profile),
-		validator: NewValidator(),
+		basePath:     basePath,
+		profiles:     make(map[string]*Profile),
+		validator:    NewValidator(),
+		stateManager: state.NewManager(parentDir),
 	}
 }
 
@@ -44,7 +50,25 @@ func (m *Manager) Initialize() error {
 	}
 
 	// Load all profiles
-	return m.LoadProfiles()
+	if err := m.LoadProfiles(); err != nil {
+		return err
+	}
+
+	// Load saved active profile
+	savedActiveID, err := m.stateManager.GetActiveProfile()
+	if err != nil {
+		// Log but don't fail initialization
+		fmt.Printf("Warning: failed to load saved active profile: %v\n", err)
+	} else if savedActiveID != "" {
+		// Verify the saved profile still exists
+		m.mu.Lock()
+		if _, exists := m.profiles[savedActiveID]; exists {
+			m.activeID = savedActiveID
+		}
+		m.mu.Unlock()
+	}
+
+	return nil
 }
 
 // createDefaultProfile creates the default profile
@@ -212,6 +236,12 @@ func (m *Manager) SetActive(id string) error {
 	}
 
 	m.activeID = id
+	
+	// Save active profile to persistent state
+	if err := m.stateManager.SetActiveProfile(id); err != nil {
+		// Log but don't fail the operation
+		fmt.Printf("Warning: failed to save active profile state: %v\n", err)
+	}
 	
 	// Update last used timestamp
 	now := time.Now()
