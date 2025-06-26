@@ -84,7 +84,6 @@ func NewExtensionEditForm(ext *extension.Extension) ExtensionEditForm {
 	ta.CharLimit = 50000
 	ta.SetWidth(80)
 	ta.SetHeight(20)
-	ta.Focus() // Ensure focus for better UX
 	
 	// Create markdown renderer
 	renderer, _ := glamour.NewTermRenderer(
@@ -129,6 +128,9 @@ func (f ExtensionEditForm) Init() tea.Cmd {
 
 // Update handles form updates
 func (f ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmds []tea.Cmd
+	var cmd tea.Cmd
+
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -167,7 +169,7 @@ func (f ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case EditModeContext:
 				f.mode = EditModeJSON
 				f.textarea.SetValue(f.jsonContent)
-				return f, nil
+				return f, textarea.Blink
 			case EditModeJSON:
 				f.mode = EditModeConfig
 				f.inputs[f.focusIndex].Focus()
@@ -186,54 +188,41 @@ func (f ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return f, f.save()
 		}
 		
-		// Update active input/textarea based on mode
-		switch f.mode {
-		case EditModeConfig:
-			// Update the focused input
-			cmd := f.updateInputs(msg)
-			return f, cmd
-			
-		case EditModeContext, EditModeJSON:
-			// Update textarea
-			var cmd tea.Cmd
-			f.textarea, cmd = f.textarea.Update(msg)
-			
-			// Save content back to appropriate field
-			if f.mode == EditModeContext {
-				f.contextContent = f.textarea.Value()
-			} else {
-				f.jsonContent = f.textarea.Value()
-			}
-			
-			return f, cmd
-		}
-		
 	case tea.WindowSizeMsg:
 		f.width = msg.Width
 		f.height = msg.Height
-		// Update textarea size based on window size
-		f.textarea.SetWidth(min(msg.Width-8, 120))
-		f.textarea.SetHeight(min(msg.Height-10, 30))
-		// Pass the resize to textarea as well
-		var cmd tea.Cmd
-		f.textarea, cmd = f.textarea.Update(msg)
-		return f, cmd
-		
-	default:
-		// Pass through to textarea in edit modes
-		if f.mode == EditModeContext || f.mode == EditModeJSON {
-			var cmd tea.Cmd
-			f.textarea, cmd = f.textarea.Update(msg)
-			return f, cmd
+		// Update textarea size
+		f.textarea.SetWidth(f.width - 8)
+		f.textarea.SetHeight(f.height - 10)
+	}
+	
+	// Always update the appropriate component based on mode
+	switch f.mode {
+	case EditModeConfig:
+		// Update all inputs
+		for i := range f.inputs {
+			f.inputs[i], cmd = f.inputs[i].Update(msg)
+			if cmd != nil {
+				cmds = append(cmds, cmd)
+			}
 		}
-		// Pass through to inputs in config mode
-		if f.mode == EditModeConfig {
-			cmd := f.updateInputs(msg)
-			return f, cmd
+		
+	case EditModeContext, EditModeJSON:
+		// Update textarea
+		f.textarea, cmd = f.textarea.Update(msg)
+		if cmd != nil {
+			cmds = append(cmds, cmd)
+		}
+		
+		// Save content back to appropriate field
+		if f.mode == EditModeContext {
+			f.contextContent = f.textarea.Value()
+		} else {
+			f.jsonContent = f.textarea.Value()
 		}
 	}
 	
-	return f, nil
+	return f, tea.Batch(cmds...)
 }
 
 // View renders the form
@@ -374,16 +363,6 @@ func (f ExtensionEditForm) renderMarkdownPreview() string {
 		Render(preview)
 }
 
-// updateInputs handles input field updates
-func (f ExtensionEditForm) updateInputs(msg tea.Msg) tea.Cmd {
-	cmds := make([]tea.Cmd, len(f.inputs))
-	
-	for i := range f.inputs {
-		f.inputs[i], cmds[i] = f.inputs[i].Update(msg)
-	}
-	
-	return tea.Batch(cmds...)
-}
 
 // save saves the extension changes
 func (f ExtensionEditForm) save() tea.Cmd {
