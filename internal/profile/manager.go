@@ -125,6 +125,16 @@ func (m *Manager) Save(profile *Profile) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
+	return m.saveInternal(profile)
+}
+
+// saveInternal saves a profile without locking (must be called with lock held)
+func (m *Manager) saveInternal(profile *Profile) error {
+	// Preserve CreatedAt if it exists in cache
+	if existing, exists := m.profiles[profile.ID]; exists && !existing.CreatedAt.IsZero() {
+		profile.CreatedAt = existing.CreatedAt
+	}
+	
 	// Update timestamp
 	profile.UpdatedAt = time.Now()
 
@@ -208,8 +218,8 @@ func (m *Manager) SetActive(id string) error {
 	profile.LastUsed = &now
 	profile.UsageCount++
 	
-	// Save the updated profile
-	return m.Save(profile)
+	// Save the updated profile (use internal method since we already have the lock)
+	return m.saveInternal(profile)
 }
 
 // Create creates a new profile
@@ -226,15 +236,9 @@ func (m *Manager) Create(profile *Profile) error {
 	profile.CreatedAt = time.Now()
 	profile.UpdatedAt = time.Now()
 
-	// Save to disk
-	if err := m.Save(profile); err != nil {
-		return err
-	}
-
-	// Add to cache
-	m.profiles[profile.ID] = profile
-
-	return nil
+	// Save to disk (use internal method since we already have the lock)
+	// saveInternal will also add to cache
+	return m.saveInternal(profile)
 }
 
 // Delete removes a profile
