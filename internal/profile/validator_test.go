@@ -45,7 +45,7 @@ func TestValidator_Validate(t *testing.T) {
 				Description: "A test profile",
 			},
 			wantErr: true,
-			errMsg:  "ID can only contain",
+			errMsg:  "invalid profile ID format",
 		},
 		{
 			name: "invalid ID with special chars",
@@ -55,7 +55,7 @@ func TestValidator_Validate(t *testing.T) {
 				Description: "A test profile",
 			},
 			wantErr: true,
-			errMsg:  "ID can only contain",
+			errMsg:  "invalid profile ID format",
 		},
 		{
 			name: "ID too long",

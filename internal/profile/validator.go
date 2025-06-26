@@ -19,6 +19,10 @@ func NewValidator() *Validator {
 
 // Validate performs validation on a profile
 func (v *Validator) Validate(p *Profile) error {
+	if p == nil {
+		return &ValidationError{Field: "profile", Message: "profile cannot be nil"}
+	}
+	
 	// Validate ID
 	if p.ID == "" {
 		return &ValidationError{Field: "id", Message: "profile ID is required"}
@@ -26,10 +30,16 @@ func (v *Validator) Validate(p *Profile) error {
 	if !v.idPattern.MatchString(p.ID) {
 		return &ValidationError{Field: "id", Message: "invalid profile ID format (use lowercase letters, numbers, and hyphens)"}
 	}
+	if len(p.ID) > 64 {
+		return &ValidationError{Field: "id", Message: "profile ID must be 64 characters or less"}
+	}
 
 	// Validate name
 	if p.Name == "" {
 		return &ValidationError{Field: "name", Message: "profile name is required"}
+	}
+	if len(p.Name) > 100 {
+		return &ValidationError{Field: "name", Message: "profile name must be 100 characters or less"}
 	}
 
 	// Validate inheritance (check for circular dependencies)

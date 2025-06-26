@@ -17,12 +17,16 @@ type Validator struct {
 func NewValidator() *Validator {
 	return &Validator{
 		idPattern:      regexp.MustCompile(`^[a-z0-9-]+$`),
-		versionPattern: regexp.MustCompile(`^\d+\.\d+\.\d+(-\w+)?$`),
+		versionPattern: regexp.MustCompile(`^\d+\.\d+\.\d+(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$`),
 	}
 }
 
 // Validate performs comprehensive validation on an extension
 func (v *Validator) Validate(ext *Extension) error {
+	if ext == nil {
+		return &ValidationError{Field: "extension", Message: "extension cannot be nil"}
+	}
+	
 	// Validate required fields
 	if ext.ID == "" {
 		return &ValidationError{Field: "id", Message: "extension ID is required"}
@@ -30,14 +34,30 @@ func (v *Validator) Validate(ext *Extension) error {
 	if !v.idPattern.MatchString(ext.ID) {
 		return &ValidationError{Field: "id", Message: "invalid extension ID format (use lowercase letters, numbers, and hyphens)"}
 	}
+	if len(ext.ID) > 64 {
+		return &ValidationError{Field: "id", Message: "extension ID must be 64 characters or less"}
+	}
 
 	if ext.Name == "" {
 		return &ValidationError{Field: "name", Message: "extension name is required"}
 	}
 
 	// Version is required and must be semantic
-	if ext.Version != "" && !v.versionPattern.MatchString(ext.Version) {
+	if ext.Version == "" {
+		return &ValidationError{Field: "version", Message: "extension version is required"}
+	}
+	if !v.versionPattern.MatchString(ext.Version) {
 		return &ValidationError{Field: "version", Message: "invalid version format (use semantic versioning)"}
+	}
+	
+	// DisplayName is required
+	if ext.DisplayName == "" {
+		return &ValidationError{Field: "displayName", Message: "extension display name is required"}
+	}
+	
+	// Description is required
+	if ext.Description == "" {
+		return &ValidationError{Field: "description", Message: "extension description is required"}
 	}
 
 	// Validate author
@@ -68,8 +88,12 @@ func (v *Validator) Validate(ext *Extension) error {
 func (v *Validator) validateFileStructure(ext *Extension) error {
 	// Check gemini-extension.json exists
 	configPath := filepath.Join(ext.Path, "gemini-extension.json")
-	if _, err := os.Stat(configPath); err != nil {
+	info, err := os.Stat(configPath)
+	if err != nil {
 		return &ValidationError{Field: "path", Message: "gemini-extension.json not found"}
+	}
+	if info.IsDir() {
+		return &ValidationError{Field: "path", Message: "gemini-extension.json must be a file, not a directory"}
 	}
 
 	// GEMINI.md is optional but recommended

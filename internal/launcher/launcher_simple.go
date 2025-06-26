@@ -37,6 +37,10 @@ func NewSimpleLauncher(pm *profile.Manager, em *extension.Manager, geminiPath st
 
 // Launch executes Gemini CLI with the current profile
 func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extension.Extension) error {
+	if profile == nil {
+		return fmt.Errorf("profile cannot be nil")
+	}
+	
 	// Open debug log file
 	debugLog, err := os.OpenFile("/tmp/gemini-cli-manager-debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err == nil {
@@ -153,6 +157,10 @@ func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extensio
 
 // CreateLaunchScript generates a standalone launch script
 func (l *SimpleLauncher) CreateLaunchScript(profile *profile.Profile, scriptPath string) error {
+	if profile == nil {
+		return fmt.Errorf("profile cannot be nil")
+	}
+	
 	script := &strings.Builder{}
 	
 	// Script header
@@ -165,7 +173,9 @@ func (l *SimpleLauncher) CreateLaunchScript(profile *profile.Profile, scriptPath
 	if profile != nil && len(profile.Environment) > 0 {
 		fmt.Fprintf(script, "# Profile Environment\n")
 		for k, v := range profile.Environment {
-			fmt.Fprintf(script, "export %s=\"%s\"\n", k, v)
+			// Escape single quotes by replacing ' with '\''
+			escapedValue := strings.ReplaceAll(v, "'", "'\"'\"'")
+			fmt.Fprintf(script, "export %s='%s'\n", k, escapedValue)
 		}
 		fmt.Fprintf(script, "export GEMINI_PROFILE=\"%s\"\n", profile.Name)
 		fmt.Fprintf(script, "\n")

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 )
 
@@ -50,12 +49,18 @@ func (ep *EnvironmentPreparer) PrepareExtensions(extensions []*extension.Extensi
 			return fmt.Errorf("extension source not found: %s", srcPath)
 		}
 		
+		// Check if something already exists at destination
+		if info, err := os.Lstat(dstPath); err == nil {
+			// If it's not a symlink, that's an error
+			if info.Mode()&os.ModeSymlink == 0 {
+				return fmt.Errorf("cannot create symlink for %s: non-symlink file already exists at %s", ext.ID, dstPath)
+			}
+			// If it's a symlink, remove it and recreate
+			os.Remove(dstPath)
+		}
+		
 		// Create symlink
 		if err := os.Symlink(srcPath, dstPath); err != nil {
-			// If it already exists and is not our symlink, skip it
-			if os.IsExist(err) {
-				continue
-			}
 			return fmt.Errorf("creating symlink for %s: %w", ext.ID, err)
 		}
 	}
@@ -83,16 +88,8 @@ func (ep *EnvironmentPreparer) cleanupSymlinks() error {
 		}
 		
 		if info.Mode()&os.ModeSymlink != 0 {
-			// Check if it points to our manager directory
-			target, err := os.Readlink(path)
-			if err != nil {
-				continue
-			}
-			
-			// If it points to our managed extensions, remove it
-			if strings.HasPrefix(target, ep.managerExtDir) {
-				os.Remove(path)
-			}
+			// Remove any symlink (we'll recreate the ones we need)
+			os.Remove(path)
 		}
 	}
 	
