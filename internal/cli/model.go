@@ -143,10 +143,11 @@ func NewModel() Model {
 	if homePath == "" {
 		homePath = "."
 	}
-	geminiPath := filepath.Join(homePath, ".gemini")
+	// Use our own state directory, separate from Gemini's
+	managerPath := filepath.Join(homePath, ".gemini-cli-manager")
 	
-	extManager := extension.NewManager(filepath.Join(geminiPath, "extensions"))
-	profManager := profile.NewManager(geminiPath)
+	extManager := extension.NewManager(filepath.Join(managerPath, "extensions"))
+	profManager := profile.NewManager(filepath.Join(managerPath, "profiles"))
 	
 	// Create launcher
 	geminiCLIPath := os.Getenv("GEMINI_CLI_PATH")

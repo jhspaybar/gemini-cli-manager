@@ -14,21 +14,31 @@ echo "Examples dir: $EXAMPLES_DIR"
 
 # Create test directories
 echo "Creating test directories..."
-mkdir -p ~/.gemini-test/extensions
-mkdir -p ~/.gemini-test/profiles
-mkdir -p ~/.gemini-test/config
+mkdir -p ~/.gemini-cli-manager-test/extensions
+mkdir -p ~/.gemini-cli-manager-test/profiles
+mkdir -p ~/.gemini-test  # For the mock gemini
 
 # Copy example extensions
 echo "Installing example extensions..."
-cp -r "$EXAMPLES_DIR/extensions/simple-extension" ~/.gemini-test/extensions/
-cp -r "$EXAMPLES_DIR/extensions/mcp-extension" ~/.gemini-test/extensions/
+cp -r "$EXAMPLES_DIR/extensions/simple-extension" ~/.gemini-cli-manager-test/extensions/
+cp -r "$EXAMPLES_DIR/extensions/mcp-extension" ~/.gemini-cli-manager-test/extensions/
 
 # Make scripts executable
-chmod +x ~/.gemini-test/extensions/mcp-extension/servers/echo-server.js 2>/dev/null || true
+chmod +x ~/.gemini-cli-manager-test/extensions/mcp-extension/servers/echo-server.js 2>/dev/null || true
 
-# Copy example profiles
+# Copy example profiles (convert JSON to YAML)
 echo "Setting up example profiles..."
-cp "$EXAMPLES_DIR/profiles"/*.json ~/.gemini-test/profiles/
+# For now, we'll create simple YAML profiles manually
+cat > ~/.gemini-cli-manager-test/profiles/default.yaml << 'EOF'
+id: default
+name: Default Profile
+description: Default profile for Gemini CLI
+environment:
+  GEMINI_ENV: default
+extensions: []
+created_at: 2024-01-01T00:00:00Z
+updated_at: 2024-01-01T00:00:00Z
+EOF
 
 # Create a mock gemini CLI for testing
 cat > ~/.gemini-test/mock-gemini << 'EOF'
@@ -53,22 +63,29 @@ EOF
 chmod +x ~/.gemini-test/mock-gemini
 
 # Create environment file
-cat > ~/.gemini-test/test-env << EOF
+cat > ~/.gemini-cli-manager-test/test-env << EOF
 # Test environment for Gemini CLI Manager
 export GEMINI_CLI_PATH=~/.gemini-test/mock-gemini
-export GEMINI_BASE_PATH=~/.gemini-test
+export HOME_BACKUP=\$HOME
+export HOME=~/.gemini-cli-manager-test
 
 # Run the manager with test configuration
-alias gemini-test='GEMINI_CLI_PATH=~/.gemini-test/mock-gemini go run $PROJECT_ROOT'
+alias gemini-test='GEMINI_CLI_PATH=~/.gemini-test/mock-gemini HOME=~/.gemini-cli-manager-test go run $PROJECT_ROOT'
+alias gemini-test-reset='export HOME=\$HOME_BACKUP'
 EOF
 
 echo ""
 echo "Test environment setup complete!"
 echo ""
 echo "To use the test environment:"
-echo "  source ~/.gemini-test/test-env"
+echo "  source ~/.gemini-cli-manager-test/test-env"
 echo "  gemini-test"
 echo ""
-echo "Test extensions installed in: ~/.gemini-test/extensions/"
-echo "Test profiles installed in: ~/.gemini-test/profiles/"
+echo "To restore normal HOME:"
+echo "  gemini-test-reset"
+echo ""
+echo "Manager extensions in: ~/.gemini-cli-manager-test/extensions/"
+echo "Manager profiles in: ~/.gemini-cli-manager-test/profiles/"
 echo "Mock Gemini CLI at: ~/.gemini-test/mock-gemini"
+echo ""
+echo "Note: The manager will create symlinks in ~/.gemini/extensions/ when launching"

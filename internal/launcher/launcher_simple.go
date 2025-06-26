@@ -45,6 +45,23 @@ func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extensio
 		fmt.Fprintf(debugLog, "Initial geminiPath: %s\n", l.geminiPath)
 	}
 	
+	// Prepare the environment by setting up extension symlinks
+	envPreparer := NewEnvironmentPreparer()
+	if err := envPreparer.PrepareExtensions(extensions); err != nil {
+		if debugLog != nil {
+			fmt.Fprintf(debugLog, "ERROR: Failed to prepare extensions: %v\n", err)
+		}
+		return fmt.Errorf("preparing extensions: %w", err)
+	}
+	
+	if debugLog != nil {
+		managerPath, geminiPath := envPreparer.GetManagedExtensionPaths()
+		fmt.Fprintf(debugLog, "Extension paths:\n")
+		fmt.Fprintf(debugLog, "  Manager: %s\n", managerPath)
+		fmt.Fprintf(debugLog, "  Gemini:  %s\n", geminiPath)
+		fmt.Fprintf(debugLog, "Prepared %d enabled extensions\n", len(extensions))
+	}
+	
 	// Find the full path to the gemini binary
 	geminiPath := l.geminiPath
 	

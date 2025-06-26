@@ -4,7 +4,12 @@
 
 echo "Cleaning up Gemini CLI Manager test environment..."
 
-# Remove test directory
+# Remove test directories
+if [ -d ~/.gemini-cli-manager-test ]; then
+    echo "Removing ~/.gemini-cli-manager-test directory..."
+    rm -rf ~/.gemini-cli-manager-test
+fi
+
 if [ -d ~/.gemini-test ]; then
     echo "Removing ~/.gemini-test directory..."
     rm -rf ~/.gemini-test

@@ -31,13 +31,12 @@ func NewManager(basePath string) *Manager {
 // Initialize sets up the profile directory and loads profiles
 func (m *Manager) Initialize() error {
 	// Ensure profiles directory exists
-	profilesPath := filepath.Join(m.basePath, "profiles")
-	if err := os.MkdirAll(profilesPath, 0755); err != nil {
+	if err := os.MkdirAll(m.basePath, 0755); err != nil {
 		return fmt.Errorf("creating profiles directory: %w", err)
 	}
 
 	// Create default profile if it doesn't exist
-	defaultPath := filepath.Join(profilesPath, "default.yaml")
+	defaultPath := filepath.Join(m.basePath, "default.yaml")
 	if _, err := os.Stat(defaultPath); os.IsNotExist(err) {
 		if err := m.createDefaultProfile(); err != nil {
 			return fmt.Errorf("creating default profile: %w", err)
@@ -69,8 +68,7 @@ func (m *Manager) LoadProfiles() error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	profilesPath := filepath.Join(m.basePath, "profiles")
-	entries, err := os.ReadDir(profilesPath)
+	entries, err := os.ReadDir(m.basePath)
 	if err != nil {
 		return fmt.Errorf("reading profiles directory: %w", err)
 	}
@@ -82,7 +80,7 @@ func (m *Manager) LoadProfiles() error {
 			continue
 		}
 
-		profilePath := filepath.Join(profilesPath, entry.Name())
+		profilePath := filepath.Join(m.basePath, entry.Name())
 		profile, err := m.loadProfile(profilePath)
 		if err != nil {
 			fmt.Printf("Warning: failed to load profile %s: %v\n", entry.Name(), err)
@@ -142,7 +140,7 @@ func (m *Manager) Save(profile *Profile) error {
 	}
 
 	// Write to file
-	profilePath := filepath.Join(m.basePath, "profiles", profile.ID+".yaml")
+	profilePath := filepath.Join(m.basePath, profile.ID+".yaml")
 	if err := os.WriteFile(profilePath, data, 0644); err != nil {
 		return fmt.Errorf("writing profile file: %w", err)
 	}
@@ -259,7 +257,7 @@ func (m *Manager) Delete(id string) error {
 	}
 
 	// Remove file
-	profilePath := filepath.Join(m.basePath, "profiles", id+".yaml")
+	profilePath := filepath.Join(m.basePath, id+".yaml")
 	if err := os.Remove(profilePath); err != nil {
 		return fmt.Errorf("removing profile file: %w", err)
 	}
