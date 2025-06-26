@@ -348,27 +348,13 @@ func (m Model) updateExtensions(msg tea.KeyMsg) (Model, tea.Cmd) {
 		if m.extensionsCursor < len(m.filteredExtensions)-1 {
 			m.extensionsCursor++
 		}
-	case " ":
-		// Toggle extension
+	case " ", "enter":
+		// View extension details (TODO: implement detail view)
 		if m.extensionsCursor < len(m.filteredExtensions) {
+			// For now, just show a message
 			ext := m.filteredExtensions[m.extensionsCursor]
-			if ext.Enabled {
-				m.extensionManager.Disable(ext.ID)
-			} else {
-				m.extensionManager.Enable(ext.ID)
-			}
-			// Reload extensions
-			m.extensions = m.extensionManager.List()
-			// Reapply filters if search is active
-			if m.searchBar.Value() != "" {
-				m.filteredExtensions = filterExtensions(m.extensions, m.searchBar.Value())
-			} else {
-				m.filteredExtensions = m.extensions
-			}
+			return m, tea.Println(fmt.Sprintf("Extension: %s v%s - %s", ext.Name, ext.Version, ext.Description))
 		}
-	case "enter":
-		// TODO: Show extension details
-		return m, tea.Println("Extension details not yet implemented")
 	case "n":
 		// Add new extension
 		return m.showExtensionInstallForm()
@@ -481,8 +467,11 @@ func (m Model) startLaunch() (Model, tea.Cmd) {
 		return m, nil
 	}
 	
+	// Get only the extensions that are in the current profile
+	profileExtensions := m.getProfileExtensions(m.currentProfile)
+	
 	// Create launch modal
-	modal := NewSimpleLaunchModal(m.currentProfile, m.extensions, m.launcher)
+	modal := NewSimpleLaunchModal(m.currentProfile, profileExtensions, m.launcher)
 	modal.SetSize(m.windowWidth, m.windowHeight)
 	modal.SetCallbacks(
 		func() tea.Cmd { return tea.Quit }, // On success, quit

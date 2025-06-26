@@ -87,13 +87,6 @@ func NewSimpleLaunchModal(p *profile.Profile, exts []*extension.Extension, l *la
 	s.Spinner = spinner.Dot
 	s.Style = lipgloss.NewStyle().Foreground(colorPrimary)
 
-	enabledCount := 0
-	for _, ext := range exts {
-		if ext.Enabled {
-			enabledCount++
-		}
-	}
-
 	return SimpleLaunchModal{
 		profile:    p,
 		extensions: exts,
@@ -102,7 +95,7 @@ func NewSimpleLaunchModal(p *profile.Profile, exts []*extension.Extension, l *la
 		state:      launchStateChecking,
 		progress: []launchStep{
 			{name: fmt.Sprintf("Profile: %s", p.Name), status: stepPending},
-			{name: fmt.Sprintf("Extensions: %d enabled", enabledCount), status: stepPending},
+			{name: fmt.Sprintf("Extensions: %d in profile", len(exts)), status: stepPending},
 			{name: "Setting up environment", status: stepPending},
 			{name: "Launching Gemini CLI", status: stepPending},
 		},

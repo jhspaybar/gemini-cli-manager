@@ -277,7 +277,7 @@ func (i *Installer) installFromDirectory(srcDir string) (*Extension, error) {
 	// Set the path
 	ext.Path = destDir
 	ext.Status = StatusInstalled
-	ext.Enabled = false // Start disabled
+	ext.Enabled = false // Extensions are controlled by profiles
 	
 	i.sendProgress("complete", "Installation complete!", 100)
 	

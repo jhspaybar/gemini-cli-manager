@@ -252,3 +252,27 @@ func (m Model) ShouldExecGemini() bool {
 func (m Model) GetExecInfo() (*profile.Profile, []*extension.Extension, *launcher.SimpleLauncher) {
 	return m.execProfile, m.execExtensions, m.launcher
 }
+
+// getProfileExtensions returns the extensions that are in the given profile
+func (m Model) getProfileExtensions(prof *profile.Profile) []*extension.Extension {
+	if prof == nil {
+		return nil
+	}
+	
+	var profileExts []*extension.Extension
+	
+	// Build a map of all extensions by ID for quick lookup
+	extMap := make(map[string]*extension.Extension)
+	for _, ext := range m.extensions {
+		extMap[ext.ID] = ext
+	}
+	
+	// Get extensions that are in the profile
+	for _, extRef := range prof.Extensions {
+		if ext, exists := extMap[extRef.ID]; exists && extRef.Enabled {
+			profileExts = append(profileExts, ext)
+		}
+	}
+	
+	return profileExts
+}

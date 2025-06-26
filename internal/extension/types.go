@@ -24,7 +24,7 @@ type Extension struct {
 	// Runtime information (not in JSON)
 	ID        string    `json:"-"` // Derived from directory name
 	Path      string    `json:"-"`
-	Enabled   bool      `json:"-"`
+	Enabled   bool      `json:"-"` // Deprecated: profiles control which extensions are active
 	LoadedAt  time.Time `json:"-"`
 	Status    Status    `json:"-"`
 }

@@ -92,8 +92,8 @@ func (m *Manager) loadExtension(path string) (*Extension, error) {
 	ext.ID = filepath.Base(path) // ID is the directory name
 	ext.Path = path
 	ext.Status = StatusInstalled
-	// Start enabled by default
-	ext.Enabled = true
+	// Extensions are now controlled by profiles, not global enable/disable
+	ext.Enabled = false
 
 	// Validate extension
 	if err := m.validator.Validate(&ext); err != nil {

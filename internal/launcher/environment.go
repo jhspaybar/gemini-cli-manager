@@ -40,12 +40,8 @@ func (ep *EnvironmentPreparer) PrepareExtensions(extensions []*extension.Extensi
 		return fmt.Errorf("cleaning up old symlinks: %w", err)
 	}
 	
-	// Create symlinks for enabled extensions
+	// Create symlinks for all provided extensions (already filtered by profile)
 	for _, ext := range extensions {
-		if !ext.Enabled {
-			continue
-		}
-		
 		srcPath := filepath.Join(ep.managerExtDir, ext.ID)
 		dstPath := filepath.Join(ep.geminiExtDir, ext.ID)
 		

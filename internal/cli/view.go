@@ -203,15 +203,10 @@ func (m Model) renderExtensions(width, height int) string {
 				style = style.Bold(true)
 			}
 			
-			// Status indicator
-			status := "✗"
-			statusStyle := disabledStyle
-			if ext.Enabled {
-				status = "✓"
-				statusStyle = enabledStyle
-			}
+			// Version indicator
+			version := mutedStyle.Render(fmt.Sprintf("v%s", ext.Version))
 			
-			line = fmt.Sprintf("%s%-30s %s", cursor, ext.Name, statusStyle.Render(status))
+			line = fmt.Sprintf("%s%-30s %s", cursor, ext.Name, version)
 			lines = append(lines, style.Render(line))
 			
 			// Show description for selected item
@@ -223,7 +218,7 @@ func (m Model) renderExtensions(width, height int) string {
 		
 		// Help text
 		lines = append(lines, "")
-		helpText := "Space: Toggle • Enter: Details • n: New • d: Delete"
+		helpText := "Enter: Details • n: Install New • d: Delete"
 		if !m.searchActive {
 			helpText += " • /: Search"
 		}
