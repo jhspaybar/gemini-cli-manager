@@ -249,6 +249,11 @@ func (i *Installer) installFromDirectory(srcDir string) (*Extension, error) {
 		return nil, fmt.Errorf("parsing manifest: %w", err)
 	}
 	
+	// Set ID from directory name if not specified
+	if ext.ID == "" {
+		ext.ID = filepath.Base(srcDir)
+	}
+	
 	// Validate the extension
 	validator := NewValidator()
 	if err := validator.Validate(&ext); err != nil {
