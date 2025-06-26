@@ -131,6 +131,9 @@ func (f ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
 	var cmd tea.Cmd
 
+	// Debug: log message type
+	// fmt.Fprintf(os.Stderr, "ExtensionEditForm.Update: got message type %T\n", msg)
+
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {

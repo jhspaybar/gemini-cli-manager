@@ -148,7 +148,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case ProfileQuickSwitchModal:
 				modal.SetSize(msg.Width, msg.Height)
 				m.modal = modal
-			case ExtensionEditForm:
+			case *ExtensionEditForm:
 				modal.SetSize(msg.Width, msg.Height)
 				m.modal = modal
 			}
@@ -880,7 +880,7 @@ func (m Model) showExtensionEditForm(ext *extension.Extension) (Model, tea.Cmd) 
 	)
 	
 	m.showingModal = true
-	m.modal = form
+	m.modal = &form
 	m.err = nil
 	
 	// Initialize the form
