@@ -1,0 +1,24 @@
+{
+  "name": "database-tools",
+  "version": "2.0.0",
+  "description": "Database query and management tools",
+  "mcpServers": {
+    "postgres-server": {
+      "url": "http://localhost:8080/mcp/postgres",
+      "env": {
+        "DATABASE_URL": "$DATABASE_URL"
+      },
+      "timeout": 60000,
+      "trust": false
+    },
+    "sqlite-server": {
+      "command": "python",
+      "args": ["-m", "mcp_servers.sqlite"],
+      "cwd": "./servers",
+      "env": {
+        "SQLITE_PATH": "$HOME/data/sqlite"
+      }
+    }
+  },
+  "contextFileName": "DATABASE.md"
+}

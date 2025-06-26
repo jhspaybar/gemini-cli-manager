@@ -1,0 +1,16 @@
+{
+  "name": "filesystem-enhanced",
+  "version": "1.2.0",
+  "description": "Enhanced filesystem operations with safety features",
+  "mcpServers": {
+    "fs-server": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "env": {
+        "ALLOWED_DIRECTORIES": "$HOME/projects,$HOME/documents"
+      },
+      "timeout": 30000,
+      "trust": false
+    }
+  }
+}
