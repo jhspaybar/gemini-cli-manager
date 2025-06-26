@@ -2,8 +2,11 @@ package cli
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
+	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
@@ -613,19 +616,45 @@ func (m Model) renderExtensionDetail(width, height int) string {
 		lines = append(lines, "")
 	}
 	
-	// TODO: Add context file support when Extension struct includes it
-	// For now, just show that context files can exist
+	// Context file display
 	lines = append(lines, h2Style.Render("📄 Context File"))
-	lines = append(lines, textDimStyle.Render("Context file name: " + func() string {
-		if ext.ContextFileName != "" {
-			return ext.ContextFileName
+	contextFileName := ext.ContextFileName
+	if contextFileName == "" {
+		contextFileName = "GEMINI.md"
+	}
+	lines = append(lines, textDimStyle.Render("File: " + contextFileName))
+	
+	// Try to read and display context file content
+	contextPath := filepath.Join(ext.Path, contextFileName)
+	if content, err := os.ReadFile(contextPath); err == nil && len(content) > 0 {
+		// Create a markdown renderer
+		renderer, err := glamour.NewTermRenderer(
+			glamour.WithAutoStyle(),
+			glamour.WithWordWrap(width-10),
+		)
+		if err == nil {
+			// Render markdown content
+			rendered, err := renderer.Render(string(content))
+			if err == nil {
+				lines = append(lines, "")
+				// Create a box for the rendered content
+				contentBox := lipgloss.NewStyle().
+					Border(lipgloss.RoundedBorder()).
+					BorderForeground(colorBorder).
+					Padding(1).
+					Width(width-2).
+					MaxHeight(15). // Limit height to avoid taking too much space
+					Render(rendered)
+				lines = append(lines, contentBox)
+			}
 		}
-		return "GEMINI.md (default)"
-	}()))
+	} else {
+		lines = append(lines, textDimStyle.Render("No context file found"))
+	}
 	lines = append(lines, "")
 	
 	// Help text
-	lines = append(lines, keyDescStyle.Render("Esc: Back • d: Delete • e: Edit (coming soon)"))
+	lines = append(lines, keyDescStyle.Render("Esc: Back • d: Delete • e: Edit"))
 	
 	return strings.Join(lines, "\n")
 }

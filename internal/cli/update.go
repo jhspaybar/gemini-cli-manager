@@ -77,6 +77,11 @@ type extensionSelectedMsg struct {
 	extension *extension.Extension
 }
 
+// extensionSavedMsg is sent when an extension is saved
+type extensionSavedMsg struct {
+	extension *extension.Extension
+}
+
 // initCompleteMsg is sent when initialization is complete
 type initCompleteMsg struct {
 	err error
@@ -184,6 +189,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Close any open modal
 			m.showingModal = false
 			m.modal = nil
+		case extensionSavedMsg:
+			// Extension was saved successfully
+			m.showingModal = false
+			m.modal = nil
+			// Update the selected extension
+			if msg.extension != nil {
+				m.selectedExtension = msg.extension
+			}
+			// Reload extensions list
+			return m, m.loadExtensionsCmd()
 		case profileSavedMsg:
 			// Profile was saved successfully
 			m.showingModal = false
@@ -613,14 +628,9 @@ func (m Model) updateExtensionDetail(msg tea.KeyMsg) (Model, tea.Cmd) {
 			return m, m.deleteExtensionCmd(extID)
 		}
 	case "e":
-		// Edit extension - for now just show a message
-		// TODO: Implement extension editing
+		// Edit extension
 		if m.selectedExtension != nil {
-			m.err = UIError{
-				Type:    ErrorTypeInfo,
-				Message: "Extension editing not yet implemented",
-				Details: "This feature is coming soon",
-			}
+			return m.showExtensionEditForm(m.selectedExtension)
 		}
 		return m, nil
 	}
@@ -849,4 +859,32 @@ func (m Model) activateProfileCmd(prof *profile.Profile) tea.Cmd {
 			err:     nil,
 		}
 	}
+}
+
+// showExtensionEditForm shows the extension edit form
+func (m Model) showExtensionEditForm(ext *extension.Extension) (Model, tea.Cmd) {
+	// Create form
+	form := NewExtensionEditForm(ext)
+	form.SetSize(m.windowWidth, m.windowHeight)
+	form.SetCallbacks(
+		func(e *extension.Extension) tea.Cmd {
+			// Save extension - return saved message
+			return func() tea.Msg {
+				return extensionSavedMsg{extension: e}
+			}
+		},
+		func() tea.Cmd {
+			// Cancel - return close modal message
+			return func() tea.Msg {
+				return closeModalMsg{}
+			}
+		},
+	)
+	
+	m.showingModal = true
+	m.modal = form
+	m.err = nil
+	
+	// Initialize the form
+	return m, form.Init()
 }
