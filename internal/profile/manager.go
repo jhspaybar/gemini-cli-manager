@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gemini-cli/manager/internal/state"
+	"github.com/jhspaybar/gemini-cli-manager/internal/state"
 	"gopkg.in/yaml.v3"
 )
 

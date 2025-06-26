@@ -5,8 +5,8 @@ import (
 	
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/bubbles/key"
-	"github.com/gemini-cli/manager/internal/extension"
-	"github.com/gemini-cli/manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
+	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
 )
 
 // closeModalMsg is sent when a modal wants to close

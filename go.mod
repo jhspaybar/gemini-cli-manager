@@ -1,4 +1,4 @@
-module github.com/gemini-cli/manager
+module github.com/jhspaybar/gemini-cli-manager
 
 go 1.24.4
 

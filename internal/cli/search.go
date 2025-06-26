@@ -6,8 +6,8 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/gemini-cli/manager/internal/extension"
-	"github.com/gemini-cli/manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
+	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
 )
 
 // SearchBar represents a search input component

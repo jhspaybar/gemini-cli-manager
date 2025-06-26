@@ -9,9 +9,9 @@ import (
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/gemini-cli/manager/internal/extension"
-	"github.com/gemini-cli/manager/internal/launcher"
-	"github.com/gemini-cli/manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
+	"github.com/jhspaybar/gemini-cli-manager/internal/launcher"
+	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
 )
 
 // Launch state enums

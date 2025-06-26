@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gemini-cli/manager/internal/extension"
-	"github.com/gemini-cli/manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
+	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
 )
 
 // SimpleLauncher handles launching Gemini CLI with profiles

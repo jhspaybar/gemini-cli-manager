@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/gemini-cli/manager/internal/extension"
+	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 )
 
 // ExtensionInstallForm represents a form for installing extensions

@@ -7,9 +7,9 @@ import (
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gemini-cli/manager/internal/extension"
-	"github.com/gemini-cli/manager/internal/launcher"
-	"github.com/gemini-cli/manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
+	"github.com/jhspaybar/gemini-cli-manager/internal/launcher"
+	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
 )
 
 // ViewType represents different views in the application

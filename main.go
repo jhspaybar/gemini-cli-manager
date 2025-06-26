@@ -6,7 +6,7 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/gemini-cli/manager/internal/cli"
+	"github.com/jhspaybar/gemini-cli-manager/internal/cli"
 )
 
 func main() {

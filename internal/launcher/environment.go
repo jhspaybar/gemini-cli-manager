@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"github.com/gemini-cli/manager/internal/extension"
+	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 )
 
 // EnvironmentPreparer handles setting up the Gemini environment before launch
