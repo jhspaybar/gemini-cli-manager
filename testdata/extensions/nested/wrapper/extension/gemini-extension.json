@@ -1,0 +1,5 @@
+{
+  "name": "nested-test-extension",
+  "version": "1.0.0",
+  "description": "A nested test extension for testing archive extraction"
+}

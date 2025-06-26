@@ -21,7 +21,6 @@ func TestValidator_Validate(t *testing.T) {
 			ext: &Extension{
 				ID:          "test-ext",
 				Name:        "test-extension",
-				DisplayName: "Test Extension",
 				Version:     "1.0.0",
 				Description: "A test extension",
 			},
@@ -31,7 +30,6 @@ func TestValidator_Validate(t *testing.T) {
 			name: "missing ID",
 			ext: &Extension{
 				Name:        "test-extension",
-				DisplayName: "Test Extension",
 				Version:     "1.0.0",
 				Description: "A test extension",
 			},
@@ -43,7 +41,6 @@ func TestValidator_Validate(t *testing.T) {
 			ext: &Extension{
 				ID:          "test ext",
 				Name:        "test-extension",
-				DisplayName: "Test Extension",
 				Version:     "1.0.0",
 				Description: "A test extension",
 			},
@@ -55,7 +52,6 @@ func TestValidator_Validate(t *testing.T) {
 			ext: &Extension{
 				ID:          "test@ext!",
 				Name:        "test-extension",
-				DisplayName: "Test Extension",
 				Version:     "1.0.0",
 				Description: "A test extension",
 			},
@@ -66,7 +62,6 @@ func TestValidator_Validate(t *testing.T) {
 			name: "missing name",
 			ext: &Extension{
 				ID:          "test-ext",
-				DisplayName: "Test Extension",
 				Version:     "1.0.0",
 				Description: "A test extension",
 			},
@@ -78,7 +73,6 @@ func TestValidator_Validate(t *testing.T) {
 			ext: &Extension{
 				ID:          "test-ext",
 				Name:        "test-extension",
-				DisplayName: "Test Extension",
 				Description: "A test extension",
 			},
 			wantErr:  true,
@@ -89,7 +83,6 @@ func TestValidator_Validate(t *testing.T) {
 			ext: &Extension{
 				ID:          "test-ext",
 				Name:        "test-extension",
-				DisplayName: "Test Extension",
 				Version:     "1.0",
 				Description: "A test extension",
 			},
@@ -101,7 +94,6 @@ func TestValidator_Validate(t *testing.T) {
 			ext: &Extension{
 				ID:          "test-ext",
 				Name:        "test-extension",
-				DisplayName: "Test Extension",
 				Version:     "v1.0.0",
 				Description: "A test extension",
 			},
@@ -109,22 +101,10 @@ func TestValidator_Validate(t *testing.T) {
 			errField: "version",
 		},
 		{
-			name: "missing display name",
-			ext: &Extension{
-				ID:          "test-ext",
-				Name:        "test-extension",
-				Version:     "1.0.0",
-				Description: "A test extension",
-			},
-			wantErr:  true,
-			errField: "displayName",
-		},
-		{
 			name: "missing description",
 			ext: &Extension{
 				ID:          "test-ext",
 				Name:        "test-extension",
-				DisplayName: "Test Extension",
 				Version:     "1.0.0",
 			},
 			wantErr:  true,
@@ -135,7 +115,6 @@ func TestValidator_Validate(t *testing.T) {
 			ext: &Extension{
 				ID:          "mcp-ext",
 				Name:        "mcp-extension",
-				DisplayName: "MCP Extension",
 				Version:     "1.0.0",
 				Description: "Extension with MCP server",
 				MCP: &MCPConfig{
@@ -154,7 +133,6 @@ func TestValidator_Validate(t *testing.T) {
 			ext: &Extension{
 				ID:          "mcp-ext",
 				Name:        "mcp-extension",
-				DisplayName: "MCP Extension",
 				Version:     "1.0.0",
 				Description: "Extension with invalid MCP server",
 				MCP: &MCPConfig{
@@ -275,7 +253,6 @@ func TestValidator_EdgeCases(t *testing.T) {
 		ext := &Extension{
 			ID:          "测试-extension",
 			Name:        "test-extension",
-			DisplayName: "Test Extension",
 			Version:     "1.0.0",
 			Description: "A test extension",
 		}
@@ -289,7 +266,6 @@ func TestValidator_EdgeCases(t *testing.T) {
 		ext := &Extension{
 			ID:          strings.Repeat("a", 256),
 			Name:        "test-extension",
-			DisplayName: "Test Extension",
 			Version:     "1.0.0",
 			Description: "A test extension",
 		}
@@ -303,7 +279,6 @@ func TestValidator_EdgeCases(t *testing.T) {
 		ext := &Extension{
 			ID:          "test-ext",
 			Name:        "test-extension",
-			DisplayName: "Test Extension",
 			Version:     "1.0.0-beta.1",
 			Description: "A test extension",
 		}
@@ -317,7 +292,6 @@ func TestValidator_EdgeCases(t *testing.T) {
 		ext := &Extension{
 			ID:          "test-ext",
 			Name:        "test-extension",
-			DisplayName: "Test Extension",
 			Version:     "1.0.0+build.123",
 			Description: "A test extension",
 		}

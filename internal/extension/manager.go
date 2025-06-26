@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -56,6 +57,11 @@ func (m *Manager) Scan() error {
 	// Process each directory
 	for _, entry := range entries {
 		if !entry.IsDir() {
+			continue
+		}
+		
+		// Skip hidden directories (like .trash)
+		if strings.HasPrefix(entry.Name(), ".") {
 			continue
 		}
 

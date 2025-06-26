@@ -326,8 +326,12 @@ func (i *Installer) installFromDirectURL(url string) (*Extension, error) {
 		return nil, fmt.Errorf("unsupported file type (expected .zip or .tar.gz)")
 	}
 	
-	// Download to temp file
-	tmpFile, err := os.CreateTemp("", "gemini-ext-*.tmp")
+	// Download to temp file with correct extension
+	ext := filepath.Ext(filename)
+	if ext == "" {
+		ext = ".tmp"
+	}
+	tmpFile, err := os.CreateTemp("", fmt.Sprintf("gemini-ext-*%s", ext))
 	if err != nil {
 		return nil, fmt.Errorf("creating temp file: %w", err)
 	}
@@ -411,19 +415,69 @@ func (i *Installer) copyFile(src, dst string) error {
 	return os.Chmod(dst, srcInfo.Mode())
 }
 
+// sanitizePath ensures the path is safe and within the destination directory
+func (i *Installer) sanitizePath(path string, destDir string) (string, error) {
+	// Reject absolute paths and paths containing ..
+	if filepath.IsAbs(path) || strings.Contains(path, "..") {
+		return "", fmt.Errorf("unsafe path: %s", path)
+	}
+	
+	// Clean and join with destination
+	cleaned := filepath.Clean(path)
+	fullPath := filepath.Join(destDir, cleaned)
+	
+	// Final safety check
+	rel, err := filepath.Rel(destDir, fullPath)
+	if err != nil || strings.HasPrefix(rel, "..") {
+		return "", fmt.Errorf("path escapes destination directory: %s", path)
+	}
+	
+	return fullPath, nil
+}
+
 // extractZip extracts a zip archive
 func (i *Installer) extractZip(zipPath, destDir string) error {
+	// Check archive size first
+	info, err := os.Stat(zipPath)
+	if err != nil {
+		return err
+	}
+	
+	const maxArchiveSize = 100 * 1024 * 1024 // 100MB limit
+	if info.Size() > maxArchiveSize {
+		return fmt.Errorf("archive too large: %d bytes (max %d)", info.Size(), maxArchiveSize)
+	}
+	
 	reader, err := zip.OpenReader(zipPath)
 	if err != nil {
 		return err
 	}
 	defer reader.Close()
 	
+	// Check total uncompressed size to prevent zip bombs
+	var totalSize uint64
 	for _, file := range reader.File {
-		path := filepath.Join(destDir, file.Name)
+		totalSize += file.UncompressedSize64
+		if totalSize > maxArchiveSize*10 { // 10x compression ratio limit
+			return fmt.Errorf("archive extraction would exceed size limit")
+		}
+	}
+	
+	for _, file := range reader.File {
+		// Sanitize the path to prevent directory traversal
+		path, err := i.sanitizePath(file.Name, destDir)
+		if err != nil {
+			return fmt.Errorf("unsafe path in archive: %w", err)
+		}
 		
 		if file.FileInfo().IsDir() {
 			os.MkdirAll(path, file.FileInfo().Mode())
+			continue
+		}
+		
+		// Skip symlinks for security reasons
+		if file.FileInfo().Mode()&os.ModeSymlink != 0 {
+			// TODO: Consider logging skipped symlinks
 			continue
 		}
 		
@@ -479,7 +533,11 @@ func (i *Installer) extractTarGz(tarPath, destDir string) error {
 			return err
 		}
 		
-		path := filepath.Join(destDir, header.Name)
+		// Sanitize the path to prevent directory traversal
+		path, err := i.sanitizePath(header.Name, destDir)
+		if err != nil {
+			return fmt.Errorf("unsafe path in archive: %w", err)
+		}
 		
 		switch header.Typeflag {
 		case tar.TypeDir:
@@ -508,6 +566,12 @@ func (i *Installer) extractTarGz(tarPath, destDir string) error {
 			if err := os.Chmod(path, os.FileMode(header.Mode)); err != nil {
 				return err
 			}
+		case tar.TypeSymlink, tar.TypeLink:
+			// Skip symlinks and hard links for security reasons
+			continue
+		default:
+			// Skip other special file types (devices, FIFOs, etc.)
+			continue
 		}
 	}
 	

@@ -1,0 +1,8 @@
+{
+  "name": "simple-test-extension",
+  "version": "1.0.0",
+  "description": "A simple test extension for unit tests",
+  "author": {
+    "name": "Test Author"
+  }
+}

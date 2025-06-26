@@ -17,7 +17,6 @@ func createTestExtension(t *testing.T, dir, id string) string {
 
 	manifest := Extension{
 		Name:        id,
-		DisplayName: "Test " + id,
 		Version:     "1.0.0",
 		Description: "Test extension " + id,
 	}

@@ -59,8 +59,17 @@ func (m *Manager) Save(state *State) error {
 		return fmt.Errorf("creating state directory: %w", err)
 	}
 
-	if err := os.WriteFile(m.statePath, data, 0644); err != nil {
-		return fmt.Errorf("writing state file: %w", err)
+	// Write to temporary file first for atomic update
+	tempPath := m.statePath + ".tmp"
+	if err := os.WriteFile(tempPath, data, 0644); err != nil {
+		return fmt.Errorf("writing temporary state file: %w", err)
+	}
+
+	// Atomic rename
+	if err := os.Rename(tempPath, m.statePath); err != nil {
+		// Clean up temp file on error
+		os.Remove(tempPath)
+		return fmt.Errorf("renaming state file: %w", err)
 	}
 
 	return nil

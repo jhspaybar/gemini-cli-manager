@@ -50,11 +50,6 @@ func (v *Validator) Validate(ext *Extension) error {
 		return &ValidationError{Field: "version", Message: "invalid version format (use semantic versioning)"}
 	}
 	
-	// DisplayName is required
-	if ext.DisplayName == "" {
-		return &ValidationError{Field: "displayName", Message: "extension display name is required"}
-	}
-	
 	// Description is required
 	if ext.Description == "" {
 		return &ValidationError{Field: "description", Message: "extension description is required"}

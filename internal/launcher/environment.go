@@ -44,9 +44,10 @@ func (ep *EnvironmentPreparer) PrepareExtensions(extensions []*extension.Extensi
 		srcPath := filepath.Join(ep.managerExtDir, ext.ID)
 		dstPath := filepath.Join(ep.geminiExtDir, ext.ID)
 		
-		// Check if source exists
+		// Check if source exists - we'll log a warning but still create the symlink
+		// This allows Gemini to see what extensions are configured even if they're not installed yet
 		if _, err := os.Stat(srcPath); os.IsNotExist(err) {
-			return fmt.Errorf("extension source not found: %s", srcPath)
+			fmt.Printf("Warning: extension source not found: %s (creating symlink anyway)\n", srcPath)
 		}
 		
 		// Check if something already exists at destination

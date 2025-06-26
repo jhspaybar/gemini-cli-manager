@@ -173,10 +173,20 @@ func (m *Manager) saveInternal(profile *Profile) error {
 		return fmt.Errorf("marshaling profile: %w", err)
 	}
 
-	// Write to file
+	// Write to file atomically
 	profilePath := filepath.Join(m.basePath, profile.ID+".yaml")
-	if err := os.WriteFile(profilePath, data, 0644); err != nil {
-		return fmt.Errorf("writing profile file: %w", err)
+	tempPath := profilePath + ".tmp"
+	
+	// Write to temporary file first
+	if err := os.WriteFile(tempPath, data, 0644); err != nil {
+		return fmt.Errorf("writing temporary profile file: %w", err)
+	}
+	
+	// Atomic rename
+	if err := os.Rename(tempPath, profilePath); err != nil {
+		// Clean up temp file on error
+		os.Remove(tempPath)
+		return fmt.Errorf("renaming profile file: %w", err)
 	}
 
 	// Update in-memory cache

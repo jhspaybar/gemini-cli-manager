@@ -8,7 +8,6 @@ import (
 type Extension struct {
 	// Core fields that match gemini-extension.json
 	Name        string `json:"name"`
-	DisplayName string `json:"displayName"`
 	Version     string `json:"version"`
 	Description string `json:"description"`
 	

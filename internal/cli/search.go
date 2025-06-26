@@ -110,9 +110,8 @@ func filterExtensions(extensions []*extension.Extension, query string) []*extens
 	filtered := make([]*extension.Extension, 0)
 	
 	for _, ext := range extensions {
-		// Search in name, display name, and description
+		// Search in name and description
 		if strings.Contains(strings.ToLower(ext.Name), query) ||
-			strings.Contains(strings.ToLower(ext.DisplayName), query) ||
 			strings.Contains(strings.ToLower(ext.Description), query) {
 			filtered = append(filtered, ext)
 		}
