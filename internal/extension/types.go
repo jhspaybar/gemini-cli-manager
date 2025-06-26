@@ -7,98 +7,36 @@ import (
 // Extension represents a Gemini CLI extension
 type Extension struct {
 	// Core fields that match gemini-extension.json
-	Name        string `json:"name"`
-	Version     string `json:"version"`
-	Description string `json:"description"`
+	Name            string                  `json:"name"`
+	Version         string                  `json:"version"`
+	Description     string                  `json:"description,omitempty"`
 	
-	// MCP configuration
-	MCP *MCPConfig `json:"mcp,omitempty"`
+	// MCP configuration (changed from mcp.servers to mcpServers)
+	MCPServers      map[string]MCPServer    `json:"mcpServers,omitempty"`
 	
-	// Additional metadata
-	Author      Author            `json:"author,omitempty"`
-	Repository  Repository        `json:"repository,omitempty"`
-	Categories  []string          `json:"categories,omitempty"`
-	Keywords    []string          `json:"keywords,omitempty"`
+	// Context file name override
+	ContextFileName string                  `json:"contextFileName,omitempty"`
 	
 	// Runtime information (not in JSON)
 	ID        string    `json:"-"` // Derived from directory name
 	Path      string    `json:"-"`
-	Enabled   bool      `json:"-"` // Deprecated: profiles control which extensions are active
 	LoadedAt  time.Time `json:"-"`
 	Status    Status    `json:"-"`
 }
 
-// Author represents extension author information
-type Author struct {
-	Name  string `json:"name"`
-	Email string `json:"email,omitempty"`
-	URL   string `json:"url,omitempty"`
-}
-
-// Repository represents the extension's source repository
-type Repository struct {
-	Type string `json:"type"`
-	URL  string `json:"url"`
-}
-
-// MCPConfig represents MCP configuration for an extension
-type MCPConfig struct {
-	Servers map[string]MCPServer `json:"servers"`
-}
-
-// MCPServer represents an MCP server configuration
+// MCPServer represents an MCP server configuration matching Gemini spec
 type MCPServer struct {
-	Command string            `json:"command"`
-	Args    []string          `json:"args"`
+	// Transport options (one required)
+	Command string `json:"command,omitempty"` // Stdio transport
+	URL     string `json:"url,omitempty"`     // SSE transport
+	HTTPUrl string `json:"httpUrl,omitempty"` // HTTP streaming transport
+	
+	// Optional configuration
+	Args    []string          `json:"args,omitempty"`
 	Env     map[string]string `json:"env,omitempty"`
-}
-
-// Tool represents a custom tool configuration
-type Tool struct {
-	DisplayName string   `json:"displayName"`
-	Description string   `json:"description"`
-	Command     string   `json:"command"`
-	Args        []string `json:"args"`
-	Input       string   `json:"input,omitempty"`  // stdin, args, file
-	Output      string   `json:"output,omitempty"` // stdout, file
-}
-
-// ConfigurationSchema defines extension configuration options
-type ConfigurationSchema struct {
-	Properties map[string]ConfigProperty `json:"properties"`
-}
-
-// ConfigProperty represents a single configuration property
-type ConfigProperty struct {
-	Type        string      `json:"type"`
-	Description string      `json:"description"`
-	Default     interface{} `json:"default,omitempty"`
-	Minimum     *float64    `json:"minimum,omitempty"`
-	Maximum     *float64    `json:"maximum,omitempty"`
-	Enum        []string    `json:"enum,omitempty"`
-}
-
-// Activation defines when the extension should be activated
-type Activation struct {
-	Events []string `json:"events"`
-}
-
-// Contributions defines what the extension contributes
-type Contributions struct {
-	Commands     []Command    `json:"commands,omitempty"`
-	Keybindings  []Keybinding `json:"keybindings,omitempty"`
-}
-
-// Command represents a contributed command
-type Command struct {
-	Command string `json:"command"`
-	Title   string `json:"title"`
-}
-
-// Keybinding represents a contributed keybinding
-type Keybinding struct {
-	Command string `json:"command"`
-	Key     string `json:"key"`
+	CWD     string            `json:"cwd,omitempty"`
+	Timeout int               `json:"timeout,omitempty"` // milliseconds
+	Trust   bool              `json:"trust"`              // bypass confirmations
 }
 
 // Status represents the current status of an extension

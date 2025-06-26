@@ -98,8 +98,6 @@ func (m *Manager) loadExtension(path string) (*Extension, error) {
 	ext.ID = filepath.Base(path) // ID is the directory name
 	ext.Path = path
 	ext.Status = StatusInstalled
-	// Extensions are now controlled by profiles, not global enable/disable
-	ext.Enabled = false
 
 	// Validate extension
 	if err := m.validator.Validate(&ext); err != nil {
@@ -143,8 +141,8 @@ func (m *Manager) Enable(id string) error {
 		return fmt.Errorf("extension not found: %s", id)
 	}
 
-	if ext.Enabled {
-		return nil // Already enabled
+	if ext.Status == StatusActive {
+		return nil // Already active
 	}
 
 	// Load the extension
@@ -153,7 +151,6 @@ func (m *Manager) Enable(id string) error {
 		return fmt.Errorf("loading extension: %w", err)
 	}
 
-	ext.Enabled = true
 	ext.Status = StatusActive
 	return nil
 }
@@ -168,8 +165,8 @@ func (m *Manager) Disable(id string) error {
 		return fmt.Errorf("extension not found: %s", id)
 	}
 
-	if !ext.Enabled {
-		return nil // Already disabled
+	if ext.Status != StatusActive {
+		return nil // Not active
 	}
 
 	// Unload the extension
@@ -177,7 +174,6 @@ func (m *Manager) Disable(id string) error {
 		return fmt.Errorf("unloading extension: %w", err)
 	}
 
-	ext.Enabled = false
 	ext.Status = StatusDisabled
 	return nil
 }
@@ -232,8 +228,8 @@ func (m *Manager) Remove(id string) error {
 		return fmt.Errorf("extension not found: %s", id)
 	}
 
-	// Disable if enabled
-	if ext.Enabled {
+	// Disable if active
+	if ext.Status == StatusActive {
 		if err := m.loader.Unload(ext); err != nil {
 			return fmt.Errorf("unloading extension: %w", err)
 		}
@@ -264,16 +260,16 @@ func (m *Manager) Update(id string) error {
 	return fmt.Errorf("update not yet implemented")
 }
 
-// GetEnabledExtensions returns all enabled extensions
-func (m *Manager) GetEnabledExtensions() []*Extension {
+// GetActiveExtensions returns all active extensions
+func (m *Manager) GetActiveExtensions() []*Extension {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
-	var enabled []*Extension
+	var active []*Extension
 	for _, ext := range m.extensions {
-		if ext.Enabled {
-			enabled = append(enabled, ext)
+		if ext.Status == StatusActive {
+			active = append(active, ext)
 		}
 	}
-	return enabled
+	return active
 }

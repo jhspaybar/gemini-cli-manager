@@ -20,7 +20,7 @@ func TestValidator_Validate(t *testing.T) {
 			name: "valid extension",
 			ext: &Extension{
 				ID:          "test-ext",
-				Name:        "test-extension",
+				Name:        "test-ext",
 				Version:     "1.0.0",
 				Description: "A test extension",
 			},
@@ -40,7 +40,7 @@ func TestValidator_Validate(t *testing.T) {
 			name: "invalid ID with spaces",
 			ext: &Extension{
 				ID:          "test ext",
-				Name:        "test-extension",
+				Name:        "test ext",
 				Version:     "1.0.0",
 				Description: "A test extension",
 			},
@@ -51,7 +51,7 @@ func TestValidator_Validate(t *testing.T) {
 			name: "invalid ID with special chars",
 			ext: &Extension{
 				ID:          "test@ext!",
-				Name:        "test-extension",
+				Name:        "test@ext!",
 				Version:     "1.0.0",
 				Description: "A test extension",
 			},
@@ -69,10 +69,21 @@ func TestValidator_Validate(t *testing.T) {
 			errField: "name",
 		},
 		{
+			name: "name mismatch with directory",
+			ext: &Extension{
+				ID:          "test-ext",
+				Name:        "different-name",
+				Version:     "1.0.0",
+				Description: "A test extension",
+			},
+			wantErr:  true,
+			errField: "name",
+		},
+		{
 			name: "missing version",
 			ext: &Extension{
 				ID:          "test-ext",
-				Name:        "test-extension",
+				Name:        "test-ext",
 				Description: "A test extension",
 			},
 			wantErr:  true,
@@ -82,7 +93,7 @@ func TestValidator_Validate(t *testing.T) {
 			name: "invalid version format",
 			ext: &Extension{
 				ID:          "test-ext",
-				Name:        "test-extension",
+				Name:        "test-ext",
 				Version:     "1.0",
 				Description: "A test extension",
 			},
@@ -93,7 +104,7 @@ func TestValidator_Validate(t *testing.T) {
 			name: "invalid version with letters",
 			ext: &Extension{
 				ID:          "test-ext",
-				Name:        "test-extension",
+				Name:        "test-ext",
 				Version:     "v1.0.0",
 				Description: "A test extension",
 			},
@@ -101,28 +112,16 @@ func TestValidator_Validate(t *testing.T) {
 			errField: "version",
 		},
 		{
-			name: "missing description",
-			ext: &Extension{
-				ID:          "test-ext",
-				Name:        "test-extension",
-				Version:     "1.0.0",
-			},
-			wantErr:  true,
-			errField: "description",
-		},
-		{
 			name: "extension with valid MCP config",
 			ext: &Extension{
 				ID:          "mcp-ext",
-				Name:        "mcp-extension",
+				Name:        "mcp-ext",
 				Version:     "1.0.0",
 				Description: "Extension with MCP server",
-				MCP: &MCPConfig{
-					Servers: map[string]MCPServer{
-						"test-server": {
-							Command: "node",
-							Args:    []string{"server.js"},
-						},
+				MCPServers: map[string]MCPServer{
+					"test-server": {
+						Command: "node",
+						Args:    []string{"server.js"},
 					},
 				},
 			},
@@ -132,19 +131,17 @@ func TestValidator_Validate(t *testing.T) {
 			name: "extension with invalid MCP config - missing command",
 			ext: &Extension{
 				ID:          "mcp-ext",
-				Name:        "mcp-extension",
+				Name:        "mcp-ext",
 				Version:     "1.0.0",
 				Description: "Extension with invalid MCP server",
-				MCP: &MCPConfig{
-					Servers: map[string]MCPServer{
-						"test-server": {
-							Args: []string{"server.js"},
-						},
+				MCPServers: map[string]MCPServer{
+					"test-server": {
+						Args: []string{"server.js"},
 					},
 				},
 			},
 			wantErr:  true,
-			errField: "mcp.servers.test-server",
+			errField: "mcpServers.test-server",
 		},
 	}
 
@@ -278,7 +275,7 @@ func TestValidator_EdgeCases(t *testing.T) {
 	t.Run("version with pre-release", func(t *testing.T) {
 		ext := &Extension{
 			ID:          "test-ext",
-			Name:        "test-extension",
+			Name:        "test-ext",
 			Version:     "1.0.0-beta.1",
 			Description: "A test extension",
 		}
@@ -291,7 +288,7 @@ func TestValidator_EdgeCases(t *testing.T) {
 	t.Run("version with build metadata", func(t *testing.T) {
 		ext := &Extension{
 			ID:          "test-ext",
-			Name:        "test-extension",
+			Name:        "test-ext",
 			Version:     "1.0.0+build.123",
 			Description: "A test extension",
 		}

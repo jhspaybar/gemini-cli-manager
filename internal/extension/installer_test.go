@@ -1,6 +1,7 @@
 package extension
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -109,8 +110,8 @@ func TestInstaller_InstallFromArchive(t *testing.T) {
 			t.Fatalf("InstallFromPath(zip) error = %v", err)
 		}
 
-		if ext.Name != "simple-test-extension" {
-			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-test-extension")
+		if ext.Name != "simple-extension" {
+			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-extension")
 		}
 
 		// Verify files were extracted
@@ -136,8 +137,8 @@ func TestInstaller_InstallFromArchive(t *testing.T) {
 			t.Fatalf("InstallFromPath(tar.gz) error = %v", err)
 		}
 
-		if ext.Name != "simple-test-extension" {
-			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-test-extension")
+		if ext.Name != "simple-extension" {
+			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-extension")
 		}
 	})
 
@@ -156,8 +157,8 @@ func TestInstaller_InstallFromArchive(t *testing.T) {
 			t.Fatalf("Failed to install nested archive: %v", err)
 		}
 
-		if ext.Name != "nested-test-extension" {
-			t.Errorf("Extension name = %q, want %q", ext.Name, "nested-test-extension")
+		if ext.Name != "extension" {
+			t.Errorf("Extension name = %q, want %q", ext.Name, "extension")
 		}
 	})
 
@@ -208,8 +209,8 @@ func TestInstaller_InstallFromURL(t *testing.T) {
 			t.Fatalf("InstallFromURL() error = %v", err)
 		}
 
-		if ext.Name != "simple-test-extension" {
-			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-test-extension")
+		if ext.Name != "simple-extension" {
+			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-extension")
 		}
 	})
 
@@ -329,13 +330,14 @@ func TestInstaller_EdgeCases(t *testing.T) {
 		}
 		defer os.RemoveAll(symlinkDir)
 		
-		// Copy manifest from test data
-		srcManifest := getTestDataPath("simple-extension/gemini-extension.json")
-		data, _ := os.ReadFile(srcManifest)
-		
-		// Modify the manifest to have a different name
-		modifiedManifest := strings.Replace(string(data), "simple-test-extension", "symlink-test-extension", 1)
-		os.WriteFile(filepath.Join(symlinkDir, "gemini-extension.json"), []byte(modifiedManifest), 0644)
+		// Create manifest that matches directory name
+		dirName := filepath.Base(symlinkDir)
+		manifest := fmt.Sprintf(`{
+  "name": "%s",
+  "version": "1.0.0",
+  "description": "Test extension with symlinks"
+}`, dirName)
+		os.WriteFile(filepath.Join(symlinkDir, "gemini-extension.json"), []byte(manifest), 0644)
 		
 		// Create a file and symlink
 		os.WriteFile(filepath.Join(symlinkDir, "original.txt"), []byte("original"), 0644)
@@ -397,8 +399,8 @@ func TestInstaller_ProgressCallback(t *testing.T) {
 			t.Fatalf("InstallWithProgress failed: %v", err)
 		}
 		
-		if ext.Name != "simple-test-extension" {
-			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-test-extension")
+		if ext.Name != "simple-extension" {
+			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-extension")
 		}
 		
 		if progressUpdates == 0 {

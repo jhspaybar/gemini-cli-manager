@@ -86,7 +86,7 @@ func (l *Loader) resolveDependencies(ext *Extension) error {
 func (l *Loader) startMCPServers(ext *Extension) error {
 	// Note: Gemini CLI handles MCP server lifecycle
 	// We just need to ensure the configuration is present
-	if ext.MCP != nil && len(ext.MCP.Servers) > 0 {
+	if len(ext.MCPServers) > 0 {
 		// Configuration is present in gemini-extension.json
 		// Gemini CLI will handle starting/stopping servers
 		return nil

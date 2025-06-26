@@ -1,7 +1,5 @@
 {
-  "name": "mcp-extension",
-  "version": "2.1.0",
-  "description": "Extension with MCP server configuration for testing",
+  "contextFileName": "GEMINI.md",
   "mcpServers": {
     "test-echo-server": {
       "command": "node",
@@ -24,6 +22,5 @@
       "timeout": 5000,
       "trust": false
     }
-  },
-  "contextFileName": "GEMINI.md"
+  }
 }

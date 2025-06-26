@@ -397,9 +397,12 @@ func (m Model) renderStatusBar() string {
 	
 	// Left side - context info
 	enabledCount := 0
-	for _, ext := range m.extensions {
-		if ext.Enabled {
-			enabledCount++
+	if m.currentProfile != nil {
+		// Count enabled extensions in current profile
+		for _, extRef := range m.currentProfile.Extensions {
+			if extRef.Enabled {
+				enabledCount++
+			}
 		}
 	}
 	left = append(left, fmt.Sprintf("Extensions: %d/%d", enabledCount, len(m.extensions)))
