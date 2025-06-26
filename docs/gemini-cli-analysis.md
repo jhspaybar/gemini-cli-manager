@@ -303,8 +303,9 @@ interface ExtensionInstallation {
 When activating a profile:
 1. Clear existing symlinks in `~/.gemini/extensions/`
 2. Create symlinks for profile's enabled extensions
-3. Generate merged `settings.json` with profile settings
-4. Set up profile-specific GEMINI.md if needed
+3. Each extension's `gemini-extension.json` contains its MCP servers
+4. Gemini CLI automatically discovers and loads these configurations
+5. No need to generate settings.json - extensions are self-contained!
 
 ### 3. MCP Server Configuration
 
@@ -321,13 +322,13 @@ interface MCPServerManager {
 }
 ```
 
-### 4. Settings Management
+### 4. Extension Management
 
-Priority order for settings:
-1. Profile-specific settings
-2. Extension-provided settings
-3. User defaults
-4. System defaults
+Extensions are self-contained:
+- Each extension has its own `gemini-extension.json`
+- MCP servers are defined in the extension's config
+- Gemini CLI automatically loads these when discovering extensions
+- No need for our manager to merge or generate configurations
 
 ### 5. Security Considerations
 
@@ -389,17 +390,16 @@ function mergeConfigurations(profile: Profile): GeminiConfig {
 
 ## Conclusion
 
-The Gemini CLI provides a flexible extension system centered around MCP servers. Our CLI Manager can effectively integrate by:
+The Gemini CLI provides a flexible extension system that is self-contained and elegant. Our CLI Manager integrates by:
 
-1. Managing extension installations and symlinks
-2. Generating proper configuration files
-3. Handling MCP server configurations per profile
-4. Providing seamless profile switching
+1. Managing extension installations
+2. Creating/removing symlinks in `~/.gemini/extensions/` based on active profile
+3. Letting Gemini CLI's extension discovery system handle the rest
 
-Key success factors:
-- Respect Gemini's configuration precedence
-- Properly handle MCP server trust settings
-- Maintain clean extension directories
-- Provide clear user feedback
+Key insights:
+- Extensions are self-contained with their own `gemini-extension.json`
+- MCP servers are defined within each extension
+- Gemini CLI automatically discovers and loads extension configurations
+- No need for complex configuration merging or generation
 
-This architecture allows our manager to enhance the Gemini CLI experience while maintaining compatibility with its core design principles.
+This simple approach leverages Gemini CLI's design perfectly - we just manage which extensions are "visible" through symlinks, and Gemini CLI handles all the complexity of loading and configuring them!

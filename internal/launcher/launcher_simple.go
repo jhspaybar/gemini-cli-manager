@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
 
-	"github.com/jhspaybar/gemini-cli-manager/internal/config"
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
 )
@@ -52,6 +50,8 @@ func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extensio
 	}
 	
 	// Prepare the environment by setting up extension symlinks
+	// This is all we need! Each extension has its own gemini-extension.json
+	// with mcpServers configuration that Gemini CLI will automatically load
 	envPreparer := NewEnvironmentPreparer()
 	if err := envPreparer.PrepareExtensions(extensions); err != nil {
 		if debugLog != nil {
@@ -66,20 +66,7 @@ func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extensio
 		fmt.Fprintf(debugLog, "  Manager: %s\n", managerPath)
 		fmt.Fprintf(debugLog, "  Gemini:  %s\n", geminiPath)
 		fmt.Fprintf(debugLog, "Prepared %d enabled extensions\n", len(extensions))
-	}
-	
-	// Generate settings.json for the profile
-	settingsGen := config.NewSettingsGenerator(profile, extensions)
-	settingsPath := filepath.Join(l.homeDir, ".gemini", "settings.json")
-	if err := settingsGen.WriteSettings(settingsPath); err != nil {
-		if debugLog != nil {
-			fmt.Fprintf(debugLog, "ERROR: Failed to generate settings.json: %v\n", err)
-		}
-		return fmt.Errorf("generating settings.json: %w", err)
-	}
-	
-	if debugLog != nil {
-		fmt.Fprintf(debugLog, "Generated settings.json at: %s\n", settingsPath)
+		fmt.Fprintf(debugLog, "Extensions contain their own MCP server configs in gemini-extension.json\n")
 	}
 	
 	// Find the full path to the gemini binary
