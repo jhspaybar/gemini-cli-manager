@@ -100,15 +100,6 @@ func (m *Modal) SetFooterStyle(style lipgloss.Style) *Modal {
 
 // Render renders the modal centered on screen
 func (m *Modal) Render() string {
-	// Calculate actual width
-	actualWidth := m.width
-	if actualWidth > m.maxWidth {
-		actualWidth = m.maxWidth
-	}
-	if actualWidth > m.windowWidth-4 {
-		actualWidth = m.windowWidth - 4
-	}
-	
 	// Build modal content
 	var parts []string
 	
@@ -134,18 +125,20 @@ func (m *Modal) Render() string {
 	// Join all parts
 	modalContent := strings.Join(parts, "\n")
 	
-	// Calculate available height for modal
-	// Account for centering margins (at least 2 top + 2 bottom)
-	maxModalHeight := m.windowHeight - 4
-	
-	// Create modal container
+	// Create modal container with proper margins
+	// Let lipgloss handle the sizing and spacing
 	modalStyle := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(m.borderColor).
 		Padding(2, 3).
-		Width(actualWidth - 2). // Account for border
-		MaxWidth(actualWidth - 2).
-		MaxHeight(maxModalHeight) // Prevent overflow
+		Margin(1, 3). // Add margin to ensure proper spacing from terminal edges
+		MaxWidth(m.width).
+		MaxHeight(m.windowHeight - 4)
+	
+	// If the requested width would overflow, let lipgloss handle it
+	if m.width > m.maxWidth {
+		modalStyle = modalStyle.MaxWidth(m.maxWidth)
+	}
 	
 	// Render with border
 	modal := modalStyle.Render(modalContent)
