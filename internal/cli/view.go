@@ -33,29 +33,21 @@ func (m Model) View() string {
 		return modalView
 	}
 
-	// Create main flexbox layout
-	fb := flexbox.New(m.windowWidth, m.windowHeight)
+	// Calculate dimensions
+	contentHeight := m.windowHeight - 4 // -4 for tab bar and status bar
 	
-	// Tab bar row
-	tabRow := fb.NewRow()
-	tabCell := flexbox.NewCell(1, 1)
-	tabCell.SetContent(m.renderTabBar())
-	tabRow.AddCells(tabCell)
+	// Render components
+	tabBar := m.renderTabBar()
+	content := m.renderContent(m.windowWidth, contentHeight)
+	statusBar := m.renderStatusBar()
 	
-	// Content row (flexible)
-	contentRow := fb.NewRow()
-	contentCell := flexbox.NewCell(1, 10) // Takes most vertical space
-	contentCell.SetContent(m.renderContent(m.windowWidth, m.windowHeight-4))
-	contentRow.AddCells(contentCell)
-	
-	// Status bar row
-	statusRow := fb.NewRow()
-	statusCell := flexbox.NewCell(1, 1)
-	statusCell.SetContent(m.renderStatusBar())
-	statusRow.AddCells(statusCell)
-	
-	fb.AddRows([]*flexbox.Row{tabRow, contentRow, statusRow})
-	return fb.Render()
+	// Combine all elements vertically
+	return lipgloss.JoinVertical(
+		lipgloss.Left,
+		tabBar,
+		content,
+		statusBar,
+	)
 }
 
 // renderTabBar renders the top navigation tabs
@@ -162,48 +154,34 @@ func (m Model) renderContent(width, height int) string {
 
 // renderExtensions renders the extensions view
 func (m Model) renderExtensions(width, height int) string {
-	// Create main flexbox
-	fb := flexbox.New(width, height)
+	var lines []string
 	
-	// Header row
-	headerRow := fb.NewRow()
-	headerCell := flexbox.NewCell(1, 1)
-	headerCell.SetContent(h1Style.Render("Extensions"))
-	headerRow.AddCells(headerCell)
-	// Fixed height rows not supported - use cell ratios instead
+	// Header
+	header := h1Style.Render("Extensions")
+	lines = append(lines, header)
 	
-	// Search bar row (if active)
+	// Show search bar if active or has query
 	if m.searchActive || m.searchBar.Value() != "" {
-		searchRow := fb.NewRow()
-		searchCell := flexbox.NewCell(1, 1)
+		lines = append(lines, "")
 		searchBox := lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(colorBorderFocus).
 			Padding(0, 1).
 			Width(60).
 			Render(m.searchBar.View())
-		searchCell.SetContent(searchBox)
-		searchRow.AddCells(searchCell)
-		// Fixed height rows not supported - use cell ratios instead
-		fb.AddRows([]*flexbox.Row{searchRow})
+		lines = append(lines, searchBox)
 	}
 	
-	// Count row
-	countRow := fb.NewRow()
-	countCell := flexbox.NewCell(1, 1)
+	lines = append(lines, "")
+	
+	// Show count
 	var count string
 	if m.searchBar.Value() != "" {
 		count = fmt.Sprintf("%d of %d extensions (filtered)", len(m.filteredExtensions), len(m.extensions))
 	} else {
 		count = fmt.Sprintf("%d extensions found", len(m.filteredExtensions))
 	}
-	countCell.SetContent(textDimStyle.Render(count))
-	countRow.AddCells(countCell)
-	// Fixed height rows not supported - use cell ratios instead
-	
-	// Content area (flexible)
-	contentRow := fb.NewRow()
-	contentCell := flexbox.NewCell(1, 10) // Takes most space
+	lines = append(lines, textDimStyle.Render(count), "")
 	
 	if len(m.filteredExtensions) == 0 {
 		// Empty state
@@ -222,26 +200,21 @@ func (m Model) renderExtensions(width, height int) string {
 					textDimStyle.Render("Press 'n' to install your first extension"),
 				),
 			)
-		contentCell.SetContent(lipgloss.NewStyle().Width(width).Align(lipgloss.Center).Render(emptyBox))
+		lines = append(lines, "")
+		lines = append(lines, lipgloss.NewStyle().Width(width-4).Align(lipgloss.Center).Render(emptyBox))
 	} else {
 		// Extension list with cards
-		var cards []string
 		for i, ext := range m.filteredExtensions {
 			isSelected := i == m.extensionsCursor
 			card := m.renderExtensionCard(ext, isSelected, width-4)
-			cards = append(cards, card)
+			lines = append(lines, card)
 			if i < len(m.filteredExtensions)-1 {
-				cards = append(cards, "") // Spacing between cards
+				lines = append(lines, "") // Spacing between cards
 			}
 		}
-		contentCell.SetContent(strings.Join(cards, "\n"))
-	}
-	contentRow.AddCells(contentCell)
-	
-	// Help text row
-	if len(m.filteredExtensions) > 0 {
-		helpRow := fb.NewRow()
-		helpCell := flexbox.NewCell(1, 1)
+		
+		// Help text
+		lines = append(lines, "", "")
 		helpText := renderKeyHelp([][2]string{
 			{"↵", "Details"},
 			{"n", "Install"},
@@ -249,17 +222,10 @@ func (m Model) renderExtensions(width, height int) string {
 			{"/", "Search"},
 			{"Tab", "Next"},
 		})
-		helpCell.SetContent(helpText)
-		helpRow.AddCells(helpCell)
-		// Fixed height rows not supported - use cell ratios instead
-		fb.AddRows([]*flexbox.Row{helpRow})
+		lines = append(lines, helpText)
 	}
 	
-	// Add all rows to flexbox
-	rows := []*flexbox.Row{headerRow, countRow, contentRow}
-	fb.AddRows(rows)
-	
-	return fb.Render()
+	return strings.Join(lines, "\n")
 }
 
 // renderExtensionCard renders a single extension as a card
@@ -318,19 +284,13 @@ func (m Model) renderExtensionCard(ext *extension.Extension, isSelected bool, wi
 
 // renderProfiles renders the profiles view
 func (m Model) renderProfiles(width, height int) string {
-	// Create main flexbox
-	fb := flexbox.New(width, height)
+	var lines []string
 	
-	// Header row
-	headerRow := fb.NewRow()
-	headerCell := flexbox.NewCell(1, 1)
-	headerCell.SetContent(h1Style.Render("Profiles"))
-	headerRow.AddCells(headerCell)
-	// Fixed height rows not supported - use cell ratios instead
+	// Header
+	header := h1Style.Render("Profiles")
+	lines = append(lines, header)
 	
-	// Active profile badge row
-	badgeRow := fb.NewRow()
-	badgeCell := flexbox.NewCell(1, 1)
+	// Active profile badge
 	activeProfile := "None"
 	if m.currentProfile != nil {
 		activeProfile = m.currentProfile.Name
@@ -343,42 +303,30 @@ func (m Model) renderProfiles(width, height int) string {
 		Padding(0, 1).
 		MaxWidth(width - 4).
 		Render(badgeText)
-	badgeCell.SetContent(activeBadge)
-	badgeRow.AddCells(badgeCell)
-	// Fixed height rows not supported - use cell ratios instead
+	lines = append(lines, "", activeBadge)
 	
-	// Search bar row (if active)
+	// Show search bar if active or has query
 	if m.searchActive || m.searchBar.Value() != "" {
-		searchRow := fb.NewRow()
-		searchCell := flexbox.NewCell(1, 1)
+		lines = append(lines, "")
 		searchBox := lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(colorBorderFocus).
 			Padding(0, 1).
 			Width(60).
 			Render(m.searchBar.View())
-		searchCell.SetContent(searchBox)
-		searchRow.AddCells(searchCell)
-		// Fixed height rows not supported - use cell ratios instead
-		fb.AddRows([]*flexbox.Row{searchRow})
+		lines = append(lines, searchBox)
 	}
 	
-	// Count row
-	countRow := fb.NewRow()
-	countCell := flexbox.NewCell(1, 1)
+	lines = append(lines, "")
+	
+	// Show count
 	var count string
 	if m.searchBar.Value() != "" {
 		count = fmt.Sprintf("%d of %d profiles (filtered)", len(m.filteredProfiles), len(m.profiles))
 	} else {
 		count = fmt.Sprintf("%d profiles", len(m.profiles))
 	}
-	countCell.SetContent(textDimStyle.Render(count))
-	countRow.AddCells(countCell)
-	// Fixed height rows not supported - use cell ratios instead
-	
-	// Content area (flexible)
-	contentRow := fb.NewRow()
-	contentCell := flexbox.NewCell(1, 10) // Takes most space
+	lines = append(lines, textDimStyle.Render(count), "")
 	
 	if len(m.filteredProfiles) == 0 {
 		// Empty state
@@ -397,27 +345,22 @@ func (m Model) renderProfiles(width, height int) string {
 					textDimStyle.Render("Press 'n' to create your first profile"),
 				),
 			)
-		contentCell.SetContent(lipgloss.NewStyle().Width(width).Align(lipgloss.Center).Render(emptyBox))
+		lines = append(lines, "")
+		lines = append(lines, lipgloss.NewStyle().Width(width-4).Align(lipgloss.Center).Render(emptyBox))
 	} else {
-		// Profile list
-		var cards []string
+		// Profile list with cards
 		for i, prof := range m.filteredProfiles {
 			isSelected := i == m.profilesCursor
 			isActive := m.currentProfile != nil && prof.ID == m.currentProfile.ID
 			card := m.renderProfileCard(prof, isSelected, isActive, width-4)
-			cards = append(cards, card)
+			lines = append(lines, card)
 			if i < len(m.filteredProfiles)-1 {
-				cards = append(cards, "")
+				lines = append(lines, "") // Spacing between cards
 			}
 		}
-		contentCell.SetContent(strings.Join(cards, "\n"))
-	}
-	contentRow.AddCells(contentCell)
-	
-	// Help text row
-	if len(m.filteredProfiles) > 0 {
-		helpRow := fb.NewRow()
-		helpCell := flexbox.NewCell(1, 1)
+		
+		// Help text
+		lines = append(lines, "", "")
 		helpText := renderKeyHelp([][2]string{
 			{"↵", "Activate"},
 			{"n", "New"},
@@ -425,17 +368,10 @@ func (m Model) renderProfiles(width, height int) string {
 			{"d", "Delete"},
 			{"/", "Search"},
 		})
-		helpCell.SetContent(helpText)
-		helpRow.AddCells(helpCell)
-		// Fixed height rows not supported - use cell ratios instead
-		fb.AddRows([]*flexbox.Row{helpRow})
+		lines = append(lines, helpText)
 	}
 	
-	// Add all rows to flexbox
-	rows := []*flexbox.Row{headerRow, badgeRow, countRow, contentRow}
-	fb.AddRows(rows)
-	
-	return fb.Render()
+	return strings.Join(lines, "\n")
 }
 
 // renderProfileCard renders a single profile as a card
@@ -663,12 +599,9 @@ func (m Model) renderExtensionDetail(width, height int) string {
 	cleanVersion := stripANSI(ext.Version)
 	cleanDescription := stripANSI(ext.Description)
 	
-	// Create main flexbox
-	fb := flexbox.New(width, height)
+	var lines []string
 	
-	// Header row
-	headerRow := fb.NewRow()
-	headerCell := flexbox.NewCell(1, 1)
+	// Header box
 	headerBox := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(colorAccent).
@@ -685,60 +618,41 @@ func (m Model) renderExtensionDetail(width, height int) string {
 			textDimStyle.Render(cleanDescription),
 		),
 	)
-	headerCell.SetContent(headerBox.Render(headerContent))
-	headerRow.AddCells(headerCell)
-	// Fixed height rows not supported - use cell ratios instead
+	lines = append(lines, headerBox.Render(headerContent))
 	
-	// Back navigation row
-	backRow := fb.NewRow()
-	backCell := flexbox.NewCell(1, 1)
-	backCell.SetContent(textDimStyle.Copy().MarginLeft(2).Render("← Press Esc to go back"))
-	backRow.AddCells(backCell)
-	// Fixed height rows not supported - use cell ratios instead
+	// Back navigation
+	lines = append(lines, "")
+	lines = append(lines, textDimStyle.Copy().MarginLeft(2).Render("← Press Esc to go back"))
+	lines = append(lines, "")
 	
-	// Two-column layout row for basic info and MCP servers
-	columnsRow := fb.NewRow()
-	
-	// Create horizontal flexbox for columns
-	columnsHfb := flexbox.NewHorizontal(width, 0) // Height will be inherited
+	// Two-column layout for basic info and MCP servers
+	// Use flexbox only for the horizontal layout
+	columnsHfb := flexbox.NewHorizontal(width, 10) // Fixed height for columns section
 	
 	// Left column (basic info)
 	leftCol := columnsHfb.NewColumn()
 	leftCell := flexbox.NewCell(1, 1) // Equal width
-	leftCell.SetContent(m.renderExtDetailLeftColumn(ext, 0)) // Width will be calculated by flexbox
+	leftCell.SetContent(m.renderExtDetailLeftColumn(ext, width/2-2))
 	leftCol.AddCells(leftCell)
 	
 	// Right column (MCP servers)
 	rightCol := columnsHfb.NewColumn()
 	rightCell := flexbox.NewCell(1, 1) // Equal width
-	rightCell.SetContent(m.renderExtDetailRightColumn(ext, 0)) // Width will be calculated by flexbox
+	rightCell.SetContent(m.renderExtDetailRightColumn(ext, width/2-2))
 	rightCol.AddCells(rightCell)
 	
 	columnsHfb.AddColumns([]*flexbox.Column{leftCol, rightCol})
+	lines = append(lines, columnsHfb.Render())
+	lines = append(lines, "")
 	
-	// Add the horizontal flexbox content to the columns row
-	columnsCell := flexbox.NewCell(1, 1)
-	columnsCell.SetContent(columnsHfb.Render())
-	columnsRow.AddCells(columnsCell)
-	// Fixed height rows not supported - use cell ratios instead
+	// Context file section
+	lines = append(lines, m.renderContextFileSection(ext, width-2))
+	lines = append(lines, "")
 	
-	// Context file section row
-	contextRow := fb.NewRow()
-	contextCell := flexbox.NewCell(1, 3) // Takes more vertical space
-	contextCell.SetContent(m.renderContextFileSection(ext, width-2))
-	contextRow.AddCells(contextCell)
+	// Action bar
+	lines = append(lines, m.renderExtDetailActions(width-2))
 	
-	// Action bar row
-	actionRow := fb.NewRow()
-	actionCell := flexbox.NewCell(1, 1)
-	actionCell.SetContent(m.renderExtDetailActions(width-2))
-	actionRow.AddCells(actionCell)
-	// Fixed height rows not supported - use cell ratios instead
-	
-	// Add all rows
-	fb.AddRows([]*flexbox.Row{headerRow, backRow, columnsRow, contextRow, actionRow})
-	
-	return fb.Render()
+	return strings.Join(lines, "\n")
 }
 
 // renderExtDetailLeftColumn renders the left column of extension details

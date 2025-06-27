@@ -278,6 +278,78 @@ func createModal(title, message string, width, height int) string {
 }
 ```
 
+## When NOT to Use Flexbox
+
+While flexbox is powerful for creating responsive layouts, there are cases where it's not appropriate:
+
+### 1. Vertical Content Lists
+
+**Problem**: Flexbox with ratios distributes content across the entire available height, causing unwanted spacing.
+
+```go
+// ❌ Bad: Using flexbox for vertical content lists
+fb := flexbox.New(width, height)
+for _, item := range items {
+    row := fb.NewRow()
+    cell := flexbox.NewCell(1, 1)
+    cell.SetContent(item)
+    row.AddCells(cell)
+    fb.AddRows([]*flexbox.Row{row})
+}
+// This spreads items across the full height!
+
+// ✅ Good: Simple string concatenation for natural flow
+var lines []string
+for _, item := range items {
+    lines = append(lines, renderItem(item))
+}
+return strings.Join(lines, "\n")
+```
+
+### 2. Main Application Layout
+
+**Problem**: Using flexbox for the entire app view can cause content spreading.
+
+```go
+// ❌ Bad: Flexbox for main app view with ratios
+func (m Model) View() string {
+    fb := flexbox.New(m.width, m.height)
+    headerRow := fb.NewRow()
+    contentRow := fb.NewRow()
+    contentCell := flexbox.NewCell(1, 10) // 10:1 ratio causes spreading!
+    // ...
+}
+
+// ✅ Good: lipgloss.JoinVertical for main layout
+func (m Model) View() string {
+    return lipgloss.JoinVertical(
+        lipgloss.Left,
+        m.renderHeader(),
+        m.renderContent(),
+        m.renderFooter(),
+    )
+}
+```
+
+### 3. Dynamic Content Areas
+
+**When to avoid flexbox:**
+- Content height is unknown or variable
+- You want content to take only the space it needs
+- Scrollable areas where content exceeds viewport
+- Simple vertical stacking of elements
+
+**When flexbox IS appropriate:**
+- Two-column or multi-column layouts
+- Responsive sidebars
+- Fixed-size modals and forms
+- Tab bars and navigation
+- Status bars with multiple sections
+
+### 4. Rule of Thumb
+
+Use flexbox for **structural layout** (columns, sidebars, navigation), but use simple string joining for **content flow** (lists, paragraphs, dynamic content).
+
 ## Best Practices
 
 ### 1. Use Ratios, Not Fixed Sizes
