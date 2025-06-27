@@ -368,12 +368,53 @@ func (m Model) View() string {
 }
 ```
 
-#### 2. Use Lipgloss for Styling
+#### 2. ALWAYS Use Flexbox for Layouts
+
+**IMPORTANT**: We use the [stickers](https://github.com/76creates/stickers) flexbox library for ALL layout needs. This ensures responsive, maintainable layouts.
+
+```go
+import "github.com/76creates/stickers/flexbox"
+
+// ✅ GOOD: Using flexbox for layout
+func (m Model) View() string {
+    fb := flexbox.New(m.windowWidth, m.windowHeight)
+    
+    // Header
+    headerRow := fb.NewRow()
+    headerCell := flexbox.NewCell(1, 1)
+    headerCell.SetContent(m.renderHeader())
+    headerRow.AddCells(headerCell)
+    headerRow.LockHeight(3)
+    
+    // Body with two columns
+    bodyRow := fb.NewRow()
+    sidebarCell := flexbox.NewCell(1, 1) // 1/3 width
+    contentCell := flexbox.NewCell(2, 1) // 2/3 width
+    sidebarCell.SetContent(m.renderSidebar())
+    contentCell.SetContent(m.renderContent())
+    bodyRow.AddCells(sidebarCell, contentCell)
+    
+    fb.AddRows([]*flexbox.Row{headerRow, bodyRow})
+    return fb.Render()
+}
+
+// ❌ BAD: Manual layout calculations
+func (m Model) View() string {
+    sidebarWidth := 30
+    contentWidth := m.windowWidth - sidebarWidth - 3
+    // Don't do manual width calculations!
+    return lipgloss.JoinHorizontal(...)
+}
+```
+
+**See [docs/flexbox-guide.md](../docs/flexbox-guide.md) for comprehensive flexbox usage patterns.**
+
+#### 3. Use Lipgloss for Styling (Within Flexbox Cells)
 ```go
 var (
     titleStyle = lipgloss.NewStyle().
         Bold(true).
-        Foreground(lipgloss.Color("39"))
+        Foreground(lipgloss.Color("87"))
     
     selectedStyle = lipgloss.NewStyle().
         Background(lipgloss.Color("237")).
@@ -571,6 +612,10 @@ internal/
 │   │   ├── list.go
 │   │   ├── form.go
 │   │   └── modal.go
+│   ├── layouts/         # Flexbox layout definitions
+│   │   ├── main.go      # Main app layout
+│   │   ├── modal.go     # Modal layouts
+│   │   └── forms.go     # Form layouts
 │   ├── styles/          # Lipgloss styles
 │   │   └── theme.go
 │   └── messages/        # Message definitions
