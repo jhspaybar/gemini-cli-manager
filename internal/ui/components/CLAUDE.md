@@ -382,7 +382,30 @@ When creating a new component, ensure:
 - **Features**: Dynamic tabs, icon support, seamless borders
 - **Test files**: test/adhoc/test_tabs*.go
 
-### (Future components listed here...)
+### Card
+- **Purpose**: Renders cards for extensions, profiles, and other items
+- **Features**: Multiple states (normal, selected, focused, active), icon/subtitle support, metadata display, truncation, responsive width
+- **Test files**: 
+  - Unit tests: internal/ui/components/card_test.go
+  - Visual test: Run `make card` in test/adhoc/
+- **Usage example**:
+```go
+card := components.NewCard(60).
+    SetTitle("Extension Name", "🧩").
+    SetSubtitle("v1.2.0").
+    SetDescription("Extension description").
+    AddMetadata("MCP Servers", "2 servers", "⚡").
+    SetSelected(isSelected)
+
+output := card.Render()
+```
+
+### (Future components)
+- **Modal** - Centered modal dialogs
+- **FormField** - Consistent form inputs
+- **StatusBar** - Three-section status bar
+- **EmptyState** - "No items" displays
+- **SearchBar** - Already exists, needs to be moved to components
 
 ## Contributing
 

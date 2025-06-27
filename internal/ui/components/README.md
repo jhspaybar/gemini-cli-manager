@@ -66,3 +66,75 @@ activeTabBorder := tabBorderWithBottom("┘", " ", "└")
 ### Testing
 
 See `test/adhoc/test_tabs.go` for a simple example and `test/adhoc/test_tabs_switching.go` for a demonstration of tab switching.
+
+## Card Component
+
+The `Card` component provides a flexible, reusable card UI element for displaying items like extensions and profiles.
+
+### Features
+
+- Multiple states: normal, selected, focused, and active
+- Optional icon and subtitle support
+- Automatic text truncation for long content
+- Metadata display with optional icons
+- Responsive width adjustment
+- Compact rendering mode for grid layouts
+- Theme-aware styling
+
+### Usage
+
+```go
+// Create a card
+card := components.NewCard(60)
+
+// Basic card with title and description
+card.SetTitle("Extension Name", "🧩").
+    SetDescription("A helpful description of what this extension does")
+
+// Card with subtitle (e.g., version)
+card.SetTitle("Markdown Assistant", "🧩").
+    SetSubtitle("v1.2.0").
+    SetDescription("Format and preview Markdown documents")
+
+// Add metadata
+card.AddMetadata("MCP Servers", "2 servers", "⚡").
+    AddMetadata("Size", "1.5MB", "💾")
+
+// Set states
+card.SetSelected(true)  // Thick border
+card.SetActive(true)    // Shows active indicator (●)
+card.SetFocused(true)   // Double border
+
+// Render
+output := card.Render()
+
+// Compact render (for grids)
+compact := card.RenderCompact()
+```
+
+### States
+
+- **Normal**: Standard rounded border
+- **Selected**: Thick border with accent color
+- **Focused**: Double border with accent color
+- **Active**: Success color border with bullet indicator (●)
+
+### Customization
+
+```go
+// Custom styles
+normalStyle := lipgloss.NewStyle().
+    Border(lipgloss.RoundedBorder()).
+    BorderForeground(theme.Border()).
+    Padding(1, 2)
+
+card.SetStyles(normalStyle, selectedStyle, focusedStyle, activeStyle)
+
+// Dynamic width adjustment
+card.SetWidth(80)
+```
+
+### Testing
+
+- Unit tests: `internal/ui/components/card_test.go`
+- Visual tests: Run `make card` in `test/adhoc/`

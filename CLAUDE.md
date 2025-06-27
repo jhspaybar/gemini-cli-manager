@@ -110,6 +110,7 @@ Bubble Tea follows **The Elm Architecture** with three core components:
 - ⚠️ **Keep Update() and View() methods fast** - offload expensive work to commands
 - ⚠️ **State is immutable** - always return a new model from Update()
 - ⚠️ **ALWAYS use theme colors** - never hardcode color values like `lipgloss.Color("87")`
+- ⚠️ **ALWAYS search for and use existing components** - Before implementing custom UI elements, check `internal/ui/components/` for existing components. Use the Card, TabBar, and other components instead of creating custom bordered boxes or UI elements
 
 ### 🏗️ Architecture Patterns
 

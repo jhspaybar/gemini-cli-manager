@@ -48,6 +48,9 @@ gear: gear-spacing
 gear-spacing:
 	@go run ../../cmd/visual-tests/main.go gear-spacing
 
+card:
+	@go run ../../cmd/visual-tests/main.go card
+
 # Clean backup files
 clean:
 	@echo "Cleaning backup files..."

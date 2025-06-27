@@ -28,6 +28,7 @@ func init() {
 		"tabs-switch":   testTabsSwitching,
 		"emoji-width":   testEmojiWidth,
 		"gear-spacing":  testGearSpacing,
+		"card":          testCard,
 		"all":           runAllTests,
 	}
 }
@@ -98,6 +99,7 @@ func runAllTests() {
 		"tabs-switch",
 		"emoji-width",
 		"gear-spacing",
+		"card",
 	}
 	
 	for i, testName := range tests {
@@ -510,4 +512,129 @@ func testGearSpacing() {
 	fmt.Printf("Width of '%s Settings': %d\n", gearWithoutVS, lipgloss.Width(gearWithoutVS+" Settings"))
 	fmt.Printf("Width of gear with VS alone: %d\n", lipgloss.Width(gearWithVS))
 	fmt.Printf("Width of gear without VS alone: %d\n", lipgloss.Width(gearWithoutVS))
+}
+
+func testCard() {
+	fmt.Println("Card Component Visual Test")
+	fmt.Println(strings.Repeat("=", 80))
+	fmt.Println()
+	
+	// Test 1: Extension Card (Normal)
+	fmt.Println("1. Extension Card (Normal):")
+	card1 := components.NewCard(60).
+		SetTitle("Markdown Assistant", "🧩").
+		SetSubtitle("v1.2.0").
+		SetDescription("A helpful assistant for writing and formatting Markdown documents with live preview support.").
+		AddMetadata("MCP Servers", "2 servers", "⚡")
+	
+	fmt.Println(card1.Render())
+	fmt.Println()
+	
+	// Test 2: Extension Card (Selected)
+	fmt.Println("2. Extension Card (Selected):")
+	card2 := components.NewCard(60).
+		SetTitle("Code Reviewer", "🧩").
+		SetSubtitle("v2.0.1").
+		SetDescription("Automated code review with suggestions for improvements and best practices.").
+		AddMetadata("MCP Servers", "1 server", "⚡").
+		SetSelected(true)
+	
+	fmt.Println(card2.Render())
+	fmt.Println()
+	
+	// Test 3: Profile Card (Active)
+	fmt.Println("3. Profile Card (Active):")
+	card3 := components.NewCard(60).
+		SetTitle("Production", "").
+		SetDescription("Production environment with stable extensions").
+		AddMetadata("Extensions", "5 extensions", "📦").
+		SetActive(true)
+	
+	fmt.Println(card3.Render())
+	fmt.Println()
+	
+	// Test 4: Profile Card (Selected)
+	fmt.Println("4. Profile Card (Selected):")
+	card4 := components.NewCard(60).
+		SetTitle("Development", "").
+		SetDescription("Development environment for testing new features").
+		AddMetadata("Extensions", "12 extensions", "📦").
+		SetSelected(true)
+	
+	fmt.Println(card4.Render())
+	fmt.Println()
+	
+	// Test 5: Compact cards in grid
+	fmt.Println("5. Compact Cards (Grid Layout):")
+	compact1 := components.NewCard(28).
+		SetTitle("Linter", "⚡").
+		SetSelected(true)
+	
+	compact2 := components.NewCard(28).
+		SetTitle("Formatter", "✨")
+	
+	compact3 := components.NewCard(28).
+		SetTitle("Builder", "🔨").
+		SetActive(true)
+	
+	row := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		compact1.RenderCompact(),
+		" ",
+		compact2.RenderCompact(),
+		" ",
+		compact3.RenderCompact(),
+	)
+	fmt.Println(row)
+	fmt.Println()
+	
+	// Test 6: Card with long content (truncation test)
+	fmt.Println("6. Card with Long Content:")
+	card6 := components.NewCard(50).
+		SetTitle("Long Description Test", "📝").
+		SetSubtitle("v10.5.2-beta.1").
+		SetDescription("This is a very long description that should be truncated to fit within the card width. It contains lots of text to demonstrate how the card handles overflow and ensures content doesn't break the layout. The truncation should happen gracefully with proper ellipsis.").
+		AddMetadata("Lines", "100+ lines of code analyzed", "📊").
+		AddMetadata("Size", "2.5MB", "💾")
+	
+	fmt.Println(card6.Render())
+	fmt.Println()
+	
+	// Test 7: Card with no description
+	fmt.Println("7. Minimal Card:")
+	card7 := components.NewCard(50).
+		SetTitle("Minimal Card", "📦").
+		SetSubtitle("v1.0.0")
+	
+	fmt.Println(card7.Render())
+	fmt.Println()
+	
+	// Test 8: Different widths
+	fmt.Println("8. Cards at Different Widths:")
+	widths := []int{40, 60, 80}
+	for _, w := range widths {
+		fmt.Printf("Width %d:\n", w)
+		card := components.NewCard(w).
+			SetTitle("Responsive Card", "📐").
+			SetDescription("This card adjusts to different widths").
+			AddMetadata("Width", fmt.Sprintf("%d chars", w), "📏")
+		fmt.Println(card.Render())
+		fmt.Println()
+	}
+	
+	// Test 9: Edge cases
+	fmt.Println("9. Edge Cases:")
+	
+	// Empty card
+	fmt.Println("Empty card:")
+	emptyCard := components.NewCard(40)
+	fmt.Println(emptyCard.Render())
+	fmt.Println()
+	
+	// Very long title
+	fmt.Println("Very long title:")
+	longTitleCard := components.NewCard(50).
+		SetTitle("This is an extremely long title that will definitely need to be truncated", "🔤").
+		SetSubtitle("v1.0.0")
+	fmt.Println(longTitleCard.Render())
 }
