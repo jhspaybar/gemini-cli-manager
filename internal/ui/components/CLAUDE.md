@@ -453,8 +453,25 @@ output := field.RenderInline(15) // 15 char label width
 output := field.Render()
 ```
 
+### StatusBar
+- **Purpose**: Three-section status bar with automatic layout and theme-aware styling
+- **Features**: Left/middle/right sections, profile status, error messages, key bindings, configurable proportions
+- **Test files**: 
+  - Visual test: `go run cmd/visual-tests/main.go status-bar`
+- **Usage example**:
+```go
+statusBar := components.NewStatusBar(80).
+    SetLeftItems(components.ProfileStatusItems("Production", 5, 12)).
+    SetErrorMessage(components.ErrorMessage{
+        Type:    components.ErrorTypeInfo,
+        Message: "Extension installed successfully",
+    }).
+    SetKeyBindings(components.CommonKeyBindings())
+
+output := statusBar.Render()
+```
+
 ### (Future components)
-- **StatusBar** - Three-section status bar
 - **EmptyState** - "No items" displays
 - **SearchBar** - Already exists, needs to be moved to components
 

@@ -326,3 +326,133 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 ### Testing
 
 - Visual tests: `go run test/adhoc/test_form_field.go`
+
+## StatusBar Component
+
+The `StatusBar` component provides a three-section status bar with automatic layout and theme-aware styling.
+
+### Features
+
+- Three-section layout: left, middle (centered), and right (right-aligned)
+- Configurable width proportions for responsive design
+- Built-in support for profile status, error messages, and key bindings
+- Helper functions for common status bar content
+- Theme-aware styling with borders
+- Support for error, info, and warning message types
+
+### Usage
+
+```go
+// Basic status bar
+statusBar := components.NewStatusBar(80)
+statusBar.SetLeftItems(components.ProfileStatusItems("Production", 5, 12)).
+    SetKeyBindings(components.CommonKeyBindings())
+
+output := statusBar.Render()
+
+// Status bar with error message
+errorBar := components.NewStatusBar(80)
+errorBar.SetLeftItems(components.ProfileStatusItems("Development", 8, 12)).
+    SetErrorMessage(components.ErrorMessage{
+        Type:    components.ErrorTypeError,
+        Message: "Failed to install extension",
+    }).
+    SetKeyBindings([]components.KeyBinding{
+        {"Enter", "Retry"},
+        {"Esc", "Cancel"},
+    })
+
+// Custom content sections
+customBar := components.NewStatusBar(80)
+customBar.SetLeftContent("🔧 Settings Mode").
+    SetMiddleContent("🎨 Applying theme changes...").
+    SetRightContent("Press any key to continue")
+
+// Adjust section proportions (left, middle, right)
+proportionBar := components.NewStatusBar(80)
+proportionBar.SetProportions(1, 4, 1). // Give more space to middle
+    SetLeftContent("Left").
+    SetMiddleContent("This is a much longer middle section").
+    SetRightContent("Right")
+```
+
+### Content Types
+
+#### Status Items
+```go
+// Profile and extension count
+statusBar.SetLeftItems(components.ProfileStatusItems("Production", 5, 12))
+
+// Custom status items
+statusBar.SetLeftItems([]components.StatusItem{
+    {"🏢", "", "Company Profile"},
+    {"📦", "", "15 extensions"},
+    {"🔧", "", "3 tools"},
+})
+```
+
+#### Error Messages
+```go
+// Error message
+statusBar.SetErrorMessage(components.ErrorMessage{
+    Type:    components.ErrorTypeError,
+    Message: "Failed to install extension",
+})
+
+// Info message with details
+statusBar.SetErrorMessage(components.ErrorMessage{
+    Type:    components.ErrorTypeInfo,
+    Message: "Extension installed successfully",
+    Details: "Restart required",
+})
+
+// Warning message
+statusBar.SetErrorMessage(components.ErrorMessage{
+    Type:    components.ErrorTypeWarning,
+    Message: "No profile selected",
+})
+```
+
+#### Key Bindings
+```go
+// Common key bindings
+statusBar.SetKeyBindings(components.CommonKeyBindings())
+
+// Custom key bindings
+statusBar.SetKeyBindings([]components.KeyBinding{
+    {"Ctrl+R", "Reload"},
+    {"Ctrl+S", "Save"},
+    {"Esc", "Exit"},
+})
+```
+
+### Configuration
+
+```go
+// Set section proportions (default: 2, 2, 3)
+statusBar.SetProportions(3, 2, 2) // More space for left section
+
+// Set width
+statusBar.SetWidth(100)
+
+// Render content only (without border)
+content := statusBar.RenderContent()
+
+// Clear all sections
+statusBar.Clear()
+```
+
+### Helper Functions
+
+```go
+// Common key bindings (Tab, L, ?, q)
+bindings := components.CommonKeyBindings()
+
+// Profile status items
+items := components.ProfileStatusItems("Production", 5, 12)
+// Creates: ["👤 Production", "🧩 5/12"]
+```
+
+### Testing
+
+- Visual tests: `go run cmd/visual-tests/main.go status-bar`

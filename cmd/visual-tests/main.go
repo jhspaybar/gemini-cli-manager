@@ -31,6 +31,7 @@ func init() {
 		"card":          testCard,
 		"modal":         testModal,
 		"form-field":    testFormField,
+		"status-bar":    testStatusBar,
 		"all":           runAllTests,
 	}
 }
@@ -104,6 +105,7 @@ func runAllTests() {
 		"card",
 		"modal",
 		"form-field",
+		"status-bar",
 	}
 	
 	for i, testName := range tests {
@@ -941,4 +943,160 @@ func testFormField() {
 		SetWidth(30)
 	requiredField.Validate() // Will fail because it's empty
 	fmt.Println(requiredField.Render())
+}
+
+func testStatusBar() {
+	fmt.Println("StatusBar Component Visual Test")
+	fmt.Println(strings.Repeat("=", 80))
+	fmt.Println()
+
+	// Test 1: Basic status bar with profile and key bindings
+	fmt.Println("1. Basic Status Bar:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	statusBar := components.NewStatusBar(80)
+	statusBar.SetLeftItems(components.ProfileStatusItems("Production", 5, 12)).
+		SetKeyBindings(components.CommonKeyBindings())
+	
+	fmt.Println(statusBar.Render())
+	fmt.Println()
+
+	// Test 2: Status bar with error message
+	fmt.Println("2. Status Bar with Error Message:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	errorBar := components.NewStatusBar(80)
+	errorBar.SetLeftItems(components.ProfileStatusItems("Development", 8, 12)).
+		SetErrorMessage(components.ErrorMessage{
+			Type:    components.ErrorTypeError,
+			Message: "Failed to install extension",
+		}).
+		SetKeyBindings([]components.KeyBinding{
+			{"Enter", "Retry"},
+			{"Esc", "Cancel"},
+		})
+	
+	fmt.Println(errorBar.Render())
+	fmt.Println()
+
+	// Test 3: Status bar with info message
+	fmt.Println("3. Status Bar with Info Message:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	infoBar := components.NewStatusBar(80)
+	infoBar.SetLeftItems(components.ProfileStatusItems("Staging", 3, 7)).
+		SetErrorMessage(components.ErrorMessage{
+			Type:    components.ErrorTypeInfo,
+			Message: "Extension installed successfully",
+			Details: "Restart required",
+		}).
+		SetKeyBindings([]components.KeyBinding{
+			{"R", "Restart"},
+			{"C", "Continue"},
+		})
+	
+	fmt.Println(infoBar.Render())
+	fmt.Println()
+
+	// Test 4: Status bar with warning message
+	fmt.Println("4. Status Bar with Warning Message:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	warningBar := components.NewStatusBar(80)
+	warningBar.SetLeftItems([]components.StatusItem{
+		{"👤", "", "No Profile"},
+		{"🧩", "", "0/0"},
+	}).
+		SetErrorMessage(components.ErrorMessage{
+			Type:    components.ErrorTypeWarning,
+			Message: "No profile selected",
+		}).
+		SetKeyBindings([]components.KeyBinding{
+			{"N", "New Profile"},
+			{"S", "Select Profile"},
+		})
+	
+	fmt.Println(warningBar.Render())
+	fmt.Println()
+
+	// Test 5: Custom content sections
+	fmt.Println("5. Custom Content Sections:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	customBar := components.NewStatusBar(80)
+	customBar.SetLeftContent("🔧 Settings Mode").
+		SetMiddleContent("🎨 Applying theme changes...").
+		SetRightContent("Press any key to continue")
+	
+	fmt.Println(customBar.Render())
+	fmt.Println()
+
+	// Test 6: Different proportions
+	fmt.Println("6. Different Section Proportions:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	proportionBar := components.NewStatusBar(80)
+	proportionBar.SetProportions(1, 4, 1). // Give more space to middle
+		SetLeftContent("Left").
+		SetMiddleContent("This is a much longer middle section that needs more space").
+		SetRightContent("Right")
+	
+	fmt.Println(proportionBar.Render())
+	fmt.Println()
+
+	// Test 7: Different widths
+	fmt.Println("7. Status Bar at Different Widths:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	widths := []int{60, 80, 100}
+	for _, width := range widths {
+		fmt.Printf("\nWidth %d:\n", width)
+		widthBar := components.NewStatusBar(width)
+		widthBar.SetLeftItems(components.ProfileStatusItems("Test", 2, 5)).
+			SetKeyBindings([]components.KeyBinding{
+				{"Tab", "Switch"},
+				{"?", "Help"},
+				{"q", "Quit"},
+			})
+		
+		fmt.Println(widthBar.Render())
+	}
+
+	// Test 8: Content without border styling  
+	fmt.Println("\n\n8. Status Bar Content Only (no border):")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	contentBar := components.NewStatusBar(80)
+	contentBar.SetLeftItems(components.ProfileStatusItems("Production", 5, 12)).
+		SetKeyBindings(components.CommonKeyBindings())
+	
+	fmt.Println(contentBar.RenderContent())
+	fmt.Println()
+
+	// Test 9: Edge cases
+	fmt.Println("9. Edge Cases:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	// Empty status bar
+	fmt.Println("\nEmpty status bar:")
+	emptyBar := components.NewStatusBar(80)
+	fmt.Println(emptyBar.Render())
+	
+	// Very narrow width
+	fmt.Println("\nNarrow width (40 chars):")
+	narrowBar := components.NewStatusBar(40)
+	narrowBar.SetLeftContent("Profile").
+		SetMiddleContent("Error").
+		SetRightContent("q: Quit")
+	fmt.Println(narrowBar.Render())
+	
+	// No profile scenario
+	fmt.Println("\nNo profile scenario:")
+	noProfileBar := components.NewStatusBar(80)
+	noProfileBar.SetLeftItems(components.ProfileStatusItems("", 0, 0)).
+		SetKeyBindings([]components.KeyBinding{
+			{"N", "New Profile"},
+			{"?", "Help"},
+		})
+	fmt.Println(noProfileBar.Render())
 }
