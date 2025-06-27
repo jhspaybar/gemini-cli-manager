@@ -49,25 +49,25 @@ func NewCard(width int) *Card {
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(borderColor).
 			Padding(1, 2).
-			MaxWidth(width),
+			Width(width),
 
 		selectedStyle: lipgloss.NewStyle().
 			Border(lipgloss.ThickBorder()).
 			BorderForeground(accentColor).
 			Padding(1, 2).
-			MaxWidth(width),
+			Width(width),
 
 		focusedStyle: lipgloss.NewStyle().
 			Border(lipgloss.DoubleBorder()).
 			BorderForeground(accentColor).
 			Padding(1, 2).
-			MaxWidth(width),
+			Width(width),
 
 		activeStyle: lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(successColor).
 			Padding(1, 2).
-			MaxWidth(width),
+			Width(width),
 	}
 }
 
@@ -126,11 +126,11 @@ func (c *Card) SetStyles(normal, selected, focused, active lipgloss.Style) *Card
 // SetWidth updates the card width
 func (c *Card) SetWidth(width int) *Card {
 	c.width = width
-	// Update all styles with new width using MaxWidth
-	c.normalStyle = c.normalStyle.MaxWidth(width)
-	c.selectedStyle = c.selectedStyle.MaxWidth(width)
-	c.focusedStyle = c.focusedStyle.MaxWidth(width)
-	c.activeStyle = c.activeStyle.MaxWidth(width)
+	// Update all styles with new width
+	c.normalStyle = c.normalStyle.Width(width)
+	c.selectedStyle = c.selectedStyle.Width(width)
+	c.focusedStyle = c.focusedStyle.Width(width)
+	c.activeStyle = c.activeStyle.Width(width)
 	return c
 }
 
@@ -150,10 +150,6 @@ func (c *Card) Render() string {
 
 	// Build content
 	var content []string
-	
-	// Create a style for content that respects the card's MaxWidth
-	// We need to account for the padding (2*2=4) when setting content width
-	contentStyle := lipgloss.NewStyle().Width(c.width - 4)
 
 	// Title line with optional subtitle
 	titleParts := []string{}
@@ -190,23 +186,24 @@ func (c *Card) Render() string {
 		// Create a title line with subtitle
 		titleText := titleStyle.Render(c.title)
 		fullTitle := prefix + titleText + "  " + subtitleText
-		content = append(content, contentStyle.Render(fullTitle))
+		content = append(content, fullTitle)
 	} else {
 		// No subtitle, just render title
 		titleText := titleStyle.Render(c.title)
 		titleParts = append(titleParts, titleText)
 		titleLine := strings.Join(titleParts, " ")
-		content = append(content, contentStyle.Render(titleLine))
+		content = append(content, titleLine)
 	}
 
 	// Description (if any)
 	if c.description != "" {
-		descStyle := lipgloss.NewStyle().Foreground(theme.TextSecondary()).Width(c.width - 4)
+		descStyle := lipgloss.NewStyle().Foreground(theme.TextSecondary())
 		content = append(content, descStyle.Render(c.description))
 	}
 
 	// Metadata section
 	if len(c.metadata) > 0 {
+		metaStyle := lipgloss.NewStyle().Foreground(theme.Primary())
 		for _, meta := range c.metadata {
 			var metaLine string
 			if meta.Icon != "" {
@@ -214,7 +211,7 @@ func (c *Card) Render() string {
 			} else {
 				metaLine = fmt.Sprintf("%s: %s", meta.Key, meta.Value)
 			}
-			content = append(content, contentStyle.Copy().Foreground(theme.Primary()).Render(metaLine))
+			content = append(content, metaStyle.Render(metaLine))
 		}
 	}
 
@@ -224,14 +221,14 @@ func (c *Card) Render() string {
 
 // RenderCompact renders a more compact version of the card
 func (c *Card) RenderCompact() string {
-	// Use compact styles (less padding, use MaxWidth)
-	compactStyle := c.normalStyle.Copy().Padding(0, 1).MaxWidth(c.width)
+	// Use compact styles (less padding)
+	compactStyle := c.normalStyle.Copy().Padding(0, 1).Width(c.width)
 	if c.active {
-		compactStyle = c.activeStyle.Copy().Padding(0, 1).MaxWidth(c.width)
+		compactStyle = c.activeStyle.Copy().Padding(0, 1).Width(c.width)
 	} else if c.focused {
-		compactStyle = c.focusedStyle.Copy().Padding(0, 1).MaxWidth(c.width)
+		compactStyle = c.focusedStyle.Copy().Padding(0, 1).Width(c.width)
 	} else if c.selected {
-		compactStyle = c.selectedStyle.Copy().Padding(0, 1).MaxWidth(c.width)
+		compactStyle = c.selectedStyle.Copy().Padding(0, 1).Width(c.width)
 	}
 
 	// Build compact title line
