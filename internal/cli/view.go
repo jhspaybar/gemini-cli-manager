@@ -755,31 +755,23 @@ func (m Model) renderExtDetailActions(width int) string {
 
 // renderLoading renders the loading screen
 func (m Model) renderLoading() string {
-	width := m.windowWidth
-	height := m.windowHeight
-
-	// Center the loading message
-	loadingBox := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(colorAccent).
-		Padding(2, 4).
-		Render(lipgloss.JoinVertical(
-			lipgloss.Center,
-			"🚀 Gemini CLI Manager",
-			"",
-			"Loading extensions and profiles...",
-			"",
-			"Please wait",
-		))
-
-	// Center in viewport
-	return lipgloss.Place(
-		width,
-		height,
+	// Loading content
+	content := lipgloss.JoinVertical(
 		lipgloss.Center,
-		lipgloss.Center,
-		loadingBox,
+		"",
+		"Loading extensions and profiles...",
+		"",
+		"Please wait",
 	)
+
+	// Use the Modal component
+	modal := components.NewModal(m.windowWidth, m.windowHeight).
+		SetTitle("Gemini CLI Manager", "🚀").
+		SetContent(content).
+		SetBorderColor(theme.Primary()).
+		Small() // Use small preset for loading modal
+
+	return modal.Render()
 }
 
 // renderStatusBarContent renders the content of the status bar

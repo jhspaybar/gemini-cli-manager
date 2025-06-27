@@ -10,6 +10,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/ui/components"
 )
 
 // ProfileForm represents a form for creating/editing profiles
@@ -238,20 +239,15 @@ func (f ProfileForm) View() string {
 		formFb.AddRows([]*flexbox.Row{errorRow})
 	}
 
-	// Render form with border
+	// Render form content
 	formContent := formFb.Render()
-	styledForm := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(colorBorder).
-		Padding(2, 3).
-		Render(formContent)
-
-	// Center the form
-	return lipgloss.Place(
-		f.width, f.height,
-		lipgloss.Center, lipgloss.Center,
-		styledForm,
-	)
+	
+	// Use the Modal component
+	modal := components.NewModal(f.width, f.height).
+		SetContent(formContent).
+		SetWidth(80) // Profile form is wider
+		
+	return modal.Render()
 }
 
 // renderFormFields renders the name and description fields

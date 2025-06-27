@@ -134,13 +134,18 @@ func (m *Modal) Render() string {
 	// Join all parts
 	modalContent := strings.Join(parts, "\n")
 	
+	// Calculate available height for modal
+	// Account for centering margins (at least 2 top + 2 bottom)
+	maxModalHeight := m.windowHeight - 4
+	
 	// Create modal container
 	modalStyle := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(m.borderColor).
 		Padding(2, 3).
 		Width(actualWidth - 2). // Account for border
-		MaxWidth(actualWidth - 2)
+		MaxWidth(actualWidth - 2).
+		MaxHeight(maxModalHeight) // Prevent overflow
 	
 	// Render with border
 	modal := modalStyle.Render(modalContent)

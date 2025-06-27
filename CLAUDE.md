@@ -727,6 +727,12 @@ internal/
 
 **IMPORTANT**: Build reusable UI components to improve testability and maintainability.
 
+**CRITICAL**: Before implementing ANY UI element:
+1. **ALWAYS search `internal/ui/components/` for existing components**
+2. **Use existing components (Card, TabBar, Modal, etc.) instead of custom implementations**
+3. **Never create custom bordered boxes, modals, or cards when a component exists**
+4. **If a component is missing functionality, extend it rather than creating a custom version**
+
 #### Why Build Components?
 
 1. **Testability**: Components can be tested in isolation without running the full TUI
