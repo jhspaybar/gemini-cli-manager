@@ -82,21 +82,16 @@ func NewExtensionEditForm(ext *extension.Extension) ExtensionEditForm {
 	ta := textarea.New()
 	ta.Placeholder = "Enter content..."
 	ta.CharLimit = 50000
-	ta.SetWidth(80)
-	ta.SetHeight(20)
+	// Don't set default size here - it will be set dynamically
 	
-	// Create markdown renderer
-	renderer, _ := glamour.NewTermRenderer(
-		glamour.WithAutoStyle(),
-		glamour.WithWordWrap(80),
-	)
+	// Don't create renderer here - it's slow and we have a cached one in Model
 	
 	form := ExtensionEditForm{
 		extension:  ext,
 		inputs:     inputs,
 		mode:       EditModeConfig,
 		textarea:   ta,
-		renderer:   renderer,
+		renderer:   nil, // Will be set by parent model
 	}
 	
 	// Load context file content
@@ -195,9 +190,11 @@ func (f *ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		f.width = msg.Width
 		f.height = msg.Height
-		// Update textarea size
-		f.textarea.SetWidth(f.width - 8)
-		f.textarea.SetHeight(f.height - 10)
+		// Update textarea size with proper constraints
+		if f.width > 10 && f.height > 10 {
+			f.textarea.SetWidth(min(f.width-8, 120))  // Max width of 120
+			f.textarea.SetHeight(min(f.height-10, 30)) // Max height of 30
+		}
 	}
 	
 	// Always update the appropriate component based on mode
@@ -237,251 +234,99 @@ func (f *ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (f *ExtensionEditForm) View() string {
 	LogDebug("ExtensionEditForm.View called, mode=%v, width=%d, height=%d", f.mode, f.width, f.height)
 	
-	// Use full width and height
-	contentWidth := f.width
-	contentHeight := f.height
-	
 	// Clean extension name
 	cleanName := stripANSI(f.extension.Name)
 	
-	// Create header with title and mode tabs on same line
-	titleText := fmt.Sprintf("✏️  Edit: %s", cleanName)
-	titleStyle := h1Style.Copy().MarginBottom(0)
-	title := titleStyle.Render(titleText)
+	// Simple header
+	title := h1Style.Render(fmt.Sprintf("Edit: %s", cleanName))
 	
 	// Mode tabs
 	tabs := f.renderModeTabs()
 	
-	// Create a two-column layout for the header
-	headerLeft := title
-	headerRight := tabs
-	
-	// Calculate spacing for header
-	titleWidth := lipgloss.Width(headerLeft)
-	tabsWidth := lipgloss.Width(headerRight)
-	availableWidth := contentWidth - 4 // Account for padding
-	spacing := availableWidth - titleWidth - tabsWidth
-	if spacing < 2 {
-		spacing = 2
-	}
-	
-	header := headerLeft + strings.Repeat(" ", spacing) + headerRight
-	
-	// Build content area
-	var contentArea strings.Builder
-	
-	// Calculate available space for content
-	availableHeight := contentHeight - 8 // Header, spacing, help text
-	
-	// Create a bordered content area
-	contentBoxStyle := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(colorBorder).
-		Padding(1).
-		Width(availableWidth).
-		Height(availableHeight)
-	
-	var innerContent string
-	
+	// Content based on mode
+	var content string
 	switch f.mode {
 	case EditModeConfig:
-		innerContent = f.renderConfigForm()
-		
+		content = f.renderConfigForm()
 	case EditModeContext:
 		if f.previewActive {
-			innerContent = f.renderMarkdownPreview()
+			content = f.renderMarkdownPreview()
 		} else {
-			// Set textarea to use available space inside the box
-			f.textarea.SetWidth(availableWidth - 4) // Account for border and padding
-			f.textarea.SetHeight(availableHeight - 3)
-			innerContent = f.renderTextarea()
+			content = f.renderTextarea()
 		}
-		
 	case EditModeJSON:
-		// Set textarea to use available space inside the box
-		f.textarea.SetWidth(availableWidth - 4)
-		f.textarea.SetHeight(availableHeight - 3)
-		innerContent = f.renderTextarea()
+		content = f.renderTextarea()
 	}
 	
-	contentArea.WriteString(contentBoxStyle.Render(innerContent))
-	
-	// Help text at bottom
-	helpStyle := keyDescStyle.Copy().
-		Width(availableWidth).
-		Align(lipgloss.Center).
-		MarginTop(1)
-	
-	helpText := "Ctrl+T: Switch Mode • Ctrl+S: Save • Esc: Cancel"
+	// Help text
+	helpText := "Ctrl+T: Mode • Ctrl+S: Save • Esc: Cancel"
 	if f.mode == EditModeContext {
-		helpText += " • Ctrl+P: Toggle Preview"
+		helpText += " • Ctrl+P: Preview"
 	}
-	help := helpStyle.Render(helpText)
+	help := keyDescStyle.Render(helpText)
 	
-	// Error display
-	var errorDisplay string
+	// Error if any
+	var errorText string
 	if f.err != nil {
-		errorDisplay = errorStyle.Copy().
-			Width(availableWidth).
-			Align(lipgloss.Center).
-			MarginTop(1).
-			Render(f.err.Error())
+		errorText = "\n" + errorStyle.Render(f.err.Error())
 	}
 	
-	// Combine all elements
-	var fullContent strings.Builder
-	fullContent.WriteString(header)
-	fullContent.WriteString("\n\n")
-	fullContent.WriteString(contentArea.String())
-	fullContent.WriteString("\n")
-	fullContent.WriteString(help)
-	if errorDisplay != "" {
-		fullContent.WriteString("\n")
-		fullContent.WriteString(errorDisplay)
-	}
-	
-	// Use full screen with minimal padding
-	formStyle := lipgloss.NewStyle().
-		Padding(1, 2).
-		Width(contentWidth).
-		Height(contentHeight)
-	
-	return formStyle.Render(fullContent.String())
+	// Combine with proper spacing
+	return lipgloss.JoinVertical(
+		lipgloss.Left,
+		title,
+		tabs,
+		"",
+		content,
+		"",
+		help,
+		errorText,
+	)
 }
 
 // renderConfigForm renders the configuration form fields
 func (f *ExtensionEditForm) renderConfigForm() string {
 	var b strings.Builder
 	
-	// Calculate available width
-	availableWidth := f.width - 8 // Account for outer padding and border
-	
-	// Basic Information section
-	basicInfoTitle := h2Style.Copy().MarginBottom(1).Render("📋 Basic Information")
-	b.WriteString(basicInfoTitle)
-	b.WriteString("\n\n")
-	
 	fields := []struct {
 		label string
 		index int
-		help  string
-		icon  string
 	}{
-		{"Name", extNameField, "The display name of your extension", "📝"},
-		{"Version", extVersionField, "Semantic version (e.g., 1.0.0)", "🏷️"},
-		{"Description", extDescriptionField, "Brief description of what your extension does", "📄"},
+		{"Name", extNameField},
+		{"Version", extVersionField},
+		{"Description", extDescriptionField},
 	}
 	
+	// Render fields compactly
 	for i, field := range fields {
-		// Create field container
-		fieldStyle := lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(colorBorder).
-			Padding(0, 1).
-			Width(min(availableWidth, 70))
-		
+		// Label
+		labelStyle := textDimStyle
 		if f.focusIndex == field.index {
-			fieldStyle = fieldStyle.BorderForeground(colorAccent)
+			labelStyle = accentStyle
 		}
-		
-		var fieldContent strings.Builder
-		
-		// Label with icon
-		labelStyle := textStyle.Copy()
-		if f.focusIndex == field.index {
-			labelStyle = labelStyle.Foreground(colorAccent).Bold(true)
-		}
-		
-		fieldContent.WriteString(fmt.Sprintf("%s %s", field.icon, labelStyle.Render(field.label)))
-		fieldContent.WriteString("\n")
-		
-		// Input field (already has its own styling)
-		inputView := f.inputs[field.index].View()
-		fieldContent.WriteString(inputView)
-		
-		// Help text
-		if f.focusIndex == field.index {
-			fieldContent.WriteString("\n")
-			fieldContent.WriteString(textDimStyle.Render(field.help))
-		}
-		
-		b.WriteString(fieldStyle.Render(fieldContent.String()))
-		
-		if i < len(fields)-1 {
-			b.WriteString("\n")
-		}
-	}
-	
-	b.WriteString("\n\n")
-	
-	// MCP Servers section
-	mcpTitle := h2Style.Copy().MarginBottom(1).Render("⚡ MCP Servers")
-	b.WriteString(mcpTitle)
-	b.WriteString("\n\n")
-	
-	if f.extension.MCPServers != nil && len(f.extension.MCPServers) > 0 {
-		// MCP servers box
-		mcpBox := lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(colorAccent).
-			Padding(1).
-			Width(min(availableWidth, 70))
-		
-		var mcpContent strings.Builder
-		
-		serverCount := 0
-		for name, server := range f.extension.MCPServers {
-			if serverCount > 0 {
-				mcpContent.WriteString("\n")
-			}
-			
-			// Server name
-			mcpContent.WriteString(accentStyle.Bold(true).Render(name))
-			mcpContent.WriteString("\n")
-			
-			// Server details with proper indentation
-			detailStyle := textStyle.Copy().MarginLeft(2)
-			mcpContent.WriteString(detailStyle.Render(fmt.Sprintf("Command: %s", server.Command)))
-			
-			if len(server.Args) > 0 {
-				mcpContent.WriteString("\n")
-				mcpContent.WriteString(detailStyle.Render(fmt.Sprintf("Args: %v", server.Args)))
-			}
-			
-			if len(server.Env) > 0 {
-				mcpContent.WriteString("\n")
-				mcpContent.WriteString(detailStyle.Render(fmt.Sprintf("Env: %v", server.Env)))
-			}
-			
-			serverCount++
-		}
-		
-		b.WriteString(mcpBox.Render(mcpContent.String()))
+		b.WriteString(labelStyle.Render(field.label))
 		b.WriteString("\n")
 		
-		// Tip about editing
-		tipBox := lipgloss.NewStyle().
-			Foreground(colorTextDim).
-			MarginLeft(2)
-		b.WriteString(tipBox.Render("💡 Tip: Switch to JSON mode to edit MCP server configuration"))
-	} else {
-		// No MCP servers message
-		emptyBox := lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(colorBorder).
-			BorderStyle(lipgloss.RoundedBorder()).
-			Padding(1, 2).
-			Align(lipgloss.Center).
-			Width(min(availableWidth, 60))
+		// Input
+		b.WriteString(f.inputs[field.index].View())
 		
-		emptyContent := lipgloss.JoinVertical(
-			lipgloss.Center,
-			textDimStyle.Render("No MCP servers configured"),
-			"",
-			textDimStyle.Render("Switch to JSON mode to add MCP servers"),
-		)
+		if i < len(fields)-1 {
+			b.WriteString("\n\n")
+		}
+	}
+	
+	// MCP Servers info
+	if f.extension.MCPServers != nil && len(f.extension.MCPServers) > 0 {
+		b.WriteString("\n\n")
+		b.WriteString(h2Style.Render("MCP Servers"))
+		b.WriteString("\n")
 		
-		b.WriteString(emptyBox.Render(emptyContent))
+		for name, server := range f.extension.MCPServers {
+			b.WriteString(fmt.Sprintf("• %s: %s\n", accentStyle.Render(name), server.Command))
+		}
+		
+		b.WriteString("\n")
+		b.WriteString(textDimStyle.Render("Use JSON mode to edit servers"))
 	}
 	
 	return b.String()
@@ -515,54 +360,22 @@ func (f *ExtensionEditForm) renderModeTabs() string {
 	modes := []struct {
 		mode EditMode
 		name string
-		icon string
 	}{
-		{EditModeConfig, "Config", "⚙️"},
-		{EditModeContext, "Context", "📝"},
-		{EditModeJSON, "JSON", "{ }"},
+		{EditModeConfig, "Config"},
+		{EditModeContext, "Context"}, 
+		{EditModeJSON, "JSON"},
 	}
 	
 	var tabs []string
-	for i, m := range modes {
-		style := lipgloss.NewStyle().
-			Padding(0, 1).
-			MarginRight(0)
-		
+	for _, m := range modes {
+		style := textStyle
 		if m.mode == f.mode {
-			// Active tab
-			style = style.
-				Bold(true).
-				Foreground(colorAccent).
-				BorderStyle(lipgloss.NormalBorder()).
-				BorderBottom(true).
-				BorderForeground(colorAccent)
-		} else {
-			// Inactive tab
-			style = style.
-				Foreground(colorTextDim).
-				BorderStyle(lipgloss.NormalBorder()).
-				BorderBottom(true).
-				BorderForeground(colorBorder)
+			style = accentStyle.Copy().Bold(true).Underline(true)
 		}
-		
-		tabContent := fmt.Sprintf("%s %s", m.icon, m.name)
-		
-		// Add separators between tabs
-		if i > 0 {
-			tabs = append(tabs, textDimStyle.Render(" "))
-		}
-		
-		tabs = append(tabs, style.Render(tabContent))
+		tabs = append(tabs, style.Render(m.name))
 	}
 	
-	// Create tab container with underline
-	tabContainer := lipgloss.NewStyle().
-		BorderStyle(lipgloss.NormalBorder()).
-		BorderBottom(true).
-		BorderForeground(colorBorder).
-		PaddingBottom(0)
-	
-	return tabContainer.Render(lipgloss.JoinHorizontal(lipgloss.Top, tabs...))
+	return strings.Join(tabs, "  ")
 }
 
 
@@ -653,15 +466,22 @@ func (f *ExtensionEditForm) save() tea.Cmd {
 func (f *ExtensionEditForm) SetSize(width, height int) {
 	f.width = width
 	f.height = height
-	// Set textarea to use most of the available space
-	f.textarea.SetWidth(width - 8)
-	f.textarea.SetHeight(height - 10)
+	// Set textarea with reasonable constraints
+	if width > 10 && height > 10 {
+		f.textarea.SetWidth(min(width-8, 120))   // Max width of 120
+		f.textarea.SetHeight(min(height-10, 30)) // Max height of 30
+	}
 }
 
 // SetCallbacks sets the form callbacks
 func (f *ExtensionEditForm) SetCallbacks(onSave func(*extension.Extension) tea.Cmd, onCancel func() tea.Cmd) {
 	f.onSave = onSave
 	f.onCancel = onCancel
+}
+
+// SetRenderer sets the markdown renderer
+func (f *ExtensionEditForm) SetRenderer(renderer *glamour.TermRenderer) {
+	f.renderer = renderer
 }
 
 // Helper function

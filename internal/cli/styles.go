@@ -6,22 +6,29 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// Simple, clean color scheme
+// Modern color scheme with better contrast
 var (
 	// Base colors
-	colorBg        = lipgloss.Color("235")
-	colorText      = lipgloss.Color("252")
-	colorTextDim   = lipgloss.Color("246")
-	colorTextMuted = lipgloss.Color("241")
+	colorBg        = lipgloss.Color("236")  // Slightly darker background
+	colorBgLight   = lipgloss.Color("238")  // Light background for cards
+	colorText      = lipgloss.Color("255")  // Brighter white text
+	colorTextDim   = lipgloss.Color("244")  // Dimmed text
+	colorTextMuted = lipgloss.Color("240")  // Very dim text
 	
-	// Accent colors
-	colorAccent  = lipgloss.Color("39")
-	colorSuccess = lipgloss.Color("42")
-	colorError   = lipgloss.Color("196")
+	// Accent colors - more vibrant
+	colorAccent     = lipgloss.Color("87")   // Bright cyan
+	colorAccentDim  = lipgloss.Color("73")   // Dim cyan
+	colorSuccess    = lipgloss.Color("120")  // Bright green
+	colorWarning    = lipgloss.Color("220")  // Yellow
+	colorError      = lipgloss.Color("197")  // Pink-red
 	
 	// UI colors
-	colorBorder      = lipgloss.Color("240")
-	colorBorderFocus = lipgloss.Color("33")
+	colorBorder       = lipgloss.Color("238")  // Subtle borders
+	colorBorderFocus  = lipgloss.Color("87")   // Cyan focus
+	colorBorderDim    = lipgloss.Color("236")  // Very subtle borders
+	
+	// Special colors
+	colorHighlight = lipgloss.Color("237")  // Selection background
 )
 
 // Text styles

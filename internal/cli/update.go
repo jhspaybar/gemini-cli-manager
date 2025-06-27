@@ -882,6 +882,7 @@ func (m Model) showExtensionEditForm(ext *extension.Extension) (Model, tea.Cmd) 
 	form := NewExtensionEditForm(ext)
 	LogDebug("Created form, setting size to %dx%d", m.windowWidth, m.windowHeight)
 	form.SetSize(m.windowWidth, m.windowHeight)
+	form.SetRenderer(m.markdownRenderer) // Use cached renderer
 	form.SetCallbacks(
 		func(e *extension.Extension) tea.Cmd {
 			// Save extension - return saved message
