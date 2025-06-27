@@ -81,34 +81,41 @@ func (m Model) renderTabsWithContent(width, height int) string {
 		tabBar.SetActiveByID("help")
 	}
 	
-	// Calculate content dimensions
-	tabHeight := 3
-	statusBarHeight := 1
-	separatorHeight := 1
-	totalUIHeight := tabHeight + statusBarHeight + separatorHeight
-	contentHeight := height - totalUIHeight
+	// Create flexbox for vertical layout
+	fb := flexbox.New(width, height)
 	
-	// Render content - pass full width, let renderContent handle margins
-	mainContent := m.renderContent(width, contentHeight)
-	statusContent := m.renderStatusBarContent(width)
+	// Tab row (fixed height)
+	tabRow := fb.NewRow()
+	tabCell := flexbox.NewCell(1, 1)
+	tabCell.SetContent(tabBar.Render())
+	tabRow.AddCells(tabCell)
+	tabRow.LockHeight(3) // Standard tab height
 	
-	// Create separator line that accounts for padding
-	separator := lipgloss.NewStyle().
-		Foreground(colorBorder).
+	// Content row (flexible, takes remaining space)
+	contentRow := fb.NewRow()
+	contentCell := flexbox.NewCell(1, 1)
+	// Render content without manual height calculations
+	mainContent := m.renderContent(width)
+	contentCell.SetContent(mainContent)
+	contentRow.AddCells(contentCell)
+	
+	// Status bar row (fixed height)
+	statusRow := fb.NewRow()
+	statusCell := flexbox.NewCell(1, 1)
+	// Wrap status bar with top border for separator
+	statusWithBorder := lipgloss.NewStyle().
+		Border(lipgloss.NormalBorder(), true, false, false, false).
+		BorderForeground(colorBorder).
 		Width(width).
-		Align(lipgloss.Center).
-		Render(strings.Repeat("─", width-4)) // Subtract 4 for padding (2 on each side)
+		Render(m.renderStatusBarContent(width))
+	statusCell.SetContent(statusWithBorder)
+	statusRow.AddCells(statusCell)
+	statusRow.LockHeight(2) // Status bar height including border
 	
-	// Combine content and status with proper spacing
-	contentWithStatus := lipgloss.JoinVertical(
-		lipgloss.Left,
-		mainContent,
-		separator,
-		statusContent,
-	)
+	// Add all rows to flexbox
+	fb.AddRows([]*flexbox.Row{tabRow, contentRow, statusRow})
 	
-	// Use the tab bar's RenderWithContent method with total content height
-	return tabBar.RenderWithContent(contentWithStatus, height-tabHeight)
+	return fb.Render()
 }
 
 // Helper function
@@ -159,33 +166,31 @@ func (m Model) renderTabBar() string {
 }
 
 // renderContent renders the main content area
-func (m Model) renderContent(width, height int) string {
-	LogDebug("renderContent called, view=%v, width=%d, height=%d", m.currentView, width, height)
+func (m Model) renderContent(width int) string {
+	LogDebug("renderContent called, view=%v, width=%d", m.currentView, width)
 
 	var content string
 
-	// Create a content container with padding
+	// Create a content container with padding - no fixed height
 	contentContainer := lipgloss.NewStyle().
 		Padding(2, 3).
-		Width(width).
-		Height(height)
+		MaxWidth(width)
 	
-	// Calculate available space after padding
+	// Calculate available width after padding
 	availableWidth := width - 6  // 3 padding on each side
-	availableHeight := height - 4 // 2 padding on top and bottom
 	
 	switch m.currentView {
 	case ViewExtensions:
-		content = m.renderExtensions(availableWidth, availableHeight)
+		content = m.renderExtensions(availableWidth)
 	case ViewProfiles:
-		content = m.renderProfiles(availableWidth, availableHeight)
+		content = m.renderProfiles(availableWidth)
 	case ViewSettings:
-		content = m.renderSettings(availableWidth, availableHeight)
+		content = m.renderSettings(availableWidth)
 	case ViewHelp:
-		content = m.renderHelp(availableWidth, availableHeight)
+		content = m.renderHelp(availableWidth)
 	case ViewExtensionDetail:
 		LogDebug("Calling renderExtensionDetail")
-		content = m.renderExtensionDetail(availableWidth, availableHeight)
+		content = m.renderExtensionDetail(availableWidth)
 	}
 
 	LogDebug("renderContent returning, content length=%d", len(content))
@@ -195,7 +200,7 @@ func (m Model) renderContent(width, height int) string {
 }
 
 // renderExtensions renders the extensions view
-func (m Model) renderExtensions(width, height int) string {
+func (m Model) renderExtensions(width int) string {
 	var lines []string
 
 	// Header
@@ -299,7 +304,7 @@ func (m Model) RenderExtensionCard(ext *extension.Extension, isSelected bool, wi
 }
 
 // renderProfiles renders the profiles view
-func (m Model) renderProfiles(width, height int) string {
+func (m Model) renderProfiles(width int) string {
 	var lines []string
 
 	// Header
@@ -414,7 +419,7 @@ func (m Model) RenderProfileCard(prof *profile.Profile, isSelected, isActive boo
 }
 
 // renderSettings renders the settings view
-func (m Model) renderSettings(width, height int) string {
+func (m Model) renderSettings(width int) string {
 	var lines []string
 
 	header := h1Style.Render("Settings")
@@ -474,7 +479,7 @@ func (m Model) renderSettings(width, height int) string {
 }
 
 // renderHelp renders the help view
-func (m Model) renderHelp(width, height int) string {
+func (m Model) renderHelp(width int) string {
 	var lines []string
 
 	header := h1Style.Render("Help")
@@ -549,8 +554,8 @@ func (m Model) renderHelp(width, height int) string {
 }
 
 // renderExtensionDetail renders the detailed view of an extension
-func (m Model) renderExtensionDetail(width, height int) string {
-	LogDebug("renderExtensionDetail called, width=%d, height=%d", width, height)
+func (m Model) renderExtensionDetail(width int) string {
+	LogDebug("renderExtensionDetail called, width=%d", width)
 
 	if m.selectedExtension == nil {
 		LogDebug("No extension selected")
