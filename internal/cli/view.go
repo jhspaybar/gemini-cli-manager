@@ -81,41 +81,27 @@ func (m Model) renderTabsWithContent(width, height int) string {
 		tabBar.SetActiveByID("help")
 	}
 	
-	// Create flexbox for vertical layout
-	fb := flexbox.New(width, height)
-	
-	// Tab row (fixed height)
-	tabRow := fb.NewRow()
-	tabCell := flexbox.NewCell(1, 1)
-	tabCell.SetContent(tabBar.Render())
-	tabRow.AddCells(tabCell)
-	tabRow.LockHeight(3) // Standard tab height
-	
-	// Content row (flexible, takes remaining space)
-	contentRow := fb.NewRow()
-	contentCell := flexbox.NewCell(1, 1)
-	// Render content without manual height calculations
+	// Render main content
 	mainContent := m.renderContent(width)
-	contentCell.SetContent(mainContent)
-	contentRow.AddCells(contentCell)
 	
-	// Status bar row (fixed height)
-	statusRow := fb.NewRow()
-	statusCell := flexbox.NewCell(1, 1)
-	// Wrap status bar with top border for separator
+	// Render status bar with top border as separator
+	statusContent := m.renderStatusBarContent(width)
 	statusWithBorder := lipgloss.NewStyle().
 		Border(lipgloss.NormalBorder(), true, false, false, false).
 		BorderForeground(colorBorder).
 		Width(width).
-		Render(m.renderStatusBarContent(width))
-	statusCell.SetContent(statusWithBorder)
-	statusRow.AddCells(statusCell)
-	statusRow.LockHeight(2) // Status bar height including border
+		Render(statusContent)
 	
-	// Add all rows to flexbox
-	fb.AddRows([]*flexbox.Row{tabRow, contentRow, statusRow})
+	// Use TabBar's RenderWithContent which handles the layout properly
+	// Combine content and status
+	contentWithStatus := lipgloss.JoinVertical(
+		lipgloss.Left,
+		mainContent,
+		statusWithBorder,
+	)
 	
-	return fb.Render()
+	// Let the tab bar handle the complete layout
+	return tabBar.RenderWithContent(contentWithStatus, height-3)
 }
 
 // Helper function
