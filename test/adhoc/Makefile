@@ -16,6 +16,7 @@ help:
 	@echo "  make card      - Card component"
 	@echo "  make modal     - Modal component"
 	@echo "  make form-field - FormField component"
+	@echo "  make status-bar - StatusBar component"
 	@echo ""
 	@echo "Run specific test: make <test-name>"
 	@echo "Example: make tabs-dynamic"
@@ -62,6 +63,9 @@ modal:
 
 form-field:
 	@go run ../../cmd/visual-tests/main.go form-field
+
+status-bar:
+	@go run ../../cmd/visual-tests/main.go status-bar
 
 # Clean backup files
 clean:
