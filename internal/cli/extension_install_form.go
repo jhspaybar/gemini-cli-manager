@@ -8,6 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
+	"github.com/jhspaybar/gemini-cli-manager/internal/ui/components"
 )
 
 // ExtensionInstallForm represents a form for installing extensions
@@ -117,73 +118,56 @@ func (f ExtensionInstallForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View renders the form
 func (f ExtensionInstallForm) View() string {
-	// Form container
-	formStyle := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(colorBorder).
-		Padding(2, 3).
-		Width(70).
-		MaxWidth(f.width - 4)
-
-	// Title
-	titleStyle := h1Style.Copy().MarginBottom(1)
-
 	// Build form content
-	var b strings.Builder
-	b.WriteString(titleStyle.Render("Install Extension"))
-	b.WriteString("\n")
+	var content strings.Builder
 
 	if f.installing {
 		// Show installation progress
-		b.WriteString("\n")
-		b.WriteString(textStyle.Render("Installing..."))
-		b.WriteString("\n\n")
+		content.WriteString(textStyle.Render("Installing..."))
+		content.WriteString("\n\n")
 		if f.progress != "" {
-			b.WriteString(textMutedStyle.Render(f.progress))
-			b.WriteString("\n")
+			content.WriteString(textMutedStyle.Render(f.progress))
 		}
 	} else {
 		// Show form
-		b.WriteString(textMutedStyle.Render("Install from a local path or remote URL"))
-		b.WriteString("\n\n")
+		content.WriteString(textMutedStyle.Render("Install from a local path or remote URL"))
+		content.WriteString("\n\n")
 
 		// Source field
-		b.WriteString(f.renderField("Source", sourceField))
-		b.WriteString("\n\n")
+		content.WriteString(f.renderField("Source", sourceField))
+		content.WriteString("\n\n")
 
 		// Examples
-		b.WriteString(helpStyle.Render("Examples:"))
-		b.WriteString("\n")
-		b.WriteString(textMutedStyle.Render("  • /Users/me/my-extension"))
-		b.WriteString("\n")
-		b.WriteString(textMutedStyle.Render("  • ~/Documents/extensions/my-tool"))
-		b.WriteString("\n")
-		b.WriteString(textMutedStyle.Render("  • https://github.com/user/gemini-extension"))
-		b.WriteString("\n")
-		b.WriteString(textMutedStyle.Render("  • git@github.com:user/gemini-extension.git"))
-		b.WriteString("\n\n")
-
-		// Help text
-		helpText := []string{
-			"Enter: Install",
-			"Esc: Cancel",
-		}
-		b.WriteString(keyDescStyle.Render(strings.Join(helpText, " • ")))
+		content.WriteString(helpStyle.Render("Examples:"))
+		content.WriteString("\n")
+		content.WriteString(textMutedStyle.Render("  • /Users/me/my-extension"))
+		content.WriteString("\n")
+		content.WriteString(textMutedStyle.Render("  • ~/Documents/extensions/my-tool"))
+		content.WriteString("\n")
+		content.WriteString(textMutedStyle.Render("  • https://github.com/user/gemini-extension"))
+		content.WriteString("\n")
+		content.WriteString(textMutedStyle.Render("  • git@github.com:user/gemini-extension.git"))
 
 		// Error display
 		if f.err != nil {
-			b.WriteString("\n\n")
-			b.WriteString(errorStyle.Render("Error: " + f.err.Error()))
+			content.WriteString("\n\n")
+			content.WriteString(errorStyle.Render("Error: " + f.err.Error()))
 		}
 	}
 
-	// Center the form
-	form := formStyle.Render(b.String())
-	return lipgloss.Place(
-		f.width, f.height,
-		lipgloss.Center, lipgloss.Center,
-		form,
-	)
+	// Use the Modal component
+	modal := components.NewModal(f.width, f.height).
+		Form().
+		SetTitle("Install Extension", "📦").
+		SetContent(content.String()).
+		SetFooter("Enter: Install • Esc: Cancel")
+		
+	// If there's an error, use error styling
+	if f.err != nil {
+		modal = modal.Error()
+	}
+
+	return modal.Render()
 }
 
 // renderField renders a form field

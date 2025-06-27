@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/76creates/stickers/flexbox"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/ui/components"
 )
 
 // ProfileQuickSwitchModal represents a quick profile switcher
@@ -119,53 +118,24 @@ func (m ProfileQuickSwitchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View renders the modal
 func (m ProfileQuickSwitchModal) View() string {
-	// Modal dimensions
-	modalWidth := min(50, m.width-4)
-	modalHeight := min(20, m.height-4)
-
-	// Create flexbox for modal
-	fb := flexbox.New(modalWidth, modalHeight)
-
-	// Title row
-	titleRow := fb.NewRow()
-	titleCell := flexbox.NewCell(1, 1)
-	titleCell.SetContent(h2Style.Render("Switch Profile"))
-	titleRow.AddCells(titleCell)
-
-	// Search row
-	searchRow := fb.NewRow()
-	searchCell := flexbox.NewCell(1, 1)
-	searchCell.SetContent(m.searchInput.View())
-	searchRow.AddCells(searchCell)
-
-	// Profile list row (takes most space)
-	listRow := fb.NewRow()
-	listCell := flexbox.NewCell(1, 6) // 6:1 ratio
-	listCell.SetContent(m.renderProfileList())
-	listRow.AddCells(listCell)
-
-	// Help row
-	helpRow := fb.NewRow()
-	helpCell := flexbox.NewCell(1, 1)
-	helpCell.SetContent(keyDescStyle.Render("Enter: Select • Esc: Cancel"))
-	helpRow.AddCells(helpCell)
-
-	// Add all rows
-	fb.AddRows([]*flexbox.Row{titleRow, searchRow, listRow, helpRow})
-
-	// Render with border and center
-	modalContent := fb.Render()
-	styledModal := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(colorBorder).
-		Padding(1, 2).
-		Render(modalContent)
-
-	return lipgloss.Place(
-		m.width, m.height,
-		lipgloss.Center, lipgloss.Center,
-		styledModal,
-	)
+	// Build content
+	var content strings.Builder
+	
+	// Search input
+	content.WriteString(m.searchInput.View())
+	content.WriteString("\n\n")
+	
+	// Profile list
+	content.WriteString(m.renderProfileList())
+	
+	// Use the Modal component
+	modal := components.NewModal(m.width, m.height).
+		SetTitle("Switch Profile", "👤").
+		SetContent(content.String()).
+		SetFooter("Enter: Select • Esc: Cancel").
+		SetWidth(50)
+	
+	return modal.Render()
 }
 
 // renderProfileList renders the scrollable profile list

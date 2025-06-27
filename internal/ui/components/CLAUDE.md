@@ -400,8 +400,23 @@ card := components.NewCard(60).
 output := card.Render()
 ```
 
+### Modal
+- **Purpose**: Centered modal dialogs for forms, alerts, and messages
+- **Features**: Auto-centering, presets (form/alert/error/success), customizable width, theme-aware
+- **Test files**: 
+  - Visual test: `go run cmd/visual-tests/main.go modal`
+- **Usage example**:
+```go
+modal := components.NewModal(width, height).
+    Form().
+    SetTitle("Install Extension", "📦").
+    SetContent(formContent).
+    SetFooter("Enter: Install • Esc: Cancel")
+
+output := modal.Render()
+```
+
 ### (Future components)
-- **Modal** - Centered modal dialogs
 - **FormField** - Consistent form inputs
 - **StatusBar** - Three-section status bar
 - **EmptyState** - "No items" displays

@@ -29,6 +29,7 @@ func init() {
 		"emoji-width":   testEmojiWidth,
 		"gear-spacing":  testGearSpacing,
 		"card":          testCard,
+		"modal":         testModal,
 		"all":           runAllTests,
 	}
 }
@@ -100,6 +101,7 @@ func runAllTests() {
 		"emoji-width",
 		"gear-spacing",
 		"card",
+		"modal",
 	}
 	
 	for i, testName := range tests {
@@ -637,4 +639,115 @@ func testCard() {
 		SetTitle("This is an extremely long title that will definitely need to be truncated", "🔤").
 		SetSubtitle("v1.0.0")
 	fmt.Println(longTitleCard.Render())
+}
+
+func testModal() {
+	fmt.Println("Modal Component Visual Test")
+	fmt.Println(strings.Repeat("=", 80))
+	fmt.Println()
+	
+	// Terminal dimensions
+	width := 100
+	height := 30
+	
+	// Test 1: Basic modal
+	fmt.Println("1. Basic Modal:")
+	modal1 := components.NewModal(width, height).
+		SetTitle("Basic Modal", "📋").
+		SetContent("This is a basic modal with some content.\n\nIt can have multiple lines of text.").
+		SetFooter("Press Enter to continue • Esc to cancel")
+	
+	// Render in simulated viewport
+	renderInViewport(modal1.Render(), width, height)
+	fmt.Println()
+	
+	// Test 2: Form modal
+	fmt.Println("2. Form Modal:")
+	formContent := `Install from a local path or remote URL
+
+Source:
+╭─────────────────────────────────────────────────────╮
+│ /path/to/extension                                  │
+╰─────────────────────────────────────────────────────╯
+
+Examples:
+  • /Users/me/my-extension
+  • ~/Documents/extensions/my-tool
+  • https://github.com/user/gemini-extension`
+	
+	modal2 := components.NewModal(width, height).
+		Form().
+		SetTitle("Install Extension", "📦").
+		SetContent(formContent).
+		SetFooter("Enter: Install • Esc: Cancel")
+	
+	renderInViewport(modal2.Render(), width, height)
+	fmt.Println()
+	
+	// Test 3: Error modal
+	fmt.Println("3. Error Modal:")
+	modal3 := components.NewModal(width, height).
+		Error().
+		SetTitle("Error", "❌").
+		SetContent("Failed to install extension:\n\nThe specified path does not exist or is not accessible.").
+		SetFooter("Press Enter to close")
+	
+	renderInViewport(modal3.Render(), width, height)
+	fmt.Println()
+	
+	// Test 4: Success modal
+	fmt.Println("4. Success Modal:")
+	modal4 := components.NewModal(width, height).
+		Success().
+		SetTitle("Success", "✅").
+		SetContent("Extension installed successfully!\n\nThe extension is now available in your profile.").
+		SetFooter("Press Enter to continue")
+	
+	renderInViewport(modal4.Render(), width, height)
+	fmt.Println()
+	
+	// Test 5: Profile quick switch modal
+	fmt.Println("5. Profile Quick Switch Modal:")
+	profileContent := `▶ Production ●
+  Default production profile
+
+  Development
+  Testing and development work
+
+  Staging
+  Pre-production environment
+  
+(3 profiles)`
+	
+	modal5 := components.NewModal(width, height).
+		SetTitle("Switch Profile", "👤").
+		SetContent(profileContent).
+		SetFooter("Enter: Select • Esc: Cancel").
+		SetWidth(50)
+	
+	renderInViewport(modal5.Render(), width, height)
+}
+
+// renderInViewport simulates rendering in a terminal viewport
+func renderInViewport(content string, width, height int) {
+	// Create a border around the viewport
+	viewportStyle := lipgloss.NewStyle().
+		Border(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("#333")).
+		Width(width).
+		Height(height).
+		Padding(0, 0)
+	
+	// Split content into lines to ensure it fits
+	lines := strings.Split(content, "\n")
+	if len(lines) > height-2 { // Account for border
+		lines = lines[:height-2]
+	}
+	
+	// Pad lines to fill viewport
+	for len(lines) < height-2 {
+		lines = append(lines, "")
+	}
+	
+	fmt.Println(viewportStyle.Render(strings.Join(lines, "\n")))
 }

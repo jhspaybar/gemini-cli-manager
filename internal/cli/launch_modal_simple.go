@@ -12,6 +12,7 @@ import (
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 	"github.com/jhspaybar/gemini-cli-manager/internal/launcher"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/ui/components"
 )
 
 // Launch state enums
@@ -183,21 +184,8 @@ func (m SimpleLaunchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View renders the launch modal
 func (m SimpleLaunchModal) View() string {
-	// Modal container
-	modalStyle := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(colorBorder).
-		Padding(2, 3).
-		Width(60).
-		MaxWidth(m.width - 4)
-
-	// Title
-	title := h1Style.Render("🚀 Launching Gemini CLI")
-
-	// Build content
-	var content strings.Builder
-	content.WriteString(title)
-	content.WriteString("\n\n")
+	// Build progress content
+	var progressContent strings.Builder
 
 	// Progress steps
 	for i, step := range m.progress {
@@ -209,55 +197,64 @@ func (m SimpleLaunchModal) View() string {
 			line += textDimStyle.Render(fmt.Sprintf(" (%dms)", step.duration.Milliseconds()))
 		}
 
-		content.WriteString(style.Render(line))
+		progressContent.WriteString(style.Render(line))
 
 		if step.message != "" && (step.status == stepRunning || step.status == stepFailed) {
-			content.WriteString("\n")
-			content.WriteString(textDimStyle.Render("   " + step.message))
+			progressContent.WriteString("\n")
+			progressContent.WriteString(textDimStyle.Render("   " + step.message))
 		}
 
 		if i < len(m.progress)-1 {
-			content.WriteString("\n")
+			progressContent.WriteString("\n")
 		}
 	}
 
-	// Footer based on state
-	content.WriteString("\n\n")
+	// Build footer based on state
+	var footer string
 	switch m.state {
 	case launchStateChecking, launchStatePreparing, launchStateStartingServers:
-		content.WriteString(m.spinner.View())
-		content.WriteString(" ")
-		content.WriteString(textMutedStyle.Render("Preparing launch..."))
-		content.WriteString("\n")
-		content.WriteString(keyDescStyle.Render("Press Esc to cancel"))
+		progressContent.WriteString("\n\n")
+		progressContent.WriteString(m.spinner.View())
+		progressContent.WriteString(" ")
+		progressContent.WriteString(textMutedStyle.Render("Preparing launch..."))
+		footer = "Press Esc to cancel"
 
 	case launchStateLaunching:
-		content.WriteString(m.spinner.View())
-		content.WriteString(" ")
-		content.WriteString(textStyle.Render("Launching Gemini CLI..."))
+		progressContent.WriteString("\n\n")
+		progressContent.WriteString(m.spinner.View())
+		progressContent.WriteString(" ")
+		progressContent.WriteString(textStyle.Render("Launching Gemini CLI..."))
 
 	case launchStateSuccess:
-		content.WriteString(successStyle.Render("✓ Successfully launched!"))
-		content.WriteString("\n")
-		content.WriteString(keyDescStyle.Render("Gemini CLI is now running"))
+		progressContent.WriteString("\n\n")
+		progressContent.WriteString(successStyle.Render("✓ Successfully launched!"))
+		footer = "Gemini CLI is now running"
 
 	case launchStateFailed:
-		content.WriteString(errorStyle.Render("✗ Launch failed"))
+		progressContent.WriteString("\n\n")
+		progressContent.WriteString(errorStyle.Render("✗ Launch failed"))
 		if m.error != nil {
-			content.WriteString("\n")
-			content.WriteString(errorStyle.Render(m.error.Error()))
+			progressContent.WriteString("\n")
+			progressContent.WriteString(errorStyle.Render(m.error.Error()))
 		}
-		content.WriteString("\n")
-		content.WriteString(keyDescStyle.Render("Press Enter to close"))
+		footer = "Press Enter to close"
 	}
 
-	// Center the modal
-	modal := modalStyle.Render(content.String())
-	return lipgloss.Place(
-		m.width, m.height,
-		lipgloss.Center, lipgloss.Center,
-		modal,
-	)
+	// Use the Modal component
+	modal := components.NewModal(m.width, m.height).
+		SetTitle("Launching Gemini CLI", "🚀").
+		SetContent(progressContent.String()).
+		SetFooter(footer).
+		SetWidth(60)
+
+	// Set border color based on state
+	if m.state == launchStateFailed {
+		modal = modal.Error()
+	} else if m.state == launchStateSuccess {
+		modal = modal.Success()
+	}
+
+	return modal.Render()
 }
 
 // SetSize updates the modal dimensions

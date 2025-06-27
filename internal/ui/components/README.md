@@ -138,3 +138,76 @@ card.SetWidth(80)
 
 - Unit tests: `internal/ui/components/card_test.go`
 - Visual tests: Run `make card` in `test/adhoc/`
+
+## Modal Component
+
+The `Modal` component provides a centered, bordered container for dialogs, forms, and alerts.
+
+### Features
+
+- Centered display with automatic sizing
+- Multiple preset configurations (form, alert, error, success)
+- Customizable title with optional icon
+- Content and footer sections
+- Theme-aware styling
+- Responsive width with max-width constraints
+- Builder pattern for easy configuration
+
+### Usage
+
+```go
+// Basic modal
+modal := components.NewModal(terminalWidth, terminalHeight).
+    SetTitle("Dialog Title", "📋").
+    SetContent("Your content here\n\nCan be multiple lines").
+    SetFooter("Press Enter to continue")
+
+output := modal.Render()
+
+// Form modal with larger width
+formModal := components.NewModal(width, height).
+    Form().  // Preset for forms (wider, focus border)
+    SetTitle("Install Extension", "📦").
+    SetContent(formContent).
+    SetFooter("Enter: Submit • Esc: Cancel")
+
+// Error modal with error styling
+errorModal := components.NewModal(width, height).
+    Error().  // Red border and title
+    SetTitle("Error", "❌").
+    SetContent("Something went wrong!").
+    SetFooter("Press Enter to close")
+
+// Success modal
+successModal := components.NewModal(width, height).
+    Success().  // Green border and title
+    SetTitle("Success", "✅").
+    SetContent("Operation completed!").
+    SetFooter("Press Enter to continue")
+
+// Custom width
+modal.SetWidth(50).SetMaxWidth(80)
+```
+
+### Presets
+
+- **Form()**: 70 width, focus border color
+- **Alert()**: 50 width, warning colors
+- **Error()**: 50 width, error colors
+- **Success()**: 50 width, success colors
+- **Large()**: 80 width, 100 max width
+- **Small()**: 40 width, 50 max width
+
+### Customization
+
+```go
+// Custom styles
+modal.SetTitleStyle(lipgloss.NewStyle().Bold(true).Foreground(customColor)).
+    SetContentStyle(lipgloss.NewStyle().Italic(true)).
+    SetFooterStyle(lipgloss.NewStyle().Foreground(theme.TextSecondary())).
+    SetBorderColor(theme.Primary())
+```
+
+### Testing
+
+- Visual tests: `go run cmd/visual-tests/main.go modal`
