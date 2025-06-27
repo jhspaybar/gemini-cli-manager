@@ -84,18 +84,19 @@ func (m Model) renderTabsWithContent(width, height int) string {
 	// Calculate content dimensions
 	contentHeight := height - 3 // Account for tab height
 	
-	// Render content
-	mainContent := m.renderContent(width-4, contentHeight-4)
-	statusContent := m.renderStatusBarContent(width-4)
+	// Render content - pass full width, let renderContent handle margins
+	mainContent := m.renderContent(width, contentHeight-1)
+	statusContent := m.renderStatusBarContent(width)
 	
 	// Combine content and status
 	contentWithStatus := lipgloss.JoinVertical(
 		lipgloss.Left,
 		mainContent,
 		lipgloss.NewStyle().
-			Width(width-4).
 			Foreground(colorBorder).
-			Render(strings.Repeat("─", width-4)),
+			MaxWidth(width).
+			Padding(0, 2). // Add horizontal padding
+			Render(strings.Repeat("─", width)),
 		statusContent,
 	)
 	
@@ -156,30 +157,34 @@ func (m Model) renderContent(width, height int) string {
 
 	var content string
 
+	// Create a content container with padding
+	contentContainer := lipgloss.NewStyle().
+		Padding(2, 3).
+		MaxWidth(width).
+		MaxHeight(height)
+	
+	// Calculate available space after padding
+	availableWidth := width - 6  // 3 padding on each side
+	availableHeight := height - 4 // 2 padding on top and bottom
+	
 	switch m.currentView {
 	case ViewExtensions:
-		content = m.renderExtensions(width-6, height-4) // Account for padding
+		content = m.renderExtensions(availableWidth, availableHeight)
 	case ViewProfiles:
-		content = m.renderProfiles(width-6, height-4)
+		content = m.renderProfiles(availableWidth, availableHeight)
 	case ViewSettings:
-		content = m.renderSettings(width-6, height-4)
+		content = m.renderSettings(availableWidth, availableHeight)
 	case ViewHelp:
-		content = m.renderHelp(width-6, height-4)
+		content = m.renderHelp(availableWidth, availableHeight)
 	case ViewExtensionDetail:
 		LogDebug("Calling renderExtensionDetail")
-		content = m.renderExtensionDetail(width-6, height-4)
+		content = m.renderExtensionDetail(availableWidth, availableHeight)
 	}
 
 	LogDebug("renderContent returning, content length=%d", len(content))
 
-	// Add padding for content inside the card
-	return lipgloss.NewStyle().
-		Padding(2, 3). // More padding for breathing room
-		Width(width).
-		Height(height).
-		MaxWidth(width).
-		MaxHeight(height).
-		Render(content)
+	// Apply the container style
+	return contentContainer.Render(content)
 }
 
 // renderExtensions renders the extensions view
@@ -194,12 +199,11 @@ func (m Model) renderExtensions(width, height int) string {
 	if m.searchActive || m.searchBar.Value() != "" {
 		lines = append(lines, "")
 		// Ensure search box fits within available width
-		searchWidth := min(60, width-4)
+		searchWidth := min(60, width)
 		searchBox := lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(colorBorderFocus).
 			Padding(0, 1).
-			Width(searchWidth).
 			MaxWidth(searchWidth).
 			Render(m.searchBar.View())
 		lines = append(lines, searchBox)
@@ -218,14 +222,12 @@ func (m Model) renderExtensions(width, height int) string {
 
 	if len(m.filteredExtensions) == 0 {
 		// Empty state
-		// Ensure empty box fits within available width
-		emptyBoxWidth := min(50, width-4)
+		// Create centered empty state
 		emptyBox := lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(colorBorder).
 			Padding(2, 4).
-			Width(emptyBoxWidth).
-			MaxWidth(emptyBoxWidth).
+			MaxWidth(50).
 			Align(lipgloss.Center).
 			Render(
 				lipgloss.JoinVertical(
@@ -236,8 +238,9 @@ func (m Model) renderExtensions(width, height int) string {
 					textDimStyle.Render("Press 'n' to install your first extension"),
 				),
 			)
+		// Center the empty box in the available width
 		lines = append(lines, "")
-		lines = append(lines, lipgloss.NewStyle().Width(width-4).Align(lipgloss.Center).Render(emptyBox))
+		lines = append(lines, lipgloss.Place(width, 1, lipgloss.Center, lipgloss.Center, emptyBox))
 	} else {
 		// Extension list with cards
 		for i, ext := range m.filteredExtensions {
@@ -307,7 +310,7 @@ func (m Model) renderProfiles(width, height int) string {
 		Foreground(lipgloss.Color("0")).
 		Bold(true).
 		Padding(0, 1).
-		MaxWidth(width - 4).
+		MaxWidth(width).
 		Render(badgeText)
 	lines = append(lines, "", activeBadge)
 
@@ -315,12 +318,11 @@ func (m Model) renderProfiles(width, height int) string {
 	if m.searchActive || m.searchBar.Value() != "" {
 		lines = append(lines, "")
 		// Ensure search box fits within available width
-		searchWidth := min(60, width-4)
+		searchWidth := min(60, width)
 		searchBox := lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(colorBorderFocus).
 			Padding(0, 1).
-			Width(searchWidth).
 			MaxWidth(searchWidth).
 			Render(m.searchBar.View())
 		lines = append(lines, searchBox)
@@ -558,8 +560,8 @@ func (m Model) renderExtensionDetail(width, height int) string {
 
 	var lines []string
 
-	// Header card using Card component
-	headerCard := components.NewCard(width - 2).
+	// Header card using Card component - use full width
+	headerCard := components.NewCard(width).
 		SetTitle(cleanName, "📦").
 		SetSubtitle(fmt.Sprintf("v%s", cleanVersion)).
 		SetDescription(cleanDescription).
@@ -579,13 +581,13 @@ func (m Model) renderExtensionDetail(width, height int) string {
 	// Left column (basic info)
 	leftCol := columnsHfb.NewColumn()
 	leftCell := flexbox.NewCell(1, 1) // Equal width
-	leftCell.SetContent(m.RenderExtDetailLeftColumn(ext, width/2-2))
+	leftCell.SetContent(m.RenderExtDetailLeftColumn(ext, width/2))
 	leftCol.AddCells(leftCell)
 
 	// Right column (MCP servers)
 	rightCol := columnsHfb.NewColumn()
 	rightCell := flexbox.NewCell(1, 1) // Equal width
-	rightCell.SetContent(m.RenderExtDetailRightColumn(ext, width/2-2))
+	rightCell.SetContent(m.RenderExtDetailRightColumn(ext, width/2))
 	rightCol.AddCells(rightCell)
 
 	columnsHfb.AddColumns([]*flexbox.Column{leftCol, rightCol})
@@ -593,11 +595,11 @@ func (m Model) renderExtensionDetail(width, height int) string {
 	lines = append(lines, "")
 
 	// Context file section
-	lines = append(lines, m.RenderContextFileSection(ext, width-2))
+	lines = append(lines, m.RenderContextFileSection(ext, width))
 	lines = append(lines, "")
 
 	// Action bar
-	lines = append(lines, m.renderExtDetailActions(width-2))
+	lines = append(lines, m.renderExtDetailActions(width))
 
 	return strings.Join(lines, "\n")
 }
@@ -678,7 +680,7 @@ func (m Model) RenderContextFileSection(ext *extension.Extension, width int) str
 	}
 
 	// Context File card
-	contextCard := components.NewCard(width - 2).
+	contextCard := components.NewCard(width).
 		SetTitle("Context File", "📄")
 
 	// Try to read and display context file content
