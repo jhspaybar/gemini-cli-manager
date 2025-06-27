@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/76creates/stickers/flexbox"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -118,99 +119,122 @@ func (m ProfileQuickSwitchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View renders the modal
 func (m ProfileQuickSwitchModal) View() string {
-	// Modal container
-	modalStyle := lipgloss.NewStyle().
+	// Modal dimensions
+	modalWidth := min(50, m.width-4)
+	modalHeight := min(20, m.height-4)
+	
+	// Create flexbox for modal
+	fb := flexbox.New(modalWidth, modalHeight)
+	
+	// Title row
+	titleRow := fb.NewRow()
+	titleCell := flexbox.NewCell(1, 1)
+	titleCell.SetContent(h2Style.Render("Switch Profile"))
+	titleRow.AddCells(titleCell)
+	
+	// Search row
+	searchRow := fb.NewRow()
+	searchCell := flexbox.NewCell(1, 1)
+	searchCell.SetContent(m.searchInput.View())
+	searchRow.AddCells(searchCell)
+	
+	// Profile list row (takes most space)
+	listRow := fb.NewRow()
+	listCell := flexbox.NewCell(1, 6) // 6:1 ratio
+	listCell.SetContent(m.renderProfileList())
+	listRow.AddCells(listCell)
+	
+	// Help row
+	helpRow := fb.NewRow()
+	helpCell := flexbox.NewCell(1, 1)
+	helpCell.SetContent(keyDescStyle.Render("Enter: Select • Esc: Cancel"))
+	helpRow.AddCells(helpCell)
+	
+	// Add all rows
+	fb.AddRows([]*flexbox.Row{titleRow, searchRow, listRow, helpRow})
+	
+	// Render with border and center
+	modalContent := fb.Render()
+	styledModal := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(colorBorder).
 		Padding(1, 2).
-		Width(50).
-		MaxWidth(m.width - 4).
-		MaxHeight(m.height - 4)
+		Render(modalContent)
 	
-	var content strings.Builder
-	
-	// Title
-	content.WriteString(h2Style.Render("Switch Profile"))
-	content.WriteString("\n\n")
-	
-	// Search input
-	content.WriteString(m.searchInput.View())
-	content.WriteString("\n\n")
-	
-	// Profile list
-	if len(m.filteredProfiles) == 0 {
-		content.WriteString(textMutedStyle.Render("No profiles match your search"))
-	} else {
-		// Show up to 10 profiles
-		visibleCount := len(m.filteredProfiles)
-		if visibleCount > 10 {
-			visibleCount = 10
-		}
-		
-		// Calculate visible range
-		start := 0
-		if m.cursor >= visibleCount {
-			start = m.cursor - visibleCount + 1
-		}
-		end := start + visibleCount
-		if end > len(m.filteredProfiles) {
-			end = len(m.filteredProfiles)
-			start = end - visibleCount
-			if start < 0 {
-				start = 0
-			}
-		}
-		
-		for i := start; i < end; i++ {
-			p := m.filteredProfiles[i]
-			
-			prefix := "  "
-			style := textStyle
-			
-			if i == m.cursor {
-				prefix = "▶ "
-				style = style.Bold(true).Foreground(colorAccent)
-			}
-			
-			// Current profile indicator
-			indicator := ""
-			if p.ID == m.currentProfileID {
-				indicator = " ●"
-				style = style.Foreground(colorSuccess)
-			}
-			
-			line := fmt.Sprintf("%s%s%s", prefix, p.Name, indicator)
-			content.WriteString(style.Render(line))
-			
-			// Show description for selected item
-			if i == m.cursor && p.Description != "" {
-				content.WriteString("\n")
-				content.WriteString(textDimStyle.Render("  " + p.Description))
-			}
-			
-			if i < end-1 {
-				content.WriteString("\n")
-			}
-		}
-		
-		// Scroll indicator
-		if len(m.filteredProfiles) > visibleCount {
-			content.WriteString("\n")
-			content.WriteString(textMutedStyle.Render(fmt.Sprintf("  (%d/%d profiles)", m.cursor+1, len(m.filteredProfiles))))
-		}
-	}
-	
-	// Help
-	content.WriteString("\n\n")
-	content.WriteString(keyDescStyle.Render("Enter: Switch • ↑/↓: Navigate • Esc: Cancel"))
-	
-	// Center the modal
-	modal := modalStyle.Render(content.String())
 	return lipgloss.Place(
 		m.width, m.height,
 		lipgloss.Center, lipgloss.Center,
-		modal,
+		styledModal,
 	)
+}
+
+// renderProfileList renders the scrollable profile list
+func (m ProfileQuickSwitchModal) renderProfileList() string {
+	if len(m.filteredProfiles) == 0 {
+		return textMutedStyle.Render("No profiles match your search")
+	}
+	
+	var content strings.Builder
+	
+	// Show up to 10 profiles
+	visibleCount := len(m.filteredProfiles)
+	if visibleCount > 10 {
+		visibleCount = 10
+	}
+	
+	// Calculate visible range
+	start := 0
+	if m.cursor >= visibleCount {
+		start = m.cursor - visibleCount + 1
+	}
+	end := start + visibleCount
+	if end > len(m.filteredProfiles) {
+		end = len(m.filteredProfiles)
+		start = end - visibleCount
+		if start < 0 {
+			start = 0
+		}
+	}
+	
+	for i := start; i < end; i++ {
+		p := m.filteredProfiles[i]
+		
+		prefix := "  "
+		style := textStyle
+		
+		if i == m.cursor {
+			prefix = "▶ "
+			style = style.Bold(true).Foreground(colorAccent)
+		}
+		
+		// Current profile indicator
+		indicator := ""
+		if p.ID == m.currentProfileID {
+			indicator = " ●"
+			style = style.Foreground(colorSuccess)
+		}
+		
+		line := fmt.Sprintf("%s%s%s", prefix, p.Name, indicator)
+		content.WriteString(style.Render(line))
+		
+		// Show description for selected item
+		if i == m.cursor && p.Description != "" {
+			content.WriteString("\n")
+			content.WriteString(textDimStyle.Render("  " + p.Description))
+		}
+		
+		if i < end-1 {
+			content.WriteString("\n")
+		}
+	}
+	
+	// Scroll indicator
+	if len(m.filteredProfiles) > visibleCount {
+		content.WriteString("\n")
+		content.WriteString(textMutedStyle.Render(fmt.Sprintf("  (%d/%d profiles)", m.cursor+1, len(m.filteredProfiles))))
+	}
+	
+	return content.String()
 }
 
 // SetSize updates modal dimensions

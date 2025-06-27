@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/76creates/stickers/flexbox"
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -234,14 +235,31 @@ func (f *ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (f *ExtensionEditForm) View() string {
 	LogDebug("ExtensionEditForm.View called, mode=%v, width=%d, height=%d", f.mode, f.width, f.height)
 	
+	if f.width == 0 || f.height == 0 {
+		return "Loading..."
+	}
+	
+	// Create main flexbox
+	fb := flexbox.New(f.width, f.height)
+	
 	// Clean extension name
 	cleanName := stripANSI(f.extension.Name)
 	
-	// Simple header
-	title := h1Style.Render(fmt.Sprintf("Edit: %s", cleanName))
+	// Header row
+	headerRow := fb.NewRow()
+	headerCell := flexbox.NewCell(1, 1)
+	headerCell.SetContent(h1Style.Render(fmt.Sprintf("Edit: %s", cleanName)))
+	headerRow.AddCells(headerCell)
 	
-	// Mode tabs
-	tabs := f.renderModeTabs()
+	// Tabs row
+	tabsRow := fb.NewRow()
+	tabsCell := flexbox.NewCell(1, 1)
+	tabsCell.SetContent(f.renderModeTabs())
+	tabsRow.AddCells(tabsCell)
+	
+	// Content row (takes most space)
+	contentRow := fb.NewRow()
+	contentCell := flexbox.NewCell(1, 5) // 5:1 ratio for content
 	
 	// Content based on mode
 	var content string
@@ -252,84 +270,129 @@ func (f *ExtensionEditForm) View() string {
 		if f.previewActive {
 			content = f.renderMarkdownPreview()
 		} else {
+			// Size textarea appropriately
+			availableHeight := f.height - 8 // Account for header, tabs, help, error
+			f.textarea.SetHeight(min(availableHeight, 30))
+			f.textarea.SetWidth(min(f.width-4, 120))
 			content = f.renderTextarea()
 		}
 	case EditModeJSON:
+		// Size textarea appropriately
+		availableHeight := f.height - 8
+		f.textarea.SetHeight(min(availableHeight, 30))
+		f.textarea.SetWidth(min(f.width-4, 120))
 		content = f.renderTextarea()
 	}
+	contentCell.SetContent(content)
+	contentRow.AddCells(contentCell)
 	
-	// Help text
+	// Help row
+	helpRow := fb.NewRow()
+	helpCell := flexbox.NewCell(1, 1)
 	helpText := "Ctrl+T: Mode • Ctrl+S: Save • Esc: Cancel"
 	if f.mode == EditModeContext {
 		helpText += " • Ctrl+P: Preview"
 	}
-	help := keyDescStyle.Render(helpText)
+	helpCell.SetContent(keyDescStyle.Render(helpText))
+	helpRow.AddCells(helpCell)
 	
-	// Error if any
-	var errorText string
+	// Add all rows
+	fb.AddRows([]*flexbox.Row{headerRow, tabsRow, contentRow, helpRow})
+	
+	// Add error row if needed
 	if f.err != nil {
-		errorText = "\n" + errorStyle.Render(f.err.Error())
+		errorRow := fb.NewRow()
+		errorCell := flexbox.NewCell(1, 1)
+		errorCell.SetContent(errorStyle.Render(f.err.Error()))
+		errorRow.AddCells(errorCell)
+		fb.AddRows([]*flexbox.Row{errorRow})
 	}
 	
-	// Combine with proper spacing
-	return lipgloss.JoinVertical(
-		lipgloss.Left,
-		title,
-		tabs,
-		"",
-		content,
-		"",
-		help,
-		errorText,
-	)
+	return fb.Render()
 }
 
 // renderConfigForm renders the configuration form fields
 func (f *ExtensionEditForm) renderConfigForm() string {
-	var b strings.Builder
+	// Create flexbox for form layout
+	fb := flexbox.New(f.width-4, 0) // Height will auto-adjust
 	
 	fields := []struct {
 		label string
 		index int
+		help  string
 	}{
-		{"Name", extNameField},
-		{"Version", extVersionField},
-		{"Description", extDescriptionField},
+		{"Name", extNameField, "Extension display name"},
+		{"Version", extVersionField, "Semantic version (e.g., 1.0.0)"},
+		{"Description", extDescriptionField, "Brief description"},
 	}
 	
-	// Render fields compactly
-	for i, field := range fields {
-		// Label
+	// Add form fields
+	for _, field := range fields {
+		fieldRow := fb.NewRow()
+		
+		// Label cell (30% width)
+		labelCell := flexbox.NewCell(3, 1)
 		labelStyle := textDimStyle
 		if f.focusIndex == field.index {
 			labelStyle = accentStyle
 		}
-		b.WriteString(labelStyle.Render(field.label))
-		b.WriteString("\n")
+		labelCell.SetContent(labelStyle.Render(field.label))
 		
-		// Input
-		b.WriteString(f.inputs[field.index].View())
+		// Input cell (70% width)
+		inputCell := flexbox.NewCell(7, 1)
+		inputContent := f.inputs[field.index].View()
+		if f.focusIndex == field.index && field.help != "" {
+			inputContent += "\n" + textDimStyle.Render(field.help)
+		}
+		inputCell.SetContent(inputContent)
 		
-		if i < len(fields)-1 {
-			b.WriteString("\n\n")
+		fieldRow.AddCells(labelCell, inputCell)
+		fb.AddRows([]*flexbox.Row{fieldRow})
+		
+		// Add spacing row
+		if field.index < len(fields)-1 {
+			spacerRow := fb.NewRow()
+			spacerCell := flexbox.NewCell(1, 1)
+			spacerCell.SetContent(" ")
+			spacerRow.AddCells(spacerCell)
+			fb.AddRows([]*flexbox.Row{spacerRow})
 		}
 	}
 	
-	// MCP Servers info
+	// MCP Servers section
 	if f.extension.MCPServers != nil && len(f.extension.MCPServers) > 0 {
-		b.WriteString("\n\n")
-		b.WriteString(h2Style.Render("MCP Servers"))
-		b.WriteString("\n")
+		// Spacer
+		spacerRow := fb.NewRow()
+		spacerCell := flexbox.NewCell(1, 1)
+		spacerCell.SetContent("")
+		spacerRow.AddCells(spacerCell)
+		fb.AddRows([]*flexbox.Row{spacerRow})
 		
+		// MCP Header
+		mcpHeaderRow := fb.NewRow()
+		mcpHeaderCell := flexbox.NewCell(1, 1)
+		mcpHeaderCell.SetContent(h2Style.Render("MCP Servers"))
+		mcpHeaderRow.AddCells(mcpHeaderCell)
+		fb.AddRows([]*flexbox.Row{mcpHeaderRow})
+		
+		// MCP Server list
 		for name, server := range f.extension.MCPServers {
-			b.WriteString(fmt.Sprintf("• %s: %s\n", accentStyle.Render(name), server.Command))
+			serverRow := fb.NewRow()
+			serverCell := flexbox.NewCell(1, 1)
+			serverCell.SetContent(fmt.Sprintf("• %s: %s", accentStyle.Render(name), server.Command))
+			serverRow.AddCells(serverCell)
+			fb.AddRows([]*flexbox.Row{serverRow})
 		}
 		
-		b.WriteString("\n")
-		b.WriteString(textDimStyle.Render("Use JSON mode to edit servers"))
+		// Tip
+		tipRow := fb.NewRow()
+		tipCell := flexbox.NewCell(1, 1)
+		tipCell.SetContent(textDimStyle.Render("Use JSON mode to edit servers"))
+		tipRow.AddCells(tipCell)
+		fb.AddRows([]*flexbox.Row{tipRow})
 	}
 	
-	return b.String()
+	return fb.Render()
 }
 
 // renderTextarea renders the textarea for editing

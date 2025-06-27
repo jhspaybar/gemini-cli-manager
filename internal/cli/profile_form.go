@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/76creates/stickers/flexbox"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -186,60 +187,97 @@ func (f ProfileForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View renders the form
 func (f ProfileForm) View() string {
-	// Form container
-	formStyle := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(colorBorder).
-		Padding(2, 3).
-		Width(60).
-		MaxWidth(f.width - 4)
+	// Create form flexbox (fixed width)
+	formWidth := min(60, f.width-4)
+	formHeight := min(40, f.height-4)
+	formFb := flexbox.New(formWidth, formHeight)
 	
-	// Title
+	// Title row
+	titleRow := formFb.NewRow()
+	titleCell := flexbox.NewCell(1, 1)
 	title := "Create New Profile"
 	if f.isEdit {
 		title = "Edit Profile"
 	}
-	titleStyle := h1Style.Copy().MarginBottom(1)
+	titleCell.SetContent(h1Style.Render(title))
+	titleRow.AddCells(titleCell)
 	
-	// Build form content
-	var b strings.Builder
-	b.WriteString(titleStyle.Render(title))
-	b.WriteString("\n")
-	
-	// Name field
-	b.WriteString(f.renderField("Name", nameField))
-	b.WriteString("\n\n")
-	
-	// Description field
-	b.WriteString(f.renderField("Description", descriptionField))
-	b.WriteString("\n\n")
+	// Form fields
+	fieldsRow := formFb.NewRow()
+	fieldsCell := flexbox.NewCell(1, 3) // Takes more vertical space
+	fieldsCell.SetContent(f.renderFormFields())
+	fieldsRow.AddCells(fieldsCell)
 	
 	// Extensions section
-	b.WriteString(f.renderExtensions())
-	b.WriteString("\n\n")
+	extRow := formFb.NewRow()
+	extCell := flexbox.NewCell(1, 4) // Takes most space
+	extCell.SetContent(f.renderExtensions())
+	extRow.AddCells(extCell)
 	
-	// Help text
+	// Help text row
+	helpRow := formFb.NewRow()
+	helpCell := flexbox.NewCell(1, 1)
 	helpText := []string{
-		"Tab/Shift+Tab: Navigate fields",
-		"Space: Toggle extension",
+		"Tab/Shift+Tab: Navigate",
+		"Space: Toggle",
 		"Ctrl+S: Save",
 		"Esc: Cancel",
 	}
-	b.WriteString(keyDescStyle.Render(strings.Join(helpText, " • ")))
+	helpCell.SetContent(keyDescStyle.Render(strings.Join(helpText, " • ")))
+	helpRow.AddCells(helpCell)
 	
-	// Error display
+	// Add all rows to form
+	formFb.AddRows([]*flexbox.Row{titleRow, fieldsRow, extRow, helpRow})
+	
+	// Add error row if needed
 	if f.err != nil {
-		b.WriteString("\n\n")
-		b.WriteString(errorStyle.Render("Error: " + f.err.Error()))
+		errorRow := formFb.NewRow()
+		errorCell := flexbox.NewCell(1, 1)
+		errorCell.SetContent(errorStyle.Render("Error: " + f.err.Error()))
+		errorRow.AddCells(errorCell)
+		formFb.AddRows([]*flexbox.Row{errorRow})
 	}
 	
+	// Render form with border
+	formContent := formFb.Render()
+	styledForm := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(colorBorder).
+		Padding(2, 3).
+		Render(formContent)
+	
 	// Center the form
-	form := formStyle.Render(b.String())
 	return lipgloss.Place(
 		f.width, f.height,
 		lipgloss.Center, lipgloss.Center,
-		form,
+		styledForm,
 	)
+}
+
+// renderFormFields renders the name and description fields
+func (f ProfileForm) renderFormFields() string {
+	fb := flexbox.New(0, 0) // Size inherited from parent
+	
+	// Name field
+	nameRow := fb.NewRow()
+	nameCell := flexbox.NewCell(1, 1)
+	nameCell.SetContent(f.renderField("Name", nameField))
+	nameRow.AddCells(nameCell)
+	
+	// Spacer
+	spacerRow := fb.NewRow()
+	spacerCell := flexbox.NewCell(1, 1)
+	spacerCell.SetContent("")
+	spacerRow.AddCells(spacerCell)
+	
+	// Description field
+	descRow := fb.NewRow()
+	descCell := flexbox.NewCell(1, 1)
+	descCell.SetContent(f.renderField("Description", descriptionField))
+	descRow.AddCells(descCell)
+	
+	fb.AddRows([]*flexbox.Row{nameRow, spacerRow, descRow})
+	return fb.Render()
 }
 
 // renderField renders a form field
