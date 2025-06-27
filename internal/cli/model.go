@@ -3,7 +3,7 @@ package cli
 import (
 	"os"
 	"path/filepath"
-	
+
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
@@ -11,6 +11,7 @@ import (
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 	"github.com/jhspaybar/gemini-cli-manager/internal/launcher"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/theme"
 )
 
 // ViewType represents different views in the application
@@ -32,10 +33,10 @@ type Model struct {
 	windowHeight int
 
 	// Navigation state
-	focusedPane  PaneType // Which pane has focus
+	focusedPane   PaneType // Which pane has focus
 	sidebarCursor int
 	sidebarItems  []SidebarItem
-	
+
 	// Content area state
 	extensionsCursor int
 	profilesCursor   int
@@ -44,7 +45,7 @@ type Model struct {
 	extensionManager *extension.Manager
 	profileManager   *profile.Manager
 	launcher         *launcher.SimpleLauncher
-	
+
 	// Data
 	extensions     []*extension.Extension
 	profiles       []*profile.Profile
@@ -60,26 +61,30 @@ type Model struct {
 	err          error
 	showingModal bool
 	modal        tea.Model
-	
+
 	// Search
-	searchBar        SearchBar
-	searchActive     bool
+	searchBar          SearchBar
+	searchActive       bool
 	filteredExtensions []*extension.Extension
 	filteredProfiles   []*profile.Profile
-	
+
 	// Launch state
 	shouldExecGemini bool
 	execProfile      *profile.Profile
 	execExtensions   []*extension.Extension
-	
+
 	// Temporary state for async operations
 	newProfileID string // ID of newly created profile for cursor positioning
-	
+
 	// Detail view state
 	selectedExtension *extension.Extension
-	
+
 	// Cached glamour renderer
 	markdownRenderer *glamour.TermRenderer
+
+	// Theme state
+	currentThemeIndex int
+	settingsCursor    int // Cursor for settings list
 }
 
 // PaneType represents which pane is focused
@@ -156,23 +161,25 @@ func NewModel() Model {
 	}
 	// Use our own state directory, separate from Gemini's
 	managerPath := filepath.Join(homePath, ".gemini-cli-manager")
-	
+
 	extManager := extension.NewManager(filepath.Join(managerPath, "extensions"))
 	profManager := profile.NewManager(filepath.Join(managerPath, "profiles"))
-	
+
 	// Create launcher
 	geminiCLIPath := os.Getenv("GEMINI_CLI_PATH")
 	if geminiCLIPath == "" {
 		geminiCLIPath = "gemini" // Assume it's in PATH
 	}
 	launcherInstance := launcher.NewSimpleLauncher(profManager, extManager, geminiCLIPath)
-	
+
 	m := Model{
-		currentView:      ViewExtensions,
-		focusedPane:      PaneContent, // Start with content focused
-		sidebarCursor:    0,           // Initialize cursor position
-		extensionsCursor: 0,           // Initialize extension cursor
-		profilesCursor:   0,           // Initialize profile cursor
+		currentView:       ViewExtensions,
+		focusedPane:       PaneContent,                  // Start with content focused
+		sidebarCursor:     0,                            // Initialize cursor position
+		extensionsCursor:  0,                            // Initialize extension cursor
+		profilesCursor:    0,                            // Initialize profile cursor
+		settingsCursor:    theme.GetCurrentThemeIndex(), // Initialize to current theme
+		currentThemeIndex: theme.GetCurrentThemeIndex(),
 		sidebarItems: []SidebarItem{
 			{Title: "Extensions", Icon: "◆", View: ViewExtensions},
 			{Title: "Profiles", Icon: "▣", View: ViewProfiles},
@@ -182,14 +189,14 @@ func NewModel() Model {
 		extensionManager: extManager,
 		profileManager:   profManager,
 		launcher:         launcherInstance,
-		help:            help.New(),
-		keys:            keys,
+		help:             help.New(),
+		keys:             keys,
 		searchBar:        NewSearchBar("Search extensions, profiles..."),
 	}
-	
+
 	// Data will be loaded asynchronously in Init()
 	m.loading = true
-	
+
 	// Create markdown renderer once
 	renderer, err := glamour.NewTermRenderer(
 		glamour.WithAutoStyle(),
@@ -198,7 +205,7 @@ func NewModel() Model {
 	if err == nil {
 		m.markdownRenderer = renderer
 	}
-	
+
 	return m
 }
 
@@ -209,10 +216,10 @@ func (m *Model) loadData() {
 		m.err = err
 		return
 	}
-	
+
 	// Load profiles
 	m.profiles = m.profileManager.List()
-	
+
 	// Get current profile
 	if current, err := m.profileManager.GetActive(); err == nil {
 		m.currentProfile = current
@@ -231,22 +238,22 @@ func (m *Model) loadData() {
 				// Just use the first profile
 				defaultProfile = m.profiles[0]
 			}
-			
+
 			// Set it as active
 			if err := m.profileManager.SetActive(defaultProfile.ID); err == nil {
 				m.currentProfile = defaultProfile
 			}
 		}
 	}
-	
+
 	// Scan for extensions
 	if err := m.extensionManager.Scan(); err != nil {
 		m.err = err
 		return
 	}
-	
+
 	m.extensions = m.extensionManager.List()
-	
+
 	// Initialize filtered lists
 	m.filteredExtensions = m.extensions
 	m.filteredProfiles = m.profiles
@@ -256,7 +263,7 @@ func (m *Model) loadData() {
 func (m Model) Init() tea.Cmd {
 	// Set loading state
 	m.loading = true
-	
+
 	// Return batch of initialization commands
 	return tea.Batch(
 		m.initializeManagersCmd(),
@@ -267,7 +274,7 @@ func (m Model) Init() tea.Cmd {
 // Getter methods for testing
 func (m Model) GetCurrentView() ViewType { return m.currentView }
 func (m Model) GetFocusedPane() PaneType { return m.focusedPane }
-func (m Model) GetSidebarCursor() int { return m.sidebarCursor }
+func (m Model) GetSidebarCursor() int    { return m.sidebarCursor }
 func (m Model) GetExtensionsCursor() int { return m.extensionsCursor }
 
 // ShouldExecGemini returns true if we should exec Gemini after quitting
@@ -285,22 +292,22 @@ func (m Model) getProfileExtensions(prof *profile.Profile) []*extension.Extensio
 	if prof == nil {
 		return nil
 	}
-	
+
 	var profileExts []*extension.Extension
-	
+
 	// Build a map of all extensions by ID for quick lookup
 	extMap := make(map[string]*extension.Extension)
 	for _, ext := range m.extensions {
 		extMap[ext.ID] = ext
 	}
-	
+
 	// Get extensions that are in the profile
 	for _, extRef := range prof.Extensions {
 		if ext, exists := extMap[extRef.ID]; exists && extRef.Enabled {
 			profileExts = append(profileExts, ext)
 		}
 	}
-	
+
 	return profileExts
 }
 
@@ -313,12 +320,12 @@ func (m Model) initializeManagersCmd() tea.Cmd {
 		if err := m.profileManager.Initialize(); err != nil {
 			return managersInitializedMsg{err: err}
 		}
-		
+
 		// Scan for extensions
 		if err := m.extensionManager.Scan(); err != nil {
 			return managersInitializedMsg{err: err}
 		}
-		
+
 		return managersInitializedMsg{err: nil}
 	}
 }
@@ -339,7 +346,7 @@ func (m Model) checkActiveProfileCmd() tea.Cmd {
 		if current, err := m.profileManager.GetActive(); err == nil {
 			return profileActivatedMsg{profile: current, err: nil}
 		}
-		
+
 		// No active profile, try to activate default
 		profiles := m.profileManager.List()
 		if len(profiles) > 0 {
@@ -355,13 +362,13 @@ func (m Model) checkActiveProfileCmd() tea.Cmd {
 				// Just use the first profile
 				defaultProfile = profiles[0]
 			}
-			
+
 			// Set it as active
 			if err := m.profileManager.SetActive(defaultProfile.ID); err == nil {
 				return profileActivatedMsg{profile: defaultProfile, err: nil}
 			}
 		}
-		
+
 		// No profiles available
 		return profileActivatedMsg{profile: nil, err: nil}
 	}

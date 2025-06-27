@@ -12,7 +12,7 @@ var ansiRegex = regexp.MustCompile(`\x1b\[[0-9;]*[a-zA-Z]|\x1b\][^\\]*\x07|\x1b[
 func stripANSI(s string) string {
 	// Remove ANSI escape sequences
 	s = ansiRegex.ReplaceAllString(s, "")
-	
+
 	// Also remove other control characters
 	var result strings.Builder
 	for _, r := range s {
@@ -20,7 +20,7 @@ func stripANSI(s string) string {
 			result.WriteRune(r)
 		}
 	}
-	
+
 	return strings.TrimSpace(result.String())
 }
 

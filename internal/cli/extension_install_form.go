@@ -14,21 +14,21 @@ import (
 type ExtensionInstallForm struct {
 	// Form data
 	installingFromPath bool // true for path, false for URL
-	
+
 	// Form inputs
-	inputs      []textinput.Model
-	focusIndex  int
-	
+	inputs     []textinput.Model
+	focusIndex int
+
 	// UI state
-	width       int
-	height      int
-	err         error
-	installing  bool
-	progress    string
-	
+	width      int
+	height     int
+	err        error
+	installing bool
+	progress   string
+
 	// Callbacks
-	onInstall   func(source string, isPath bool) tea.Cmd
-	onCancel    func() tea.Cmd
+	onInstall func(source string, isPath bool) tea.Cmd
+	onCancel  func() tea.Cmd
 }
 
 // Form field indices
@@ -40,7 +40,7 @@ const (
 // NewExtensionInstallForm creates a new extension installation form
 func NewExtensionInstallForm() ExtensionInstallForm {
 	inputs := make([]textinput.Model, totalInstallFields)
-	
+
 	// Source input (path or URL)
 	inputs[sourceField] = textinput.New()
 	inputs[sourceField].Placeholder = "Enter path or URL to extension (e.g., /path/to/extension or https://github.com/...)"
@@ -48,7 +48,7 @@ func NewExtensionInstallForm() ExtensionInstallForm {
 	inputs[sourceField].CharLimit = 200
 	inputs[sourceField].Width = 50
 	inputs[sourceField].Prompt = ""
-	
+
 	return ExtensionInstallForm{
 		inputs:     inputs,
 		focusIndex: 0,
@@ -81,7 +81,7 @@ func (f ExtensionInstallForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		return f, nil
 	}
-	
+
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -90,16 +90,16 @@ func (f ExtensionInstallForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return f, f.onCancel()
 			}
 			return f, nil
-			
+
 		case "enter":
 			// Start installation
 			cmd := f.install()
 			return f, cmd
-			
+
 		case "ctrl+v":
 			// Paste support would be nice but requires clipboard access
 			return f, nil
-			
+
 		default:
 			// Let text input handle other keys
 			var cmd tea.Cmd
@@ -107,11 +107,11 @@ func (f ExtensionInstallForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return f, cmd
 		}
 	}
-	
+
 	// For non-key messages, pass to text input
 	var cmd tea.Cmd
 	f.inputs[f.focusIndex], cmd = f.inputs[f.focusIndex].Update(msg)
-	
+
 	return f, cmd
 }
 
@@ -124,15 +124,15 @@ func (f ExtensionInstallForm) View() string {
 		Padding(2, 3).
 		Width(70).
 		MaxWidth(f.width - 4)
-	
+
 	// Title
 	titleStyle := h1Style.Copy().MarginBottom(1)
-	
+
 	// Build form content
 	var b strings.Builder
 	b.WriteString(titleStyle.Render("Install Extension"))
 	b.WriteString("\n")
-	
+
 	if f.installing {
 		// Show installation progress
 		b.WriteString("\n")
@@ -146,11 +146,11 @@ func (f ExtensionInstallForm) View() string {
 		// Show form
 		b.WriteString(textMutedStyle.Render("Install from a local path or remote URL"))
 		b.WriteString("\n\n")
-		
+
 		// Source field
 		b.WriteString(f.renderField("Source", sourceField))
 		b.WriteString("\n\n")
-		
+
 		// Examples
 		b.WriteString(helpStyle.Render("Examples:"))
 		b.WriteString("\n")
@@ -162,21 +162,21 @@ func (f ExtensionInstallForm) View() string {
 		b.WriteString("\n")
 		b.WriteString(textMutedStyle.Render("  • git@github.com:user/gemini-extension.git"))
 		b.WriteString("\n\n")
-		
+
 		// Help text
 		helpText := []string{
 			"Enter: Install",
 			"Esc: Cancel",
 		}
 		b.WriteString(keyDescStyle.Render(strings.Join(helpText, " • ")))
-		
+
 		// Error display
 		if f.err != nil {
 			b.WriteString("\n\n")
 			b.WriteString(errorStyle.Render("Error: " + f.err.Error()))
 		}
 	}
-	
+
 	// Center the form
 	form := formStyle.Render(b.String())
 	return lipgloss.Place(
@@ -192,16 +192,16 @@ func (f ExtensionInstallForm) renderField(label string, index int) string {
 	if f.focusIndex == index {
 		labelStyle = labelStyle.Foreground(colorAccent).Bold(true)
 	}
-	
+
 	fieldStyle := lipgloss.NewStyle().
 		Border(lipgloss.NormalBorder()).
 		BorderForeground(colorBorder).
 		Padding(0, 1)
-		
+
 	if f.focusIndex == index {
 		fieldStyle = fieldStyle.BorderForeground(colorBorderFocus)
 	}
-	
+
 	return fmt.Sprintf("%s\n%s",
 		labelStyle.Render(label+":"),
 		fieldStyle.Render(f.inputs[index].View()),
@@ -215,13 +215,13 @@ func (f *ExtensionInstallForm) install() tea.Cmd {
 		f.err = fmt.Errorf("source path or URL is required")
 		return nil
 	}
-	
+
 	// Basic validation for URLs
 	if strings.HasPrefix(source, "http://") {
 		f.err = fmt.Errorf("HTTP URLs are not allowed for security reasons, please use HTTPS")
 		return nil
 	}
-	
+
 	// Validate GitHub URLs
 	if strings.Contains(source, "github.com") {
 		if !strings.HasPrefix(source, "https://github.com/") && !strings.HasPrefix(source, "git@github.com:") {
@@ -229,27 +229,27 @@ func (f *ExtensionInstallForm) install() tea.Cmd {
 			return nil
 		}
 	}
-	
+
 	// Determine if it's a path or URL
-	isPath := !strings.HasPrefix(source, "http://") && 
-		!strings.HasPrefix(source, "https://") && 
+	isPath := !strings.HasPrefix(source, "http://") &&
+		!strings.HasPrefix(source, "https://") &&
 		!strings.HasPrefix(source, "git@")
-	
+
 	// Expand home directory if needed
 	if isPath && strings.HasPrefix(source, "~/") {
 		// This would need proper home directory expansion
 		// For now, we'll pass it as-is and let the installer handle it
 	}
-	
+
 	f.installing = true
 	f.err = nil
 	f.progress = "Starting installation..."
-	
+
 	// Call install callback
 	if f.onInstall != nil {
 		return f.onInstall(source, isPath)
 	}
-	
+
 	return nil
 }
 

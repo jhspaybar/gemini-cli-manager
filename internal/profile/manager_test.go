@@ -178,7 +178,7 @@ func TestProfileManager_CreateWithExtensions(t *testing.T) {
 		foundSimple := false
 		foundMCP := false
 		enabledCount := 0
-		
+
 		for _, ext := range retrieved.Extensions {
 			if ext.ID == "simple-extension" {
 				foundSimple = true
@@ -227,7 +227,7 @@ func TestProfileManager_Timestamps(t *testing.T) {
 
 	t.Run("Timestamps are set correctly", func(t *testing.T) {
 		beforeCreate := time.Now()
-		
+
 		profile := &Profile{
 			ID:          "timestamp-test",
 			Name:        "Timestamp Test",
@@ -258,11 +258,11 @@ func TestProfileManager_Timestamps(t *testing.T) {
 
 		// Save the original UpdatedAt for comparison
 		originalUpdatedAt := retrieved.UpdatedAt
-		
+
 		// Update the profile
 		time.Sleep(10 * time.Millisecond) // Ensure time difference
 		beforeUpdate := time.Now()
-		
+
 		retrieved.Description = "Updated description"
 		if err := manager.Save(retrieved); err != nil {
 			t.Fatalf("Failed to save profile: %v", err)

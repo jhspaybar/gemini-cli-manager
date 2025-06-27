@@ -24,16 +24,16 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 		// Create a malicious zip with path traversal
 		var buf bytes.Buffer
 		zipWriter := zip.NewWriter(&buf)
-		
+
 		// Add a normal manifest
 		manifest := `{"name": "evil-ext", "version": "1.0.0", "description": "Evil extension"}`
 		w, _ := zipWriter.Create("gemini-extension.json")
 		w.Write([]byte(manifest))
-		
+
 		// Try to write outside the extension directory
 		w, _ = zipWriter.Create("../../../etc/evil.txt")
 		w.Write([]byte("malicious content"))
-		
+
 		zipWriter.Close()
 
 		// Write the malicious zip to a file
@@ -42,7 +42,7 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 
 		// This should fail or sanitize the path
 		_, err = installer.InstallFromPath(maliciousZip)
-		
+
 		// Check that no file was written outside the extension directory
 		evilPath := filepath.Join(tmpDir, "..", "..", "..", "etc", "evil.txt")
 		if _, err := os.Stat(evilPath); err == nil {
@@ -63,7 +63,7 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 		var buf bytes.Buffer
 		gzWriter := gzip.NewWriter(&buf)
 		tarWriter := tar.NewWriter(gzWriter)
-		
+
 		// Add a normal manifest
 		manifest := `{"name": "evil-ext", "version": "1.0.0", "description": "Evil extension"}`
 		hdr := &tar.Header{
@@ -73,7 +73,7 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 		}
 		tarWriter.WriteHeader(hdr)
 		tarWriter.Write([]byte(manifest))
-		
+
 		// Try to write outside the extension directory
 		evil := "malicious content"
 		hdr = &tar.Header{
@@ -83,7 +83,7 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 		}
 		tarWriter.WriteHeader(hdr)
 		tarWriter.Write([]byte(evil))
-		
+
 		tarWriter.Close()
 		gzWriter.Close()
 
@@ -93,7 +93,7 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 
 		// This should fail or sanitize the path
 		_, err = installer.InstallFromPath(maliciousTar)
-		
+
 		// Check that no file was written outside the extension directory
 		evilPath := "/tmp/evil.txt"
 		if _, err := os.Stat(evilPath); err == nil {
@@ -114,15 +114,15 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 		// Create a zip with symlinks pointing outside
 		var buf bytes.Buffer
 		zipWriter := zip.NewWriter(&buf)
-		
+
 		// Add a normal manifest
 		manifest := `{"name": "evil-ext", "version": "1.0.0", "description": "Evil extension"}`
 		w, _ := zipWriter.Create("gemini-extension.json")
 		w.Write([]byte(manifest))
-		
+
 		// Note: Creating proper symlinks in zip files is complex and platform-specific
 		// Our protection should skip any files with symlink mode bits set
-		
+
 		zipWriter.Close()
 
 		// Write the zip to a file
@@ -154,12 +154,12 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 		// Create a zip with high compression ratio (simulated zip bomb)
 		var buf bytes.Buffer
 		zipWriter := zip.NewWriter(&buf)
-		
+
 		// Add a normal manifest
 		manifest := `{"name": "bomb-ext", "version": "1.0.0", "description": "Zip bomb test"}`
 		w, _ := zipWriter.Create("gemini-extension.json")
 		w.Write([]byte(manifest))
-		
+
 		// Add a highly compressible file (lots of zeros)
 		w, _ = zipWriter.Create("bomb.txt")
 		// Write 100MB of zeros (highly compressible)
@@ -167,7 +167,7 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 		for i := 0; i < 100; i++ {
 			w.Write(zeros)
 		}
-		
+
 		zipWriter.Close()
 
 		// Write the zip to a file
@@ -177,10 +177,10 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 		// Get size of compressed file
 		info, _ := os.Stat(bombZip)
 		compressedSize := info.Size()
-		
+
 		// Install should either fail or enforce size limits
 		_, err = installer.InstallFromPath(bombZip)
-		
+
 		// Check that we didn't extract 100MB
 		if err == nil {
 			// Check extracted size
@@ -191,7 +191,7 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 				}
 				return nil
 			})
-			
+
 			ratio := float64(totalSize) / float64(compressedSize)
 			if ratio > 100 {
 				t.Logf("Warning: High compression ratio detected (%.2f:1) - potential zip bomb", ratio)
@@ -211,16 +211,16 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 		// Create a zip with absolute paths
 		var buf bytes.Buffer
 		zipWriter := zip.NewWriter(&buf)
-		
+
 		// Add a normal manifest
 		manifest := `{"name": "abs-ext", "version": "1.0.0", "description": "Absolute path test"}`
 		w, _ := zipWriter.Create("gemini-extension.json")
 		w.Write([]byte(manifest))
-		
+
 		// Try to use absolute path
 		w, _ = zipWriter.Create("/tmp/absolute-evil.txt")
 		w.Write([]byte("malicious content"))
-		
+
 		zipWriter.Close()
 
 		// Write the zip to a file
@@ -229,7 +229,7 @@ func TestInstaller_SecurityEdgeCases(t *testing.T) {
 
 		// This should sanitize the path
 		_, err = installer.InstallFromPath(absZip)
-		
+
 		// Check that no file was written to /tmp
 		if _, err := os.Stat("/tmp/absolute-evil.txt"); err == nil {
 			t.Error("Absolute path attack succeeded - file written to /tmp")
@@ -247,11 +247,11 @@ func TestInstaller_MalformedArchives(t *testing.T) {
 		defer os.RemoveAll(tmpDir)
 
 		installer := NewInstaller(tmpDir)
-		
+
 		// Create empty zip
 		emptyZip := filepath.Join(tmpDir, "empty.zip")
 		os.WriteFile(emptyZip, []byte("PK\x05\x06\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"), 0644)
-		
+
 		_, err = installer.InstallFromPath(emptyZip)
 		if err == nil {
 			t.Error("Expected error for empty zip file")
@@ -266,11 +266,11 @@ func TestInstaller_MalformedArchives(t *testing.T) {
 		defer os.RemoveAll(tmpDir)
 
 		installer := NewInstaller(tmpDir)
-		
+
 		// Create corrupted zip
 		corruptedZip := filepath.Join(tmpDir, "corrupted.zip")
 		os.WriteFile(corruptedZip, []byte("This is not a zip file"), 0644)
-		
+
 		_, err = installer.InstallFromPath(corruptedZip)
 		if err == nil {
 			t.Error("Expected error for corrupted zip file")
@@ -289,13 +289,13 @@ func TestInstaller_MalformedArchives(t *testing.T) {
 		// Create a zip with a huge manifest
 		var buf bytes.Buffer
 		zipWriter := zip.NewWriter(&buf)
-		
+
 		// Create manifest with very long description (10MB)
 		longDesc := strings.Repeat("A", 10*1024*1024)
 		manifest := `{"name": "huge-ext", "version": "1.0.0", "description": "` + longDesc + `"}`
 		w, _ := zipWriter.Create("gemini-extension.json")
 		w.Write([]byte(manifest))
-		
+
 		zipWriter.Close()
 
 		// Write the zip to a file
@@ -307,4 +307,3 @@ func TestInstaller_MalformedArchives(t *testing.T) {
 		// We don't necessarily expect an error, but it shouldn't crash or use excessive memory
 	})
 }
-

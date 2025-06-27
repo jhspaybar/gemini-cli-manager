@@ -19,7 +19,7 @@ func TestEnvironmentPreparer_PrepareExtensions(t *testing.T) {
 
 	managerExtDir := filepath.Join(tmpDir, "manager", "extensions")
 	geminiExtDir := filepath.Join(tmpDir, "gemini", "extensions")
-	
+
 	os.MkdirAll(managerExtDir, 0755)
 	os.MkdirAll(geminiExtDir, 0755)
 
@@ -131,15 +131,15 @@ func TestEnvironmentPreparer_EdgeCases(t *testing.T) {
 
 	managerExtDir := filepath.Join(tmpDir, "manager", "extensions")
 	geminiExtDir := filepath.Join(tmpDir, "gemini", "extensions")
-	
+
 	os.MkdirAll(managerExtDir, 0755)
 
 	t.Run("gemini directory doesn't exist", func(t *testing.T) {
 		preparer := &EnvironmentPreparer{
-		managerExtDir: managerExtDir,
-		geminiExtDir:  geminiExtDir,
-	}
-		
+			managerExtDir: managerExtDir,
+			geminiExtDir:  geminiExtDir,
+		}
+
 		extDir := filepath.Join(managerExtDir, "test-ext")
 		os.MkdirAll(extDir, 0755)
 
@@ -161,9 +161,9 @@ func TestEnvironmentPreparer_EdgeCases(t *testing.T) {
 	t.Run("existing non-symlink file", func(t *testing.T) {
 		os.MkdirAll(geminiExtDir, 0755)
 		preparer := &EnvironmentPreparer{
-		managerExtDir: managerExtDir,
-		geminiExtDir:  geminiExtDir,
-	}
+			managerExtDir: managerExtDir,
+			geminiExtDir:  geminiExtDir,
+		}
 
 		// Create a regular file where symlink should go
 		conflictPath := filepath.Join(geminiExtDir, "conflict-ext")
@@ -185,9 +185,9 @@ func TestEnvironmentPreparer_EdgeCases(t *testing.T) {
 	t.Run("broken symlink in gemini dir", func(t *testing.T) {
 		os.MkdirAll(geminiExtDir, 0755)
 		preparer := &EnvironmentPreparer{
-		managerExtDir: managerExtDir,
-		geminiExtDir:  geminiExtDir,
-	}
+			managerExtDir: managerExtDir,
+			geminiExtDir:  geminiExtDir,
+		}
 
 		// Create broken symlink
 		brokenLink := filepath.Join(geminiExtDir, "broken")
@@ -239,9 +239,9 @@ func TestEnvironmentPreparer_EdgeCases(t *testing.T) {
 	t.Run("extension path doesn't exist", func(t *testing.T) {
 		os.MkdirAll(geminiExtDir, 0755)
 		preparer := &EnvironmentPreparer{
-		managerExtDir: managerExtDir,
-		geminiExtDir:  geminiExtDir,
-	}
+			managerExtDir: managerExtDir,
+			geminiExtDir:  geminiExtDir,
+		}
 
 		extensions := []*extension.Extension{
 			{ID: "nonexistent", Path: "/nonexistent/path"},
@@ -267,9 +267,9 @@ func TestEnvironmentPreparer_EdgeCases(t *testing.T) {
 
 		os.MkdirAll(geminiExtDir, 0755)
 		preparer := &EnvironmentPreparer{
-		managerExtDir: managerExtDir,
-		geminiExtDir:  geminiExtDir,
-	}
+			managerExtDir: managerExtDir,
+			geminiExtDir:  geminiExtDir,
+		}
 
 		// Create circular symlinks
 		link1 := filepath.Join(geminiExtDir, "circular1")

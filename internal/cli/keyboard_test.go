@@ -2,7 +2,7 @@ package cli
 
 import (
 	"testing"
-	
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
@@ -11,10 +11,10 @@ import (
 // TestEnterKeyBehavior tests that Enter key works correctly on different views
 func TestEnterKeyBehavior(t *testing.T) {
 	tests := []struct {
-		name           string
-		setupModel     func() Model
-		keyMsg         tea.KeyMsg
-		checkResult    func(t *testing.T, m Model, cmd tea.Cmd)
+		name        string
+		setupModel  func() Model
+		keyMsg      tea.KeyMsg
+		checkResult func(t *testing.T, m Model, cmd tea.Cmd)
 	}{
 		{
 			name: "Enter key on extension shows info",
@@ -39,7 +39,7 @@ func TestEnterKeyBehavior(t *testing.T) {
 				if m.currentView != ViewExtensionDetail {
 					t.Errorf("Expected ViewExtensionDetail, got %v", m.currentView)
 				}
-				
+
 				// Check that selected extension is set
 				if m.selectedExtension == nil {
 					t.Error("Expected selectedExtension to be set")
@@ -71,7 +71,7 @@ func TestEnterKeyBehavior(t *testing.T) {
 				if m.currentView != ViewExtensionDetail {
 					t.Errorf("Expected ViewExtensionDetail, got %v", m.currentView)
 				}
-				
+
 				// Check that selected extension is set
 				if m.selectedExtension == nil {
 					t.Error("Expected selectedExtension to be set")
@@ -99,14 +99,14 @@ func TestEnterKeyBehavior(t *testing.T) {
 			},
 		},
 	}
-	
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := tt.setupModel()
-			
+
 			var updatedModel Model
 			var cmd tea.Cmd
-			
+
 			// Update based on current view
 			switch m.currentView {
 			case ViewExtensions:
@@ -114,7 +114,7 @@ func TestEnterKeyBehavior(t *testing.T) {
 			case ViewProfiles:
 				updatedModel, cmd = m.updateProfiles(tt.keyMsg)
 			}
-			
+
 			tt.checkResult(t, updatedModel, cmd)
 		})
 	}
@@ -130,16 +130,16 @@ func TestRegressionEnterKeyNotBroken(t *testing.T) {
 			},
 			extensionsCursor: 0,
 		}
-		
+
 		// Before: Enter key did nothing after async refactor
 		// After: Enter key should show extension details
 		updated, _ := m.updateExtensions(tea.KeyMsg{Type: tea.KeyEnter})
-		
+
 		if updated.currentView != ViewExtensionDetail {
 			t.Error("Regression: Enter key on extension does not show details")
 		}
 	})
-	
+
 	t.Run("Profile Enter triggers activation", func(t *testing.T) {
 		m := Model{
 			currentView: ViewProfiles,
@@ -148,11 +148,11 @@ func TestRegressionEnterKeyNotBroken(t *testing.T) {
 			},
 			profilesCursor: 0,
 		}
-		
-		// Before: Enter key did nothing after async refactor  
+
+		// Before: Enter key did nothing after async refactor
 		// After: Enter key should return activation command
 		_, cmd := m.updateProfiles(tea.KeyMsg{Type: tea.KeyEnter})
-		
+
 		if cmd == nil {
 			t.Error("Regression: Enter key on profile does not activate")
 		}

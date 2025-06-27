@@ -61,12 +61,12 @@ func (i *Installer) Install(source string, isPath bool) (*Extension, error) {
 // InstallFromURL installs an extension from a remote URL
 func (i *Installer) InstallFromURL(url string) (*Extension, error) {
 	i.sendProgress("download", "Starting download...", 0)
-	
+
 	// Handle different URL types
 	if strings.Contains(url, "github.com") {
 		return i.installFromGitHub(url)
 	}
-	
+
 	// Generic URL download
 	return i.installFromDirectURL(url)
 }
@@ -74,7 +74,7 @@ func (i *Installer) InstallFromURL(url string) (*Extension, error) {
 // InstallFromPath installs an extension from a local path
 func (i *Installer) InstallFromPath(path string) (*Extension, error) {
 	i.sendProgress("validate", "Validating extension...", 0)
-	
+
 	// Expand home directory
 	if strings.HasPrefix(path, "~/") {
 		home, err := os.UserHomeDir()
@@ -83,29 +83,29 @@ func (i *Installer) InstallFromPath(path string) (*Extension, error) {
 		}
 		path = filepath.Join(home, path[2:])
 	}
-	
+
 	// Get absolute path
 	absPath, err := filepath.Abs(path)
 	if err != nil {
 		return nil, fmt.Errorf("resolving path: %w", err)
 	}
-	
+
 	// Check if path exists
 	info, err := os.Stat(absPath)
 	if err != nil {
 		return nil, fmt.Errorf("accessing path: %w", err)
 	}
-	
+
 	// If it's a directory, validate and copy
 	if info.IsDir() {
 		return i.installFromDirectory(absPath)
 	}
-	
+
 	// If it's a file, check if it's an archive
 	if strings.HasSuffix(path, ".zip") || strings.HasSuffix(path, ".tar.gz") || strings.HasSuffix(path, ".tgz") {
 		return i.installFromArchive(absPath)
 	}
-	
+
 	return nil, fmt.Errorf("unsupported file type")
 }
 
@@ -116,7 +116,7 @@ func (i *Installer) installFromGitHub(url string) (*Extension, error) {
 	// - https://github.com/user/repo
 	// - https://github.com/user/repo.git
 	// - git@github.com:user/repo.git
-	
+
 	var repoURL string
 	if strings.HasPrefix(url, "git@github.com:") {
 		// Convert SSH URL to HTTPS
@@ -125,23 +125,23 @@ func (i *Installer) installFromGitHub(url string) (*Extension, error) {
 	} else {
 		repoURL = strings.TrimSuffix(url, ".git")
 	}
-	
+
 	// Extract user and repo
 	parts := strings.Split(strings.TrimPrefix(repoURL, "https://github.com/"), "/")
 	if len(parts) < 2 {
 		return nil, fmt.Errorf("invalid GitHub URL format")
 	}
-	
+
 	user := parts[0]
 	repo := parts[1]
-	
+
 	// Try to download the latest release first
 	i.sendProgress("download", "Checking for latest release...", 10)
 	ext, err := i.downloadGitHubRelease(user, repo)
 	if err == nil {
 		return ext, nil
 	}
-	
+
 	// Fall back to cloning the repository
 	i.sendProgress("download", "Cloning repository...", 20)
 	return i.cloneGitRepository(url)
@@ -151,17 +151,17 @@ func (i *Installer) installFromGitHub(url string) (*Extension, error) {
 func (i *Installer) downloadGitHubRelease(user, repo string) (*Extension, error) {
 	// GitHub API URL for latest release
 	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", user, repo)
-	
+
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		return nil, fmt.Errorf("fetching release info: %w", err)
 	}
 	defer resp.Body.Close()
-	
+
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("no releases found")
 	}
-	
+
 	// Parse release info
 	var release struct {
 		Assets []struct {
@@ -169,18 +169,18 @@ func (i *Installer) downloadGitHubRelease(user, repo string) (*Extension, error)
 			BrowserDownloadURL string `json:"browser_download_url"`
 		} `json:"assets"`
 	}
-	
+
 	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
 		return nil, fmt.Errorf("parsing release info: %w", err)
 	}
-	
+
 	// Look for a suitable asset (zip or tar.gz)
 	for _, asset := range release.Assets {
 		if strings.HasSuffix(asset.Name, ".zip") || strings.HasSuffix(asset.Name, ".tar.gz") {
 			return i.downloadAndInstallAsset(asset.BrowserDownloadURL, asset.Name)
 		}
 	}
-	
+
 	return nil, fmt.Errorf("no suitable release assets found")
 }
 
@@ -193,22 +193,22 @@ func (i *Installer) downloadAndInstallAsset(url, filename string) (*Extension, e
 	}
 	defer os.Remove(tmpFile.Name())
 	defer tmpFile.Close()
-	
+
 	// Download the asset
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("downloading asset: %w", err)
 	}
 	defer resp.Body.Close()
-	
+
 	// Copy to temp file with progress
 	_, err = io.Copy(tmpFile, resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("saving asset: %w", err)
 	}
-	
+
 	tmpFile.Close()
-	
+
 	// Install from the downloaded file
 	return i.installFromArchive(tmpFile.Name())
 }
@@ -221,16 +221,16 @@ func (i *Installer) cloneGitRepository(url string) (*Extension, error) {
 		return nil, fmt.Errorf("creating temp directory: %w", err)
 	}
 	defer os.RemoveAll(tmpDir)
-	
+
 	// Clone the repository
 	cmd := exec.Command("git", "clone", "--depth", "1", url, tmpDir)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return nil, fmt.Errorf("cloning repository: %w\nOutput: %s", err, output)
 	}
-	
+
 	i.sendProgress("install", "Installing extension...", 80)
-	
+
 	// Install from the cloned directory
 	return i.installFromDirectory(tmpDir)
 }
@@ -243,43 +243,43 @@ func (i *Installer) installFromDirectory(srcDir string) (*Extension, error) {
 	if err != nil {
 		return nil, fmt.Errorf("reading manifest: %w", err)
 	}
-	
+
 	var ext Extension
 	if err := json.Unmarshal(manifestData, &ext); err != nil {
 		return nil, fmt.Errorf("parsing manifest: %w", err)
 	}
-	
+
 	// Set ID from directory name if not specified
 	if ext.ID == "" {
 		ext.ID = filepath.Base(srcDir)
 	}
-	
+
 	// Validate the extension
 	validator := NewValidator()
 	if err := validator.Validate(&ext); err != nil {
 		return nil, fmt.Errorf("validation failed: %w", err)
 	}
-	
+
 	// Create destination directory
 	destDir := filepath.Join(i.extensionsDir, ext.ID)
-	
+
 	// Check if extension already exists
 	if _, err := os.Stat(destDir); err == nil {
 		return nil, fmt.Errorf("extension %s already exists", ext.ID)
 	}
-	
+
 	// Copy the extension
 	i.sendProgress("install", "Copying files...", 90)
 	if err := i.copyDirectory(srcDir, destDir); err != nil {
 		return nil, fmt.Errorf("copying extension: %w", err)
 	}
-	
+
 	// Set the path
 	ext.Path = destDir
 	ext.Status = StatusInstalled
-	
+
 	i.sendProgress("complete", "Installation complete!", 100)
-	
+
 	return &ext, nil
 }
 
@@ -291,9 +291,9 @@ func (i *Installer) installFromArchive(archivePath string) (*Extension, error) {
 		return nil, fmt.Errorf("creating temp directory: %w", err)
 	}
 	defer os.RemoveAll(tmpDir)
-	
+
 	i.sendProgress("extract", "Extracting archive...", 50)
-	
+
 	// Extract based on file type
 	if strings.HasSuffix(archivePath, ".zip") {
 		if err := i.extractZip(archivePath, tmpDir); err != nil {
@@ -306,13 +306,13 @@ func (i *Installer) installFromArchive(archivePath string) (*Extension, error) {
 	} else {
 		return nil, fmt.Errorf("unsupported archive format")
 	}
-	
+
 	// Find the extension directory (might be nested)
 	extDir, err := i.findExtensionDir(tmpDir)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Install from the extracted directory
 	return i.installFromDirectory(extDir)
 }
@@ -324,7 +324,7 @@ func (i *Installer) installFromDirectURL(url string) (*Extension, error) {
 	if !strings.HasSuffix(filename, ".zip") && !strings.HasSuffix(filename, ".tar.gz") {
 		return nil, fmt.Errorf("unsupported file type (expected .zip or .tar.gz)")
 	}
-	
+
 	// Download to temp file with correct extension
 	ext := filepath.Ext(filename)
 	if ext == "" {
@@ -336,28 +336,28 @@ func (i *Installer) installFromDirectURL(url string) (*Extension, error) {
 	}
 	defer os.Remove(tmpFile.Name())
 	defer tmpFile.Close()
-	
+
 	i.sendProgress("download", "Downloading extension...", 30)
-	
+
 	// Download the file
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("downloading file: %w", err)
 	}
 	defer resp.Body.Close()
-	
+
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("download failed: %s", resp.Status)
 	}
-	
+
 	// Copy to temp file
 	_, err = io.Copy(tmpFile, resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("saving file: %w", err)
 	}
-	
+
 	tmpFile.Close()
-	
+
 	// Install from the downloaded file
 	return i.installFromArchive(tmpFile.Name())
 }
@@ -368,19 +368,19 @@ func (i *Installer) copyDirectory(src, dst string) error {
 		if err != nil {
 			return err
 		}
-		
+
 		// Calculate destination path
 		relPath, err := filepath.Rel(src, path)
 		if err != nil {
 			return err
 		}
 		dstPath := filepath.Join(dst, relPath)
-		
+
 		// Create directories
 		if info.IsDir() {
 			return os.MkdirAll(dstPath, info.Mode())
 		}
-		
+
 		// Copy files
 		return i.copyFile(path, dstPath)
 	})
@@ -393,24 +393,24 @@ func (i *Installer) copyFile(src, dst string) error {
 		return err
 	}
 	defer srcFile.Close()
-	
+
 	dstFile, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
 	defer dstFile.Close()
-	
+
 	_, err = io.Copy(dstFile, srcFile)
 	if err != nil {
 		return err
 	}
-	
+
 	// Copy file permissions
 	srcInfo, err := os.Stat(src)
 	if err != nil {
 		return err
 	}
-	
+
 	return os.Chmod(dst, srcInfo.Mode())
 }
 
@@ -420,17 +420,17 @@ func (i *Installer) sanitizePath(path string, destDir string) (string, error) {
 	if filepath.IsAbs(path) || strings.Contains(path, "..") {
 		return "", fmt.Errorf("unsafe path: %s", path)
 	}
-	
+
 	// Clean and join with destination
 	cleaned := filepath.Clean(path)
 	fullPath := filepath.Join(destDir, cleaned)
-	
+
 	// Final safety check
 	rel, err := filepath.Rel(destDir, fullPath)
 	if err != nil || strings.HasPrefix(rel, "..") {
 		return "", fmt.Errorf("path escapes destination directory: %s", path)
 	}
-	
+
 	return fullPath, nil
 }
 
@@ -441,18 +441,18 @@ func (i *Installer) extractZip(zipPath, destDir string) error {
 	if err != nil {
 		return err
 	}
-	
+
 	const maxArchiveSize = 100 * 1024 * 1024 // 100MB limit
 	if info.Size() > maxArchiveSize {
 		return fmt.Errorf("archive too large: %d bytes (max %d)", info.Size(), maxArchiveSize)
 	}
-	
+
 	reader, err := zip.OpenReader(zipPath)
 	if err != nil {
 		return err
 	}
 	defer reader.Close()
-	
+
 	// Check total uncompressed size to prevent zip bombs
 	var totalSize uint64
 	for _, file := range reader.File {
@@ -461,49 +461,49 @@ func (i *Installer) extractZip(zipPath, destDir string) error {
 			return fmt.Errorf("archive extraction would exceed size limit")
 		}
 	}
-	
+
 	for _, file := range reader.File {
 		// Sanitize the path to prevent directory traversal
 		path, err := i.sanitizePath(file.Name, destDir)
 		if err != nil {
 			return fmt.Errorf("unsafe path in archive: %w", err)
 		}
-		
+
 		if file.FileInfo().IsDir() {
 			os.MkdirAll(path, file.FileInfo().Mode())
 			continue
 		}
-		
+
 		// Skip symlinks for security reasons
 		if file.FileInfo().Mode()&os.ModeSymlink != 0 {
 			// TODO: Consider logging skipped symlinks
 			continue
 		}
-		
+
 		// Create directory if needed
 		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 			return err
 		}
-		
+
 		// Extract file
 		fileReader, err := file.Open()
 		if err != nil {
 			return err
 		}
 		defer fileReader.Close()
-		
+
 		targetFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.FileInfo().Mode())
 		if err != nil {
 			return err
 		}
 		defer targetFile.Close()
-		
+
 		_, err = io.Copy(targetFile, fileReader)
 		if err != nil {
 			return err
 		}
 	}
-	
+
 	return nil
 }
 
@@ -514,15 +514,15 @@ func (i *Installer) extractTarGz(tarPath, destDir string) error {
 		return err
 	}
 	defer file.Close()
-	
+
 	gzr, err := gzip.NewReader(file)
 	if err != nil {
 		return err
 	}
 	defer gzr.Close()
-	
+
 	tr := tar.NewReader(gzr)
-	
+
 	for {
 		header, err := tr.Next()
 		if err == io.EOF {
@@ -531,13 +531,13 @@ func (i *Installer) extractTarGz(tarPath, destDir string) error {
 		if err != nil {
 			return err
 		}
-		
+
 		// Sanitize the path to prevent directory traversal
 		path, err := i.sanitizePath(header.Name, destDir)
 		if err != nil {
 			return fmt.Errorf("unsafe path in archive: %w", err)
 		}
-		
+
 		switch header.Typeflag {
 		case tar.TypeDir:
 			if err := os.MkdirAll(path, os.FileMode(header.Mode)); err != nil {
@@ -548,19 +548,19 @@ func (i *Installer) extractTarGz(tarPath, destDir string) error {
 			if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
 				return err
 			}
-			
+
 			// Extract file
 			outFile, err := os.Create(path)
 			if err != nil {
 				return err
 			}
-			
+
 			if _, err := io.Copy(outFile, tr); err != nil {
 				outFile.Close()
 				return err
 			}
 			outFile.Close()
-			
+
 			// Set file permissions
 			if err := os.Chmod(path, os.FileMode(header.Mode)); err != nil {
 				return err
@@ -573,19 +573,19 @@ func (i *Installer) extractTarGz(tarPath, destDir string) error {
 			continue
 		}
 	}
-	
+
 	return nil
 }
 
 // findExtensionDir finds the directory containing gemini-extension.json
 func (i *Installer) findExtensionDir(rootDir string) (string, error) {
 	var extensionDir string
-	
+
 	err := filepath.Walk(rootDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		
+
 		if info.IsDir() {
 			// Check if this directory contains gemini-extension.json
 			manifestPath := filepath.Join(path, "gemini-extension.json")
@@ -594,18 +594,18 @@ func (i *Installer) findExtensionDir(rootDir string) (string, error) {
 				return filepath.SkipAll // Stop walking
 			}
 		}
-		
+
 		return nil
 	})
-	
+
 	if err != nil {
 		return "", err
 	}
-	
+
 	if extensionDir == "" {
 		return "", fmt.Errorf("no gemini-extension.json found in archive")
 	}
-	
+
 	return extensionDir, nil
 }
 

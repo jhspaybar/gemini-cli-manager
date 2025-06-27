@@ -25,7 +25,7 @@ type Manager struct {
 func NewManager(basePath string) *Manager {
 	// Get parent directory for state
 	parentDir := filepath.Dir(basePath)
-	
+
 	return &Manager{
 		basePath:     basePath,
 		profiles:     make(map[string]*Profile),
@@ -158,7 +158,7 @@ func (m *Manager) saveInternal(profile *Profile) error {
 	if existing, exists := m.profiles[profile.ID]; exists && !existing.CreatedAt.IsZero() {
 		profile.CreatedAt = existing.CreatedAt
 	}
-	
+
 	// Update timestamp
 	profile.UpdatedAt = time.Now()
 
@@ -176,12 +176,12 @@ func (m *Manager) saveInternal(profile *Profile) error {
 	// Write to file atomically
 	profilePath := filepath.Join(m.basePath, profile.ID+".yaml")
 	tempPath := profilePath + ".tmp"
-	
+
 	// Write to temporary file first
 	if err := os.WriteFile(tempPath, data, 0644); err != nil {
 		return fmt.Errorf("writing temporary profile file: %w", err)
 	}
-	
+
 	// Atomic rename
 	if err := os.Rename(tempPath, profilePath); err != nil {
 		// Clean up temp file on error
@@ -246,18 +246,18 @@ func (m *Manager) SetActive(id string) error {
 	}
 
 	m.activeID = id
-	
+
 	// Save active profile to persistent state
 	if err := m.stateManager.SetActiveProfile(id); err != nil {
 		// Log but don't fail the operation
 		fmt.Printf("Warning: failed to save active profile state: %v\n", err)
 	}
-	
+
 	// Update last used timestamp
 	now := time.Now()
 	profile.LastUsed = &now
 	profile.UsageCount++
-	
+
 	// Save the updated profile (use internal method since we already have the lock)
 	return m.saveInternal(profile)
 }

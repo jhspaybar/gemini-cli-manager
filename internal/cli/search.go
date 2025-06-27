@@ -12,10 +12,10 @@ import (
 
 // SearchBar represents a search input component
 type SearchBar struct {
-	textInput    textinput.Model
-	active       bool
-	placeholder  string
-	width        int
+	textInput   textinput.Model
+	active      bool
+	placeholder string
+	width       int
 }
 
 // NewSearchBar creates a new search bar
@@ -25,7 +25,7 @@ func NewSearchBar(placeholder string) SearchBar {
 	ti.CharLimit = 50
 	ti.Width = 30
 	ti.Prompt = "🔍 "
-	
+
 	return SearchBar{
 		textInput:   ti,
 		placeholder: placeholder,
@@ -42,7 +42,7 @@ func (s SearchBar) Update(msg tea.Msg) (SearchBar, tea.Cmd) {
 	if !s.active {
 		return s, nil
 	}
-	
+
 	var cmd tea.Cmd
 	s.textInput, cmd = s.textInput.Update(msg)
 	return s, cmd
@@ -54,11 +54,11 @@ func (s SearchBar) View() string {
 		Border(lipgloss.NormalBorder()).
 		BorderForeground(colorBorder).
 		Padding(0, 1)
-		
+
 	if s.active {
 		style = style.BorderForeground(colorBorderFocus)
 	}
-	
+
 	return style.Render(s.textInput.View())
 }
 
@@ -105,10 +105,10 @@ func filterExtensions(extensions []*extension.Extension, query string) []*extens
 	if query == "" {
 		return extensions
 	}
-	
+
 	query = strings.ToLower(query)
 	filtered := make([]*extension.Extension, 0)
-	
+
 	for _, ext := range extensions {
 		// Search in name and description
 		if strings.Contains(strings.ToLower(ext.Name), query) ||
@@ -116,7 +116,7 @@ func filterExtensions(extensions []*extension.Extension, query string) []*extens
 			filtered = append(filtered, ext)
 		}
 	}
-	
+
 	return filtered
 }
 
@@ -125,10 +125,10 @@ func filterProfiles(profiles []*profile.Profile, query string) []*profile.Profil
 	if query == "" {
 		return profiles
 	}
-	
+
 	query = strings.ToLower(query)
 	filtered := make([]*profile.Profile, 0)
-	
+
 	for _, prof := range profiles {
 		// Search in name, description, and tags
 		if strings.Contains(strings.ToLower(prof.Name), query) ||
@@ -136,7 +136,7 @@ func filterProfiles(profiles []*profile.Profile, query string) []*profile.Profil
 			filtered = append(filtered, prof)
 			continue
 		}
-		
+
 		// Search in tags
 		for _, tag := range prof.Tags {
 			if strings.Contains(strings.ToLower(tag), query) {
@@ -145,6 +145,6 @@ func filterProfiles(profiles []*profile.Profile, query string) []*profile.Profil
 			}
 		}
 	}
-	
+
 	return filtered
 }

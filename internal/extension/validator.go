@@ -26,7 +26,7 @@ func (v *Validator) Validate(ext *Extension) error {
 	if ext == nil {
 		return &ValidationError{Field: "extension", Message: "extension cannot be nil"}
 	}
-	
+
 	// Validate required fields
 	if ext.ID == "" {
 		return &ValidationError{Field: "id", Message: "extension ID is required"}
@@ -44,7 +44,7 @@ func (v *Validator) Validate(ext *Extension) error {
 	// Validate name matches directory name (Gemini requirement)
 	if ext.ID != "" && ext.Name != ext.ID {
 		return &ValidationError{
-			Field: "name", 
+			Field:   "name",
 			Message: fmt.Sprintf("extension name '%s' must match directory name '%s'", ext.Name, ext.ID),
 		}
 	}
@@ -59,7 +59,7 @@ func (v *Validator) Validate(ext *Extension) error {
 	if !v.versionPattern.MatchString(ext.Version) {
 		return &ValidationError{Field: "version", Message: "invalid version format (use semantic versioning)"}
 	}
-	
+
 	// Description is optional in Gemini spec
 	// But we still recommend it
 	if ext.Description == "" {
@@ -123,14 +123,12 @@ func (v *Validator) validateMCPServer(name string, server MCPServer) error {
 			Message: "at least one transport (command, url, or httpUrl) is required",
 		}
 	}
-	
+
 	// Validate extension name must match directory name
 	// This is enforced by Gemini CLI
-	
+
 	return nil
 }
-
-
 
 // contains checks if a slice contains a string
 func contains(slice []string, item string) bool {

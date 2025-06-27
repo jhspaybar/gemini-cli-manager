@@ -56,7 +56,7 @@ func TestManager_Scan(t *testing.T) {
 		if os.Getuid() == 0 {
 			t.Skip("Skipping permission test when running as root")
 		}
-		
+
 		readOnlyDir := filepath.Join(tmpDir, "readonly")
 		os.MkdirAll(readOnlyDir, 0755)
 		os.Chmod(readOnlyDir, 0444)
@@ -150,7 +150,7 @@ func TestManager_Remove(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	manager := NewManager(tmpDir)
-	
+
 	extPath := createTestExtension(t, tmpDir, "removable-ext")
 	manager.Scan()
 
@@ -201,7 +201,6 @@ func TestManager_ConcurrentAccess(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	manager := NewManager(tmpDir)
-	
 
 	// Create multiple extensions
 	for i := 0; i < 10; i++ {
@@ -227,7 +226,7 @@ func TestManager_ConcurrentAccess(t *testing.T) {
 					errors <- fmt.Errorf("Get returned nil")
 					return
 				}
-				
+
 				// List extensions
 				exts := manager.List()
 				if len(exts) == 0 {
@@ -243,7 +242,7 @@ func TestManager_ConcurrentAccess(t *testing.T) {
 		go func(id int) {
 			defer func() { done <- true }()
 			extID := fmt.Sprintf("ext%d", id)
-			
+
 			// Toggle enable/disable
 			for j := 0; j < 10; j++ {
 				if j%2 == 0 {
@@ -283,7 +282,6 @@ func TestManager_EdgeCases(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	manager := NewManager(tmpDir)
-	
 
 	t.Run("remove non-existent extension", func(t *testing.T) {
 		err := manager.Remove("non-existent")
@@ -315,7 +313,7 @@ func TestManager_EdgeCases(t *testing.T) {
 		if err != nil {
 			t.Errorf("Scan should not fail with corrupted manifest: %v", err)
 		}
-		
+
 		// Should have 0 extensions loaded
 		if len(manager.List()) != 0 {
 			t.Errorf("Should have 0 extensions with corrupted manifest, got %d", len(manager.List()))
@@ -328,7 +326,7 @@ func TestManager_EdgeCases(t *testing.T) {
 		for i := 0; i < 20; i++ {
 			longPath = filepath.Join(longPath, fmt.Sprintf("very-long-directory-name-%d", i))
 		}
-		
+
 		// This might fail on some systems due to path length limits
 		err := os.MkdirAll(longPath, 0755)
 		if err != nil {

@@ -91,7 +91,7 @@ func (l *Loader) startMCPServers(ext *Extension) error {
 		// Gemini CLI will handle starting/stopping servers
 		return nil
 	}
-	
+
 	return nil
 }
 

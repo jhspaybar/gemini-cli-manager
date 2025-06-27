@@ -196,7 +196,6 @@ func TestValidator_Validate(t *testing.T) {
 	}
 }
 
-
 func TestValidator_EdgeCases(t *testing.T) {
 	validator := NewValidator()
 

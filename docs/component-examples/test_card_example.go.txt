@@ -1,0 +1,157 @@
+// Example visual test for Card component
+// This would go in test/adhoc/test_card.go
+
+package main
+
+import (
+	"fmt"
+	"strings"
+	
+	"github.com/charmbracelet/lipgloss"
+	"github.com/jhspaybar/gemini-cli-manager/internal/theme"
+	"github.com/jhspaybar/gemini-cli-manager/internal/ui/components"
+)
+
+func main() {
+	// Initialize theme
+	theme.SetTheme("github-dark")
+	
+	fmt.Println("Card Component Visual Test")
+	fmt.Println(strings.Repeat("=", 80))
+	fmt.Println()
+	
+	// Test 1: Normal card
+	fmt.Println("1. Normal Card:")
+	card1 := components.NewCard(60).
+		SetTitle("Markdown Assistant", "🧩").
+		SetDescription("A helpful assistant for writing and formatting Markdown documents with live preview support.").
+		AddMetadata("Version", "1.2.0").
+		AddMetadata("Type", "extension").
+		AddMetadata("Author", "Anthropic")
+	
+	fmt.Println(card1.Render())
+	fmt.Println()
+	
+	// Test 2: Selected card
+	fmt.Println("2. Selected Card:")
+	card2 := components.NewCard(60).
+		SetTitle("Code Reviewer", "🔍").
+		SetDescription("Automated code review with suggestions for improvements.").
+		AddMetadata("Version", "2.0.1").
+		AddMetadata("Type", "tool").
+		SetSelected(true)
+	
+	fmt.Println(card2.Render())
+	fmt.Println()
+	
+	// Test 3: Focused card
+	fmt.Println("3. Focused Card:")
+	card3 := components.NewCard(60).
+		SetTitle("Test Runner", "🧪").
+		SetDescription("Run and manage your test suites with detailed reporting.").
+		AddMetadata("Status", "Active").
+		SetFocused(true)
+	
+	fmt.Println(card3.Render())
+	fmt.Println()
+	
+	// Test 4: Compact cards in a row
+	fmt.Println("4. Compact Cards (side by side):")
+	compact1 := components.NewCard(25).
+		SetTitle("Linter", "⚡").
+		SetSelected(true)
+	
+	compact2 := components.NewCard(25).
+		SetTitle("Formatter", "✨")
+	
+	compact3 := components.NewCard(25).
+		SetTitle("Builder", "🔨")
+	
+	row := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		compact1.RenderCompact(),
+		" ",
+		compact2.RenderCompact(),
+		" ",
+		compact3.RenderCompact(),
+	)
+	fmt.Println(row)
+	fmt.Println()
+	
+	// Test 5: Card with long content (truncation test)
+	fmt.Println("5. Card with Long Content:")
+	card5 := components.NewCard(50).
+		SetTitle("Long Description Test", "📝").
+		SetDescription("This is a very long description that should be truncated to fit within the card width. It contains lots of text to demonstrate how the card handles overflow and ensures content doesn't break the layout.").
+		AddMetadata("Lines", "100+").
+		AddMetadata("Size", "2.5MB")
+	
+	fmt.Println(card5.Render())
+	fmt.Println()
+	
+	// Test 6: Card with no description
+	fmt.Println("6. Card with No Description:")
+	card6 := components.NewCard(50).
+		SetTitle("Minimal Card", "📦").
+		AddMetadata("Type", "simple")
+	
+	fmt.Println(card6.Render())
+	fmt.Println()
+	
+	// Test 7: Different themes
+	fmt.Println("7. Cards with Different Themes:")
+	fmt.Println("Switching to Monokai theme...")
+	theme.SetTheme("monokai")
+	
+	card7 := components.NewCard(60).
+		SetTitle("Theme Test Card", "🎨").
+		SetDescription("This card uses the Monokai theme colors.").
+		AddMetadata("Theme", "monokai").
+		SetSelected(true)
+	
+	fmt.Println(card7.Render())
+	fmt.Println()
+	
+	// Test 8: Custom styles
+	fmt.Println("8. Card with Custom Styles:")
+	customNormal := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("99")).
+		Padding(2, 3).
+		Width(60)
+	
+	customSelected := lipgloss.NewStyle().
+		Border(lipgloss.ThickBorder()).
+		BorderForeground(lipgloss.Color("212")).
+		Background(lipgloss.Color("235")).
+		Padding(2, 3).
+		Width(60)
+	
+	customFocused := lipgloss.NewStyle().
+		Border(lipgloss.DoubleBorder()).
+		BorderForeground(lipgloss.Color("205")).
+		Padding(2, 3).
+		Width(60)
+	
+	card8 := components.NewCard(60).
+		SetTitle("Custom Styled Card", "🎯").
+		SetDescription("This card uses completely custom styles.").
+		SetStyles(customNormal, customSelected, customFocused).
+		SetFocused(true)
+	
+	fmt.Println(card8.Render())
+	
+	// Summary
+	fmt.Println()
+	fmt.Println(strings.Repeat("=", 80))
+	fmt.Println("✅ Card component test completed")
+	fmt.Println()
+	fmt.Println("Features tested:")
+	fmt.Println("- Normal, selected, and focused states")
+	fmt.Println("- Title with icons")
+	fmt.Println("- Description with truncation")
+	fmt.Println("- Metadata display")
+	fmt.Println("- Compact rendering")
+	fmt.Println("- Theme integration")
+	fmt.Println("- Custom styling")
+}

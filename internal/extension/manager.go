@@ -59,7 +59,7 @@ func (m *Manager) Scan() error {
 		if !entry.IsDir() {
 			continue
 		}
-		
+
 		// Skip hidden directories (like .trash)
 		if strings.HasPrefix(entry.Name(), ".") {
 			continue
@@ -181,23 +181,22 @@ func (m *Manager) Disable(id string) error {
 // Install adds a new extension from a source
 func (m *Manager) Install(source string, isPath bool) (*Extension, error) {
 	installer := NewInstaller(m.extensionsDir)
-	
+
 	// Install the extension
 	ext, err := installer.Install(source, isPath)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Rescan to pick up the new extension
 	if err := m.Scan(); err != nil {
 		// Try to clean up
 		os.RemoveAll(ext.Path)
 		return nil, fmt.Errorf("rescanning after install: %w", err)
 	}
-	
+
 	return ext, nil
 }
-
 
 // Remove deletes an extension
 func (m *Manager) Remove(id string) error {

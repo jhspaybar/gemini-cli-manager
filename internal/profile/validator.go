@@ -22,7 +22,7 @@ func (v *Validator) Validate(p *Profile) error {
 	if p == nil {
 		return &ValidationError{Field: "profile", Message: "profile cannot be nil"}
 	}
-	
+
 	// Validate ID
 	if p.ID == "" {
 		return &ValidationError{Field: "id", Message: "profile ID is required"}

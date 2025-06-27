@@ -36,7 +36,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	// Check if we need to exec into Gemini
 	if m, ok := finalModel.(cli.Model); ok && m.ShouldExecGemini() {
 		profile, extensions, launcher := m.GetExecInfo()

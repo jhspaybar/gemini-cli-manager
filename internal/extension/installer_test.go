@@ -31,7 +31,7 @@ func TestInstaller_InstallFromPath(t *testing.T) {
 	t.Run("install from directory", func(t *testing.T) {
 		// Use the test data directory
 		srcDir := getTestDataPath("simple-extension")
-		
+
 		ext, err := installer.InstallFromPath(srcDir)
 		if err != nil {
 			t.Fatalf("InstallFromPath() error = %v", err)
@@ -46,7 +46,7 @@ func TestInstaller_InstallFromPath(t *testing.T) {
 		if _, err := os.Stat(installedPath); os.IsNotExist(err) {
 			t.Error("Extension was not installed")
 		}
-		
+
 		// Verify files were copied
 		manifestPath := filepath.Join(installedPath, "gemini-extension.json")
 		if _, err := os.Stat(manifestPath); os.IsNotExist(err) {
@@ -62,7 +62,7 @@ func TestInstaller_InstallFromPath(t *testing.T) {
 
 		// Simulate home path with non-existent directory
 		relativePath := "~/nonexistent-extension"
-		
+
 		// This should fail because the path doesn't exist
 		_, err = installer.InstallFromPath(relativePath)
 		if err == nil {
@@ -80,7 +80,7 @@ func TestInstaller_InstallFromPath(t *testing.T) {
 	t.Run("install file instead of directory", func(t *testing.T) {
 		// Use an actual file from test data
 		filePath := getTestDataPath("simple-extension.zip")
-		
+
 		// This should actually work since it's a zip file
 		ext, err := installer.InstallFromPath(filePath)
 		if err != nil {
@@ -104,7 +104,7 @@ func TestInstaller_InstallFromArchive(t *testing.T) {
 
 		installer := NewInstaller(tmpDir)
 		zipPath := getTestDataPath("simple-extension.zip")
-		
+
 		ext, err := installer.InstallFromPath(zipPath)
 		if err != nil {
 			t.Fatalf("InstallFromPath(zip) error = %v", err)
@@ -131,7 +131,7 @@ func TestInstaller_InstallFromArchive(t *testing.T) {
 
 		installer := NewInstaller(tmpDir)
 		tarPath := getTestDataPath("simple-extension.tar.gz")
-		
+
 		ext, err := installer.InstallFromPath(tarPath)
 		if err != nil {
 			t.Fatalf("InstallFromPath(tar.gz) error = %v", err)
@@ -151,7 +151,7 @@ func TestInstaller_InstallFromArchive(t *testing.T) {
 
 		installer := NewInstaller(tmpDir)
 		nestedPath := getTestDataPath("nested-extension.zip")
-		
+
 		ext, err := installer.InstallFromPath(nestedPath)
 		if err != nil {
 			t.Fatalf("Failed to install nested archive: %v", err)
@@ -171,7 +171,7 @@ func TestInstaller_InstallFromArchive(t *testing.T) {
 
 		installer := NewInstaller(tmpDir)
 		noManifestPath := getTestDataPath("no-manifest.zip")
-		
+
 		_, err = installer.InstallFromPath(noManifestPath)
 		if err == nil {
 			t.Error("Expected error for archive without manifest")
@@ -250,7 +250,7 @@ func TestInstaller_EdgeCases(t *testing.T) {
 	t.Run("install already existing extension", func(t *testing.T) {
 		// Use test data
 		srcDir := getTestDataPath("simple-extension")
-		
+
 		// Install once
 		_, err := installer.InstallFromPath(srcDir)
 		if err != nil {
@@ -274,7 +274,7 @@ func TestInstaller_EdgeCases(t *testing.T) {
 			t.Fatalf("Failed to create temp dir: %v", err)
 		}
 		defer os.RemoveAll(badDir)
-		
+
 		// Create invalid manifest (missing required fields)
 		invalidManifest := `{
 			"name": "bad-ext"
@@ -302,10 +302,10 @@ func TestInstaller_EdgeCases(t *testing.T) {
 		// Create read-only destination
 		readOnlyDir := filepath.Join(tmpDir, "readonly")
 		os.MkdirAll(readOnlyDir, 0755)
-		
+
 		// Create installer pointing to read-only directory
 		roInstaller := NewInstaller(readOnlyDir)
-		
+
 		// Make directory read-only
 		os.Chmod(readOnlyDir, 0444)
 		defer os.Chmod(readOnlyDir, 0755)
@@ -329,7 +329,7 @@ func TestInstaller_EdgeCases(t *testing.T) {
 			t.Fatalf("Failed to create temp dir: %v", err)
 		}
 		defer os.RemoveAll(symlinkDir)
-		
+
 		// Create manifest that matches directory name
 		dirName := filepath.Base(symlinkDir)
 		manifest := fmt.Sprintf(`{
@@ -338,7 +338,7 @@ func TestInstaller_EdgeCases(t *testing.T) {
   "description": "Test extension with symlinks"
 }`, dirName)
 		os.WriteFile(filepath.Join(symlinkDir, "gemini-extension.json"), []byte(manifest), 0644)
-		
+
 		// Create a file and symlink
 		os.WriteFile(filepath.Join(symlinkDir, "original.txt"), []byte("original"), 0644)
 		os.Symlink("original.txt", filepath.Join(symlinkDir, "link.txt"))
@@ -364,7 +364,7 @@ func TestInstaller_GitHubURL(t *testing.T) {
 			"https://github.com/user/repo.git",
 			"git@github.com:user/repo.git",
 		}
-		
+
 		for _, url := range urls {
 			// Just verify the URL format is recognized
 			if !strings.Contains(url, "github.com") {
@@ -382,17 +382,17 @@ func TestInstaller_ProgressCallback(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	installer := NewInstaller(tmpDir)
-	
+
 	t.Run("install without progress tracking", func(t *testing.T) {
 		ext, err := installer.Install(
 			getTestDataPath("simple-extension"),
 			true,
 		)
-		
+
 		if err != nil {
 			t.Fatalf("Install failed: %v", err)
 		}
-		
+
 		if ext.Name != "simple-extension" {
 			t.Errorf("Extension name = %q, want %q", ext.Name, "simple-extension")
 		}

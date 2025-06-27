@@ -66,16 +66,16 @@ type SimpleLaunchModal struct {
 	profile    *profile.Profile
 	extensions []*extension.Extension
 	launcher   *launcher.SimpleLauncher
-	
+
 	// UI state
-	width      int
-	height     int
-	spinner    spinner.Model
-	state      launchState
-	progress   []launchStep
+	width       int
+	height      int
+	spinner     spinner.Model
+	state       launchState
+	progress    []launchStep
 	currentStep int
-	error      error
-	
+	error       error
+
 	// Callbacks
 	onComplete func() tea.Cmd
 	onCancel   func() tea.Cmd
@@ -144,11 +144,11 @@ func (m SimpleLaunchModal) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			fmt.Fprintf(debugLog, "Received launchStepMsg: step=%d, message=%s\n", msg.step, msg.message)
 			debugLog.Close()
 		}
-		
+
 		m.currentStep = msg.step
 		m.progress[msg.step].status = stepRunning
 		m.progress[msg.step].message = msg.message
-		
+
 		return m, m.continueNextStep()
 
 	case launchCompleteStepMsg:
@@ -193,34 +193,34 @@ func (m SimpleLaunchModal) View() string {
 
 	// Title
 	title := h1Style.Render("🚀 Launching Gemini CLI")
-	
+
 	// Build content
 	var content strings.Builder
 	content.WriteString(title)
 	content.WriteString("\n\n")
-	
+
 	// Progress steps
 	for i, step := range m.progress {
 		icon := m.getStepIcon(step.status)
 		style := m.getStepStyle(step.status)
-		
+
 		line := fmt.Sprintf("%s %s", icon, step.name)
 		if step.duration > 0 {
 			line += textDimStyle.Render(fmt.Sprintf(" (%dms)", step.duration.Milliseconds()))
 		}
-		
+
 		content.WriteString(style.Render(line))
-		
+
 		if step.message != "" && (step.status == stepRunning || step.status == stepFailed) {
 			content.WriteString("\n")
 			content.WriteString(textDimStyle.Render("   " + step.message))
 		}
-		
+
 		if i < len(m.progress)-1 {
 			content.WriteString("\n")
 		}
 	}
-	
+
 	// Footer based on state
 	content.WriteString("\n\n")
 	switch m.state {
@@ -230,17 +230,17 @@ func (m SimpleLaunchModal) View() string {
 		content.WriteString(textMutedStyle.Render("Preparing launch..."))
 		content.WriteString("\n")
 		content.WriteString(keyDescStyle.Render("Press Esc to cancel"))
-		
+
 	case launchStateLaunching:
 		content.WriteString(m.spinner.View())
 		content.WriteString(" ")
 		content.WriteString(textStyle.Render("Launching Gemini CLI..."))
-		
+
 	case launchStateSuccess:
 		content.WriteString(successStyle.Render("✓ Successfully launched!"))
 		content.WriteString("\n")
 		content.WriteString(keyDescStyle.Render("Gemini CLI is now running"))
-		
+
 	case launchStateFailed:
 		content.WriteString(errorStyle.Render("✗ Launch failed"))
 		if m.error != nil {
@@ -250,7 +250,7 @@ func (m SimpleLaunchModal) View() string {
 		content.WriteString("\n")
 		content.WriteString(keyDescStyle.Render("Press Enter to close"))
 	}
-	
+
 	// Center the modal
 	modal := modalStyle.Render(content.String())
 	return lipgloss.Place(
@@ -318,7 +318,7 @@ func (m SimpleLaunchModal) startLaunch() tea.Cmd {
 		fmt.Fprintf(debugLog, "startLaunch() called\n")
 		debugLog.Close()
 	}
-	
+
 	return func() tea.Msg {
 		return launchStepMsg{
 			step:    0,
@@ -334,14 +334,14 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 		fmt.Fprintf(debugLog, "continueNextStep() called, currentStep=%d\n", m.currentStep)
 		debugLog.Close()
 	}
-	
+
 	return func() tea.Msg {
 		start := time.Now()
-		
+
 		switch m.currentStep {
 		case 0: // Profile validation
 			time.Sleep(300 * time.Millisecond)
-			
+
 			// Need to return both the completion and the next step
 			return tea.Batch(
 				func() tea.Msg {
@@ -358,10 +358,10 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 					}
 				},
 			)()
-			
+
 		case 1: // Extension check
 			time.Sleep(500 * time.Millisecond)
-			
+
 			return tea.Batch(
 				func() tea.Msg {
 					return launchCompleteStepMsg{
@@ -377,10 +377,10 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 					}
 				},
 			)()
-			
+
 		case 2: // Environment setup
 			time.Sleep(200 * time.Millisecond)
-			
+
 			return tea.Batch(
 				func() tea.Msg {
 					return launchCompleteStepMsg{
@@ -396,11 +396,11 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 					}
 				},
 			)()
-			
+
 		case 3: // Launch Gemini
 			// Don't actually launch here - just validate we can
 			// The actual exec needs to happen after Bubble Tea shuts down
-			
+
 			// Debug log
 			debugLog, _ := os.OpenFile("/tmp/gemini-cli-manager-debug.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 			if debugLog != nil {
@@ -408,7 +408,7 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 				fmt.Fprintf(debugLog, "Ready to launch after TUI exits\n")
 				debugLog.Close()
 			}
-			
+
 			// Just mark as successful and let the main app handle the actual exec
 			return tea.Batch(
 				func() tea.Msg {
@@ -424,7 +424,7 @@ func (m SimpleLaunchModal) continueNextStep() tea.Cmd {
 				},
 			)()
 		}
-		
+
 		return nil
 	}
 }

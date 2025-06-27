@@ -44,7 +44,7 @@ func TestStateManager(t *testing.T) {
 	t.Run("Handle missing state file", func(t *testing.T) {
 		// Create new manager with non-existent file
 		newManager := NewManager(filepath.Join(tmpDir, "nonexistent"))
-		
+
 		// Should return empty string, not error
 		id, err := newManager.GetActiveProfile()
 		if err != nil {

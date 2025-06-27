@@ -36,20 +36,20 @@ func (e UIError) Error() string {
 // Format formats the error for display in the UI
 func (e UIError) Format() string {
 	var parts []string
-	
+
 	// Main message
 	parts = append(parts, errorStyle.Render("Error: "+e.Message))
-	
+
 	// Details if available
 	if e.Details != "" {
 		parts = append(parts, textMutedStyle.Render("  "+e.Details))
 	}
-	
+
 	// Hint if available
 	if e.Hint != "" {
 		parts = append(parts, helpStyle.Render("  💡 "+e.Hint))
 	}
-	
+
 	return strings.Join(parts, "\n")
 }
 
@@ -109,7 +109,7 @@ func NewNetworkError(operation string, err error) UIError {
 	} else if strings.Contains(err.Error(), "certificate") {
 		hint = "There may be a certificate issue. Check the URL or your system time"
 	}
-	
+
 	return UIError{
 		Type:    ErrorTypeNetwork,
 		Message: fmt.Sprintf("Network error during %s", operation),
@@ -123,31 +123,31 @@ func WrapError(err error, context string) UIError {
 	if err == nil {
 		return UIError{}
 	}
-	
+
 	// Check if it's already a UIError
 	if uiErr, ok := err.(UIError); ok {
 		return uiErr
 	}
-	
+
 	// Try to determine error type from error message
 	errStr := err.Error()
-	
+
 	if strings.Contains(errStr, "permission denied") || strings.Contains(errStr, "access denied") {
 		return NewPermissionError(context)
 	}
-	
+
 	if strings.Contains(errStr, "no such file") || strings.Contains(errStr, "not found") {
 		return NewNotFoundError("Resource", context)
 	}
-	
+
 	if strings.Contains(errStr, "already exists") {
 		return NewConflictError("Resource", context)
 	}
-	
+
 	if strings.Contains(errStr, "timeout") || strings.Contains(errStr, "connection") {
 		return NewNetworkError(context, err)
 	}
-	
+
 	// Generic error
 	return UIError{
 		Type:    ErrorTypeSystem,

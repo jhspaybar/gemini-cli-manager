@@ -2,11 +2,12 @@ package cli
 
 import (
 	"fmt"
-	
-	tea "github.com/charmbracelet/bubbletea"
+
 	"github.com/charmbracelet/bubbles/key"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/jhspaybar/gemini-cli-manager/internal/extension"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
+	"github.com/jhspaybar/gemini-cli-manager/internal/theme"
 )
 
 // closeModalMsg is sent when a modal wants to close
@@ -123,17 +124,17 @@ var (
 // Update handles all messages and updates the model accordingly
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	LogMessage("Model.Update", msg)
-	
+
 	// Handle modal updates first
 	if m.showingModal && m.modal != nil {
 		LogDebug("Modal is showing, type: %T", m.modal)
-		
+
 		// Allow Ctrl+C to quit even in modals
 		if keyMsg, ok := msg.(tea.KeyMsg); ok && keyMsg.String() == "ctrl+c" {
 			LogDebug("Ctrl+C pressed in modal, quitting")
 			return m, tea.Quit
 		}
-		
+
 		switch msg := msg.(type) {
 		case tea.WindowSizeMsg:
 			// Update main model size
@@ -158,12 +159,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.modal = modal
 			}
 		}
-		
+
 		LogDebug("Calling modal.Update with message: %T", msg)
 		updatedModal, cmd := m.modal.Update(msg)
 		LogDebug("Modal.Update returned, cmd: %v", cmd)
 		m.modal = updatedModal
-		
+
 		// Check if modal wants to close
 		switch msg := msg.(type) {
 		case LaunchCompleteMsg:
@@ -213,12 +214,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Profile was saved successfully
 			m.showingModal = false
 			m.modal = nil
-			
+
 			// Store the new profile info for cursor positioning
 			if msg.isNew {
 				m.newProfileID = msg.profile.ID
 			}
-			
+
 			// Refresh profiles list asynchronously
 			return m, m.loadProfilesCmd()
 		case profileSwitchMsg:
@@ -239,11 +240,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.modal = nil
 			return m, tea.Quit
 		}
-		
+
 		// Return with the command from modal update
 		return m, cmd
 	}
-	
+
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.windowWidth = msg.Width
@@ -255,7 +256,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.ready = true
 		}
 		return m, nil
-		
+
 	case extensionsLoadedMsg:
 		if msg.err != nil {
 			m.err = msg.err
@@ -273,7 +274,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.loading = false
 		}
 		return m, nil
-		
+
 	case extensionDeletedMsg:
 		if msg.err != nil {
 			m.err = NewFileSystemError("delete", msg.extensionID, msg.err)
@@ -281,7 +282,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Reload extensions after successful deletion
 			return m, m.loadExtensionsCmd()
 		}
-		
+
 	case profilesLoadedMsg:
 		if msg.err != nil {
 			m.err = msg.err
@@ -293,7 +294,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.filteredProfiles = m.profiles
 			}
-			
+
 			// If we just created a new profile, position cursor on it
 			if m.newProfileID != "" {
 				for i, prof := range m.profiles {
@@ -310,7 +311,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.loading = false
 		}
 		return m, nil
-		
+
 	case profileDeletedMsg:
 		if msg.err != nil {
 			m.err = WrapError(msg.err, "profile deletion")
@@ -323,7 +324,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, m.loadProfilesCmd()
 		}
 		return m, nil
-		
+
 	case profileActivatedMsg:
 		if msg.err != nil {
 			m.err = msg.err
@@ -343,7 +344,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 		return m, nil
-		
+
 	case managersInitializedMsg:
 		if msg.err != nil {
 			m.err = msg.err
@@ -352,7 +353,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		// Managers initialized, now load data
 		return m, m.loadInitialDataCmd()
-		
+
 	case initCompleteMsg:
 		m.loading = false
 		if msg.err != nil {
@@ -382,12 +383,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				// Update search bar
 				var cmd tea.Cmd
 				m.searchBar, cmd = m.searchBar.Update(msg)
-				
+
 				// Apply filters
 				query := m.searchBar.Value()
 				m.filteredExtensions = filterExtensions(m.extensions, query)
 				m.filteredProfiles = filterProfiles(m.profiles, query)
-				
+
 				// Reset cursors if they're out of bounds
 				if m.extensionsCursor >= len(m.filteredExtensions) {
 					m.extensionsCursor = 0
@@ -395,11 +396,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.profilesCursor >= len(m.filteredProfiles) {
 					m.profilesCursor = 0
 				}
-				
+
 				return m, cmd
 			}
 		}
-		
+
 		// Handle vim-style navigation and arrow keys
 		switch msg.String() {
 		case "q", "ctrl+c":
@@ -479,7 +480,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Quick switch profiles
 			return m.showProfileQuickSwitch()
 		}
-		
+
 		// Fallback to key matching for any keys we missed
 		switch {
 		case key.Matches(msg, m.keys.Quit):
@@ -502,7 +503,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	return m, nil
 }
-
 
 // updateContent handles navigation in the content area
 func (m Model) updateContent(msg tea.KeyMsg) (Model, tea.Cmd) {
@@ -603,10 +603,30 @@ func (m Model) updateProfiles(msg tea.KeyMsg) (Model, tea.Cmd) {
 }
 
 func (m Model) updateSettings(msg tea.KeyMsg) (Model, tea.Cmd) {
+	themes := theme.GetAvailableThemes()
+
 	switch msg.String() {
-	case "e":
-		// TODO: Edit settings
-		return m, tea.Println("Edit settings not yet implemented")
+	case "up", "k":
+		if m.settingsCursor > 0 {
+			m.settingsCursor--
+		}
+	case "down", "j":
+		if m.settingsCursor < len(themes)-1 {
+			m.settingsCursor++
+		}
+	case "enter", " ":
+		// Apply selected theme
+		if m.settingsCursor < len(themes) {
+			theme.SetThemeByIndex(m.settingsCursor)
+			UpdateStyles() // Update all styles with new theme colors
+			m.currentThemeIndex = m.settingsCursor
+
+			// Show success message
+			m.err = UIError{
+				Type:    ErrorTypeInfo,
+				Message: fmt.Sprintf("Theme changed to %s", themes[m.settingsCursor]),
+			}
+		}
 	}
 	return m, nil
 }
@@ -619,7 +639,7 @@ func (m Model) updateHelp(msg tea.KeyMsg) (Model, tea.Cmd) {
 
 func (m Model) updateExtensionDetail(msg tea.KeyMsg) (Model, tea.Cmd) {
 	LogDebug("updateExtensionDetail: key=%s", msg.String())
-	
+
 	switch msg.String() {
 	case "esc":
 		// Go back to extensions list
@@ -656,10 +676,10 @@ func (m Model) startLaunch() (Model, tea.Cmd) {
 		m.err = fmt.Errorf("no profile selected")
 		return m, nil
 	}
-	
+
 	// Get only the extensions that are in the current profile
 	profileExtensions := m.getProfileExtensions(m.currentProfile)
-	
+
 	// Create launch modal
 	modal := NewSimpleLaunchModal(m.currentProfile, profileExtensions, m.launcher)
 	modal.SetSize(m.windowWidth, m.windowHeight)
@@ -671,10 +691,10 @@ func (m Model) startLaunch() (Model, tea.Cmd) {
 			return nil
 		},
 	)
-	
+
 	m.showingModal = true
 	m.modal = modal
-	
+
 	// Initialize the modal
 	return m, modal.Init()
 }
@@ -686,7 +706,7 @@ func (m Model) showProfileForm(prof *profile.Profile, isEdit bool) (Model, tea.C
 	for _, ext := range m.extensions {
 		extIDs = append(extIDs, ext.ID)
 	}
-	
+
 	// Create form
 	form := NewProfileForm(prof, extIDs, isEdit)
 	form.SetSize(m.windowWidth, m.windowHeight)
@@ -700,7 +720,7 @@ func (m Model) showProfileForm(prof *profile.Profile, isEdit bool) (Model, tea.C
 				} else {
 					err = m.profileManager.Create(p)
 				}
-				
+
 				if err != nil {
 					// Return error message
 					return UIError{
@@ -709,7 +729,7 @@ func (m Model) showProfileForm(prof *profile.Profile, isEdit bool) (Model, tea.C
 						Details: err.Error(),
 					}
 				}
-				
+
 				// Return success message to trigger refresh
 				return profileSavedMsg{profile: p, isNew: !isEdit}
 			}
@@ -721,11 +741,11 @@ func (m Model) showProfileForm(prof *profile.Profile, isEdit bool) (Model, tea.C
 			}
 		},
 	)
-	
+
 	m.showingModal = true
 	m.modal = form
 	m.err = nil // Clear any previous errors
-	
+
 	// Initialize the form
 	return m, form.Init()
 }
@@ -736,7 +756,7 @@ func (m Model) showProfileQuickSwitch() (Model, tea.Cmd) {
 	if m.currentProfile != nil {
 		currentID = m.currentProfile.ID
 	}
-	
+
 	modal := NewProfileQuickSwitchModal(m.profiles, currentID)
 	modal.SetSize(m.windowWidth, m.windowHeight)
 	modal.SetCallbacks(
@@ -753,10 +773,10 @@ func (m Model) showProfileQuickSwitch() (Model, tea.Cmd) {
 			}
 		},
 	)
-	
+
 	m.showingModal = true
 	m.modal = modal
-	
+
 	return m, modal.Init()
 }
 
@@ -782,11 +802,11 @@ func (m Model) showExtensionInstallForm() (Model, tea.Cmd) {
 			}
 		},
 	)
-	
+
 	m.showingModal = true
 	m.modal = form
 	m.err = nil
-	
+
 	// Initialize the form
 	return m, form.Init()
 }
@@ -797,13 +817,13 @@ func (m Model) performInstallation(source string, isPath bool) tea.Cmd {
 		// For now, use the regular Install method without progress
 		// We'll refactor the extension manager to support non-blocking progress later
 		ext, err := m.extensionManager.Install(source, isPath)
-		
+
 		if err != nil {
 			return installCompleteMsg{
 				err: err,
 			}
 		}
-		
+
 		return installCompleteMsg{
 			extension: ext,
 			err:       nil,
@@ -877,7 +897,7 @@ func (m Model) activateProfileCmd(prof *profile.Profile) tea.Cmd {
 // showExtensionEditForm shows the extension edit form
 func (m Model) showExtensionEditForm(ext *extension.Extension) (Model, tea.Cmd) {
 	LogDebug("showExtensionEditForm called for extension: %s", ext.Name)
-	
+
 	// Create form
 	form := NewExtensionEditForm(ext)
 	LogDebug("Created form, setting size to %dx%d", m.windowWidth, m.windowHeight)
@@ -897,11 +917,11 @@ func (m Model) showExtensionEditForm(ext *extension.Extension) (Model, tea.Cmd) 
 			}
 		},
 	)
-	
+
 	m.showingModal = true
 	m.modal = &form
 	m.err = nil
-	
+
 	LogDebug("Modal set, showingModal=%v, calling Init", m.showingModal)
 	// Initialize the form
 	initCmd := form.Init()

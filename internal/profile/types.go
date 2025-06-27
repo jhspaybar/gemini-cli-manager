@@ -6,27 +6,27 @@ import (
 
 // Profile represents a configuration profile
 type Profile struct {
-	ID          string                    `yaml:"id"`
-	Name        string                    `yaml:"name"`
-	Description string                    `yaml:"description"`
-	Icon        string                    `yaml:"icon,omitempty"`
-	Color       string                    `yaml:"color,omitempty"`
-	
+	ID          string `yaml:"id"`
+	Name        string `yaml:"name"`
+	Description string `yaml:"description"`
+	Icon        string `yaml:"icon,omitempty"`
+	Color       string `yaml:"color,omitempty"`
+
 	// Configuration
-	Extensions  []ExtensionRef            `yaml:"extensions"`
-	Environment map[string]string         `yaml:"environment"`
-	MCPServers  map[string]ServerConfig   `yaml:"mcp_servers"`
-	
+	Extensions  []ExtensionRef          `yaml:"extensions"`
+	Environment map[string]string       `yaml:"environment"`
+	MCPServers  map[string]ServerConfig `yaml:"mcp_servers"`
+
 	// Metadata
-	CreatedAt  time.Time                  `yaml:"created_at"`
-	UpdatedAt  time.Time                  `yaml:"updated_at"`
-	LastUsed   *time.Time                 `yaml:"last_used,omitempty"`
-	UsageCount int                        `yaml:"usage_count"`
-	
+	CreatedAt  time.Time  `yaml:"created_at"`
+	UpdatedAt  time.Time  `yaml:"updated_at"`
+	LastUsed   *time.Time `yaml:"last_used,omitempty"`
+	UsageCount int        `yaml:"usage_count"`
+
 	// Advanced
-	Inherits   []string                   `yaml:"inherits,omitempty"`
-	Tags       []string                   `yaml:"tags,omitempty"`
-	AutoDetect *AutoDetectRules           `yaml:"auto_detect,omitempty"`
+	Inherits   []string         `yaml:"inherits,omitempty"`
+	Tags       []string         `yaml:"tags,omitempty"`
+	AutoDetect *AutoDetectRules `yaml:"auto_detect,omitempty"`
 }
 
 // ExtensionRef represents a reference to an extension in a profile
