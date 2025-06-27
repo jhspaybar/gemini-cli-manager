@@ -281,27 +281,45 @@ func (f *Form) Render() string {
 
 ## Best Practices
 
-### 1. Width Calculations
-Always account for borders and padding:
+### 1. Width and Height Management
+Use lipgloss's built-in layout features instead of manual calculations:
 ```go
+// ❌ BAD: Manual calculations are error-prone
 func (c *Component) Render() string {
-    // Account for borders (2) and padding (4)
-    contentWidth := c.width - 6
-    
-    // Ensure minimum width
+    contentWidth := c.width - 6  // Subtracting for borders and padding
     if contentWidth < 10 {
         contentWidth = 10
     }
-    
-    // Use MaxWidth to prevent overflow
+    return style.Width(contentWidth).Render(content)
+}
+
+// ✅ GOOD: Let lipgloss handle sizing
+func (c *Component) Render() string {
     return lipgloss.NewStyle().
         Border(lipgloss.RoundedBorder()).
         Padding(1, 2).
-        Width(c.width).
-        MaxWidth(c.width).
+        Margin(0, 1).      // Add margins for spacing
+        MaxWidth(c.width). // Set maximum width
+        Render(content)
+}
+
+// ✅ GOOD: For constrained layouts
+func (c *Component) RenderInContainer(maxWidth, maxHeight int) string {
+    return lipgloss.NewStyle().
+        Border(lipgloss.RoundedBorder()).
+        Padding(1, 2).
+        Margin(1).           // Margin on all sides
+        MaxWidth(maxWidth).  // Container constraint
+        MaxHeight(maxHeight).
         Render(content)
 }
 ```
+
+**Key principles:**
+- Use `Margin()` instead of calculating space for edges
+- Use `MaxWidth()`/`MaxHeight()` instead of calculating available space
+- Let lipgloss handle border and padding calculations
+- Only use manual calculations when absolutely necessary (e.g., for precise column layouts)
 
 ### 2. Error Handling
 Fail gracefully with sensible defaults:
@@ -368,7 +386,7 @@ When creating a new component, ensure:
 - [ ] **Constructor** with sensible defaults
 - [ ] **Configuration methods** for runtime changes
 - [ ] **Theme integration** using theme package
-- [ ] **Width handling** with proper calculations
+- [ ] **Size management** using MaxWidth/MaxHeight and margins
 - [ ] **Error handling** for edge cases
 - [ ] **Documentation** with examples
 - [ ] **Unit tests** for logic

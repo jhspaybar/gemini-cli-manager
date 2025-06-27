@@ -6,7 +6,6 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/jhspaybar/gemini-cli-manager/internal/theme"
-	"github.com/muesli/reflow/truncate"
 )
 
 // Card represents a reusable card UI component
@@ -50,25 +49,25 @@ func NewCard(width int) *Card {
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(borderColor).
 			Padding(1, 2).
-			Width(width - 2), // Account for borders
+			MaxWidth(width),
 
 		selectedStyle: lipgloss.NewStyle().
 			Border(lipgloss.ThickBorder()).
 			BorderForeground(accentColor).
 			Padding(1, 2).
-			Width(width - 2), // Account for borders
+			MaxWidth(width),
 
 		focusedStyle: lipgloss.NewStyle().
 			Border(lipgloss.DoubleBorder()).
 			BorderForeground(accentColor).
 			Padding(1, 2).
-			Width(width - 2), // Account for borders
+			MaxWidth(width),
 
 		activeStyle: lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(successColor).
 			Padding(1, 2).
-			Width(width - 2), // Account for borders
+			MaxWidth(width),
 	}
 }
 
@@ -127,11 +126,11 @@ func (c *Card) SetStyles(normal, selected, focused, active lipgloss.Style) *Card
 // SetWidth updates the card width
 func (c *Card) SetWidth(width int) *Card {
 	c.width = width
-	// Update all styles with new width (accounting for borders)
-	c.normalStyle = c.normalStyle.Width(width - 2)
-	c.selectedStyle = c.selectedStyle.Width(width - 2)
-	c.focusedStyle = c.focusedStyle.Width(width - 2)
-	c.activeStyle = c.activeStyle.Width(width - 2)
+	// Update all styles with new width using MaxWidth
+	c.normalStyle = c.normalStyle.MaxWidth(width)
+	c.selectedStyle = c.selectedStyle.MaxWidth(width)
+	c.focusedStyle = c.focusedStyle.MaxWidth(width)
+	c.activeStyle = c.activeStyle.MaxWidth(width)
 	return c
 }
 
@@ -147,14 +146,14 @@ func (c *Card) Render() string {
 		style = c.selectedStyle
 	}
 
-	// Calculate content width (accounting for border and padding)
-	contentWidth := c.width - 7 // 2 for border, 4 for padding, 1 for safety
-	if contentWidth < 10 {
-		contentWidth = 10
-	}
+	// Content will be automatically constrained by MaxWidth on the style
 
 	// Build content
 	var content []string
+	
+	// Create a style for content that respects the card's MaxWidth
+	// We need to account for the padding (2*2=4) when setting content width
+	contentStyle := lipgloss.NewStyle().Width(c.width - 4)
 
 	// Title line with optional subtitle
 	titleParts := []string{}
@@ -182,42 +181,32 @@ func (c *Card) Render() string {
 		subtitleStyle := lipgloss.NewStyle().Foreground(theme.TextMuted())
 		subtitleText := subtitleStyle.Render(c.subtitle)
 		
-		// Calculate space used by icon and status
-		prefixWidth := 0
-		for _, part := range titleParts {
-			prefixWidth += lipgloss.Width(part) + 1 // +1 for space
+		// Build the title parts
+		prefix := strings.Join(titleParts, " ")
+		if prefix != "" {
+			prefix += " "
 		}
 		
-		// Calculate available width for title
-		availableWidth := contentWidth - lipgloss.Width(subtitleText) - prefixWidth - 2 // 2 for spacing between title and subtitle
-		
-		// Truncate title if needed
-		truncatedTitle := truncate.String(c.title, uint(availableWidth))
-		titleText := titleStyle.Render(truncatedTitle)
-		titleParts = append(titleParts, titleText)
-		
-		// Join title parts with subtitle
-		titleLine := strings.Join(titleParts, " ") + "  " + subtitleText
-		content = append(content, titleLine)
+		// Create a title line with subtitle
+		titleText := titleStyle.Render(c.title)
+		fullTitle := prefix + titleText + "  " + subtitleText
+		content = append(content, contentStyle.Render(fullTitle))
 	} else {
 		// No subtitle, just render title
 		titleText := titleStyle.Render(c.title)
 		titleParts = append(titleParts, titleText)
 		titleLine := strings.Join(titleParts, " ")
-		content = append(content, truncate.String(titleLine, uint(contentWidth)))
+		content = append(content, contentStyle.Render(titleLine))
 	}
 
 	// Description (if any)
 	if c.description != "" {
-		descStyle := lipgloss.NewStyle().Foreground(theme.TextSecondary())
-		truncated := truncate.String(c.description, uint(contentWidth))
-		content = append(content, descStyle.Render(truncated))
+		descStyle := lipgloss.NewStyle().Foreground(theme.TextSecondary()).Width(c.width - 4)
+		content = append(content, descStyle.Render(c.description))
 	}
 
 	// Metadata section
 	if len(c.metadata) > 0 {
-		metaStyle := lipgloss.NewStyle().Foreground(theme.Primary())
-		
 		for _, meta := range c.metadata {
 			var metaLine string
 			if meta.Icon != "" {
@@ -225,7 +214,7 @@ func (c *Card) Render() string {
 			} else {
 				metaLine = fmt.Sprintf("%s: %s", meta.Key, meta.Value)
 			}
-			content = append(content, metaStyle.Render(truncate.String(metaLine, uint(contentWidth))))
+			content = append(content, contentStyle.Copy().Foreground(theme.Primary()).Render(metaLine))
 		}
 	}
 
@@ -235,14 +224,14 @@ func (c *Card) Render() string {
 
 // RenderCompact renders a more compact version of the card
 func (c *Card) RenderCompact() string {
-	// Use compact styles (less padding, maintain width adjustment)
-	compactStyle := c.normalStyle.Copy().Padding(0, 1).Width(c.width - 2)
+	// Use compact styles (less padding, use MaxWidth)
+	compactStyle := c.normalStyle.Copy().Padding(0, 1).MaxWidth(c.width)
 	if c.active {
-		compactStyle = c.activeStyle.Copy().Padding(0, 1).Width(c.width - 2)
+		compactStyle = c.activeStyle.Copy().Padding(0, 1).MaxWidth(c.width)
 	} else if c.focused {
-		compactStyle = c.focusedStyle.Copy().Padding(0, 1).Width(c.width - 2)
+		compactStyle = c.focusedStyle.Copy().Padding(0, 1).MaxWidth(c.width)
 	} else if c.selected {
-		compactStyle = c.selectedStyle.Copy().Padding(0, 1).Width(c.width - 2)
+		compactStyle = c.selectedStyle.Copy().Padding(0, 1).MaxWidth(c.width)
 	}
 
 	// Build compact title line
@@ -256,9 +245,8 @@ func (c *Card) RenderCompact() string {
 	parts = append(parts, c.title)
 	
 	titleLine := strings.Join(parts, " ")
-	contentWidth := c.width - 4 // Less padding in compact mode
 	
-	return compactStyle.Render(truncate.String(titleLine, uint(contentWidth)))
+	return compactStyle.Render(titleLine)
 }
 
 // Helper function to pluralize

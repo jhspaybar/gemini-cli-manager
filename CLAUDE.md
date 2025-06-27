@@ -484,17 +484,36 @@ padding := 2
 contentHeight := windowHeight - tabBarHeight - statusBarHeight - (padding * 2)
 ```
 
-#### 4. Width Calculations for Text
-```go
-// When calculating available text width inside a bordered box:
-// Account for: borders (2) + padding (4-6) = 6-8 chars total
-textWidth := boxWidth - 8  // Safe default
+#### 4. Width and Height Management
 
-// Always use MaxWidth to prevent overflow
+**IMPORTANT**: Use lipgloss's built-in layout features instead of manual calculations:
+
+```go
+// ❌ BAD: Manual width calculations
+modalWidth := windowWidth - 8  // Trying to account for margins
+contentWidth := modalWidth - 2  // Account for borders
+textWidth := contentWidth - 4   // Account for padding
+
+// ✅ GOOD: Let lipgloss handle it with margins and max constraints
+modalStyle := lipgloss.NewStyle().
+    Border(lipgloss.RoundedBorder()).
+    Padding(1, 2).
+    Margin(1, 3).        // Proper spacing from edges
+    MaxWidth(80).        // Maximum width constraint
+    MaxHeight(40)        // Maximum height constraint
+
+// ✅ GOOD: For text truncation, use MaxWidth directly
 textStyle := lipgloss.NewStyle().
-    MaxWidth(textWidth).
+    MaxWidth(50).        // Lipgloss handles overflow
     Render(longText)
 ```
+
+**Key principles:**
+- Use `Margin()` for spacing from container edges
+- Use `Padding()` for internal content spacing
+- Use `MaxWidth()` and `MaxHeight()` for size constraints
+- Let lipgloss calculate the actual dimensions
+- Avoid manual subtraction for borders/padding
 
 #### 5. Component Spacing Rules
 - **Between cards/items**: 1 empty line minimum
