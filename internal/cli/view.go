@@ -92,16 +92,30 @@ func (m Model) renderTabsWithContent(width, height int) string {
 		Width(width).
 		Render(statusContent)
 	
-	// Use TabBar's RenderWithContent which handles the layout properly
-	// Combine content and status
+	// Calculate heights
+	tabHeight := 3
+	statusHeight := 2 // includes border
+	availableHeight := height - tabHeight
+	contentAreaHeight := availableHeight - statusHeight
+	
+	// Place content in a box that fills available space
+	expandedContent := lipgloss.Place(
+		width,
+		contentAreaHeight,
+		lipgloss.Left,
+		lipgloss.Top,
+		mainContent,
+	)
+	
+	// Combine expanded content with status bar
 	contentWithStatus := lipgloss.JoinVertical(
 		lipgloss.Left,
-		mainContent,
+		expandedContent,
 		statusWithBorder,
 	)
 	
 	// Let the tab bar handle the complete layout
-	return tabBar.RenderWithContent(contentWithStatus, height-3)
+	return tabBar.RenderWithContent(contentWithStatus, availableHeight)
 }
 
 // Helper function
