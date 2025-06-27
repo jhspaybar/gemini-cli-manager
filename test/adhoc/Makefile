@@ -11,6 +11,12 @@ help:
 	@echo "  make emoji     - Run emoji width test"
 	@echo "  make clean     - Clean backup files"
 	@echo ""
+	@echo "Component Tests:"
+	@echo "  make tabs      - Tab bar component"
+	@echo "  make card      - Card component"
+	@echo "  make modal     - Modal component"
+	@echo "  make form-field - FormField component"
+	@echo ""
 	@echo "Run specific test: make <test-name>"
 	@echo "Example: make tabs-dynamic"
 
@@ -50,6 +56,12 @@ gear-spacing:
 
 card:
 	@go run ../../cmd/visual-tests/main.go card
+
+modal:
+	@go run ../../cmd/visual-tests/main.go modal
+
+form-field:
+	@go run ../../cmd/visual-tests/main.go form-field
 
 # Clean backup files
 clean:

@@ -211,3 +211,118 @@ modal.SetTitleStyle(lipgloss.NewStyle().Bold(true).Foreground(customColor)).
 ### Testing
 
 - Visual tests: `go run cmd/visual-tests/main.go modal`
+
+## FormField Component
+
+The `FormField` component provides consistent form field rendering with labels, help text, and validation.
+
+### Features
+
+- Multiple field types: text input and checkbox (more coming)
+- Required field indicators (*)
+- Placeholder text support
+- Help text displayed when focused
+- Built-in and custom validation
+- Error message display
+- Both inline and stacked layouts
+- Theme-aware styling
+- Configurable width
+
+### Usage
+
+```go
+// Basic text input
+nameField := components.NewFormField("Name", components.TextInput).
+    SetPlaceholder("Enter your name").
+    SetRequired(true).
+    SetWidth(40)
+
+// With help text
+emailField := components.NewFormField("Email", components.TextInput).
+    SetPlaceholder("user@example.com").
+    SetHelpText("We'll never share your email").
+    SetWidth(50)
+
+// With validation
+versionField := components.NewFormField("Version", components.TextInput).
+    SetValidator(func(value string) error {
+        if !strings.Contains(value, ".") {
+            return fmt.Errorf("must be semantic version (e.g., 1.0.0)")
+        }
+        return nil
+    })
+
+// Checkbox field
+agreeField := components.NewFormField("I agree to terms", components.Checkbox).
+    SetChecked(true)
+
+// Render stacked (label above field)
+output := field.Render()
+
+// Render inline (label beside field)
+output := field.RenderInline(15) // 15 char label width
+```
+
+### Field Types
+
+- **TextInput**: Single-line text input with full textinput.Model features
+- **Checkbox**: Boolean checkbox with check/uncheck support
+
+### Validation
+
+```go
+// Built-in required validation
+field.SetRequired(true)
+err := field.Validate() // Returns error if empty
+
+// Custom validation
+field.SetValidator(func(value string) error {
+    if len(value) < 3 {
+        return fmt.Errorf("must be at least 3 characters")
+    }
+    return nil
+})
+```
+
+### State Management
+
+```go
+// Focus management
+field.SetFocused(true)  // or field.Focus()
+field.SetFocused(false) // or field.Blur()
+
+// Value management
+field.SetValue("initial value")
+value := field.GetValue()
+
+// Checkbox state
+field.SetChecked(true)
+isChecked := field.IsChecked()
+```
+
+### Bubble Tea Integration
+
+```go
+// In your Update method
+func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+    // Update the focused field
+    m.fields[m.focusIndex].Update(msg)
+    
+    // Handle focus navigation
+    switch msg := msg.(type) {
+    case tea.KeyMsg:
+        switch msg.String() {
+        case "tab":
+            m.fields[m.focusIndex].Blur()
+            m.focusIndex = (m.focusIndex + 1) % len(m.fields)
+            m.fields[m.focusIndex].Focus()
+        }
+    }
+    
+    return m, nil
+}
+```
+
+### Testing
+
+- Visual tests: `go run test/adhoc/test_form_field.go`

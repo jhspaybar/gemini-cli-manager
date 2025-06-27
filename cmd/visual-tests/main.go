@@ -30,6 +30,7 @@ func init() {
 		"gear-spacing":  testGearSpacing,
 		"card":          testCard,
 		"modal":         testModal,
+		"form-field":    testFormField,
 		"all":           runAllTests,
 	}
 }
@@ -102,6 +103,7 @@ func runAllTests() {
 		"gear-spacing",
 		"card",
 		"modal",
+		"form-field",
 	}
 	
 	for i, testName := range tests {
@@ -750,4 +752,193 @@ func renderInViewport(content string, width, height int) {
 	}
 	
 	fmt.Println(viewportStyle.Render(strings.Join(lines, "\n")))
+}
+
+func testFormField() {
+	fmt.Println("FormField Component Visual Test")
+	fmt.Println(strings.Repeat("=", 80))
+	fmt.Println()
+
+	// Test 1: Basic text input
+	fmt.Println("1. Basic Text Input:")
+	fmt.Println(strings.Repeat("-", 40))
+	
+	nameField := components.NewFormField("Name", components.TextInput).
+		SetPlaceholder("Enter your name").
+		SetRequired(true).
+		SetWidth(40)
+	
+	fmt.Println("Unfocused:")
+	fmt.Println(nameField.Render())
+	
+	fmt.Println("\nFocused:")
+	nameField.SetFocused(true)
+	fmt.Println(nameField.Render())
+	fmt.Println()
+	
+	// Test 2: Text input with help text
+	fmt.Println("2. Text Input with Help Text:")
+	fmt.Println(strings.Repeat("-", 40))
+	
+	emailField := components.NewFormField("Email", components.TextInput).
+		SetPlaceholder("user@example.com").
+		SetHelpText("We'll never share your email").
+		SetWidth(50).
+		SetFocused(true)
+	
+	fmt.Println(emailField.Render())
+	fmt.Println()
+	
+	// Test 3: Field with validation error
+	fmt.Println("3. Field with Validation Error:")
+	fmt.Println(strings.Repeat("-", 40))
+	
+	versionField := components.NewFormField("Version", components.TextInput).
+		SetValue("invalid-version").
+		SetValidator(func(value string) error {
+			if value != "" && !strings.Contains(value, ".") {
+				return fmt.Errorf("must be semantic version (e.g., 1.0.0)")
+			}
+			return nil
+		}).
+		SetWidth(30)
+	
+	versionField.Validate()
+	fmt.Println(versionField.Render())
+	fmt.Println()
+	
+	// Test 4: Checkbox field
+	fmt.Println("4. Checkbox Field:")
+	fmt.Println(strings.Repeat("-", 40))
+	
+	agreeField := components.NewFormField("I agree to the terms", components.Checkbox)
+	
+	fmt.Println("Unchecked:")
+	fmt.Println(agreeField.Render())
+	
+	fmt.Println("\nChecked and focused:")
+	agreeField.SetChecked(true).SetFocused(true)
+	fmt.Println(agreeField.Render())
+	fmt.Println()
+	
+	// Test 5: Inline rendering
+	fmt.Println("5. Inline Field Rendering:")
+	fmt.Println(strings.Repeat("-", 40))
+	
+	fields := []*components.FormField{
+		components.NewFormField("First Name", components.TextInput).
+			SetPlaceholder("John").
+			SetWidth(30),
+		components.NewFormField("Last Name", components.TextInput).
+			SetPlaceholder("Doe").
+			SetWidth(30),
+		components.NewFormField("Age", components.TextInput).
+			SetPlaceholder("25").
+			SetWidth(10),
+	}
+	
+	// Focus the second field
+	fields[1].SetFocused(true).SetHelpText("Family name")
+	
+	for _, field := range fields {
+		fmt.Println(field.RenderInline(15))
+		fmt.Println() // Spacing between fields
+	}
+	
+	// Test 6: Complete form layout simulation
+	fmt.Println("6. Complete Form Layout:")
+	fmt.Println(strings.Repeat("-", 40))
+	
+	formFields := []*components.FormField{
+		components.NewFormField("Extension Name", components.TextInput).
+			SetRequired(true).
+			SetValue("My Extension").
+			SetWidth(40),
+		components.NewFormField("Version", components.TextInput).
+			SetRequired(true).
+			SetValue("1.0.0").
+			SetWidth(20),
+		components.NewFormField("Description", components.TextInput).
+			SetPlaceholder("Brief description of your extension").
+			SetWidth(60),
+		components.NewFormField("Enable Auto-update", components.Checkbox).
+			SetChecked(true),
+	}
+	
+	// Focus the third field
+	formFields[2].SetFocused(true)
+	
+	// Render with border
+	formContent := []string{}
+	for i, field := range formFields {
+		formContent = append(formContent, field.Render())
+		if i < len(formFields)-1 {
+			formContent = append(formContent, "") // Spacing
+		}
+	}
+	
+	// Add a border around the form
+	formBox := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(theme.Border()).
+		Padding(2, 3).
+		Width(70).
+		Render(strings.Join(formContent, "\n"))
+	
+	fmt.Println(formBox)
+	fmt.Println()
+	
+	// Test 7: Different widths
+	fmt.Println("7. Fields with Different Widths:")
+	fmt.Println(strings.Repeat("-", 40))
+	
+	widthTests := []int{20, 40, 60}
+	for _, width := range widthTests {
+		field := components.NewFormField("Test Field", components.TextInput).
+			SetPlaceholder("Type here...").
+			SetWidth(width)
+		fmt.Printf("\nWidth %d:\n", width)
+		fmt.Println(field.Render())
+	}
+	
+	// Test 8: Form field themes
+	fmt.Println("\n\n8. Form Fields with Different Themes:")
+	fmt.Println(strings.Repeat("-", 40))
+	
+	themes := []string{"github-dark", "monokai", "solarized-dark", "one-dark"}
+	
+	for _, themeName := range themes {
+		theme.SetTheme(themeName)
+		
+		fmt.Printf("\nTheme: %s\n", themeName)
+		
+		field := components.NewFormField("Sample Field", components.TextInput).
+			SetValue("Sample value").
+			SetHelpText("This shows the field in "+themeName+" theme").
+			SetWidth(50).
+			SetFocused(true)
+		
+		fmt.Println(field.Render())
+	}
+	
+	// Reset to default theme
+	theme.SetTheme("github-dark")
+	
+	// Test 9: Edge cases
+	fmt.Println("\n\n9. Edge Cases:")
+	fmt.Println(strings.Repeat("-", 40))
+	
+	// Very long label
+	fmt.Println("\nVery long label:")
+	longLabelField := components.NewFormField("This is an extremely long field label that might cause layout issues", components.TextInput).
+		SetWidth(40)
+	fmt.Println(longLabelField.Render())
+	
+	// Required field validation
+	fmt.Println("\nRequired field validation:")
+	requiredField := components.NewFormField("Required Field", components.TextInput).
+		SetRequired(true).
+		SetWidth(30)
+	requiredField.Validate() // Will fail because it's empty
+	fmt.Println(requiredField.Render())
 }

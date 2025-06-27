@@ -434,8 +434,26 @@ modal := components.NewModal(width, height).
 output := modal.Render()
 ```
 
+### FormField
+- **Purpose**: Consistent form field rendering with labels, help text, and validation
+- **Features**: Text input, checkbox support, required fields, validation, inline/stacked layouts
+- **Test files**: test/adhoc/test_form_field.go
+- **Usage example**:
+```go
+field := components.NewFormField("Email", components.TextInput).
+    SetPlaceholder("user@example.com").
+    SetRequired(true).
+    SetHelpText("We'll never share your email").
+    SetWidth(50)
+
+// For inline layout (label beside field)
+output := field.RenderInline(15) // 15 char label width
+
+// For stacked layout (label above field)
+output := field.Render()
+```
+
 ### (Future components)
-- **FormField** - Consistent form inputs
 - **StatusBar** - Three-section status bar
 - **EmptyState** - "No items" displays
 - **SearchBar** - Already exists, needs to be moved to components
