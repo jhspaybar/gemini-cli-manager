@@ -441,6 +441,91 @@ func (m Model) renderItem(item string, selected bool) string {
 
 **See [docs/theming-guide.md](../docs/theming-guide.md) for comprehensive theming patterns.**
 
+### 🎯 Terminal Layout Best Practices
+
+**CRITICAL**: Always account for proper spacing to avoid cut-off borders and cramped content.
+
+#### 1. Window Padding
+```go
+// ❌ BAD: Using full terminal dimensions
+contentWidth := m.windowWidth
+contentHeight := m.windowHeight
+
+// ✅ GOOD: Leave space for terminal edges
+horizontalPadding := 3  // Minimum 3 chars on each side
+verticalPadding := 2    // Minimum 2 lines top and bottom
+contentWidth := m.windowWidth - (horizontalPadding * 2)
+contentHeight := m.windowHeight - (verticalPadding * 2)
+```
+
+#### 2. Content Padding Inside Borders
+```go
+// ❌ BAD: No padding inside bordered elements
+cardStyle := lipgloss.NewStyle().
+    Border(lipgloss.RoundedBorder()).
+    Padding(0, 1)  // Too tight!
+
+// ✅ GOOD: Generous padding for readability
+cardStyle := lipgloss.NewStyle().
+    Border(lipgloss.RoundedBorder()).
+    Padding(1, 2)  // Vertical: 1, Horizontal: 2
+```
+
+#### 3. Height Calculations
+```go
+// ❌ BAD: Not accounting for all UI elements
+contentHeight := windowHeight - 2
+
+// ✅ GOOD: Account for every UI element
+tabBarHeight := 2
+statusBarHeight := 3  // Including borders
+padding := 2
+contentHeight := windowHeight - tabBarHeight - statusBarHeight - (padding * 2)
+```
+
+#### 4. Width Calculations for Text
+```go
+// When calculating available text width inside a bordered box:
+// Account for: borders (2) + padding (4-6) = 6-8 chars total
+textWidth := boxWidth - 8  // Safe default
+
+// Always use MaxWidth to prevent overflow
+textStyle := lipgloss.NewStyle().
+    MaxWidth(textWidth).
+    Render(longText)
+```
+
+#### 5. Component Spacing Rules
+- **Between cards/items**: 1 empty line minimum
+- **Section headers**: 2 lines before, 1 line after
+- **Inside cards**: 1-2 char padding on all sides
+- **Terminal edges**: 3 chars horizontal, 2 lines vertical
+
+#### Common Pitfalls to Avoid:
+1. **Status bar cut-off**: Always ensure status bar has enough bottom padding
+2. **Tab overflow**: Calculate tab widths to fit within available space
+3. **Border overlap**: Never place bordered elements directly adjacent
+4. **Text truncation**: Always calculate and respect MaxWidth constraints
+
+#### Testing Different Terminal Sizes
+Always test your layouts with various terminal dimensions:
+```bash
+# Test minimum viable size
+printf '\e[8;24;80t'  # 80x24 (classic terminal)
+
+# Test small window
+printf '\e[8;20;60t'  # 60x20
+
+# Test large window
+printf '\e[8;50;120t' # 120x50
+```
+
+Your UI should gracefully handle all sizes without:
+- Cut-off borders
+- Overlapping elements
+- Text overflow
+- Panic on small dimensions
+
 ### 🐛 Debugging Techniques
 
 #### 1. Message Logging
@@ -637,6 +722,74 @@ internal/
 │       └── types.go
 ```
 
+### 🧩 UI Components Best Practices
+
+**IMPORTANT**: Build reusable UI components to improve testability and maintainability.
+
+#### Why Build Components?
+
+1. **Testability**: Components can be tested in isolation without running the full TUI
+2. **Reusability**: Write once, use throughout the application
+3. **Consistency**: Ensure uniform behavior and styling
+4. **Maintainability**: Fix bugs or add features in one place
+
+#### Component Guidelines
+
+1. **Create components in `internal/ui/components/`**
+   ```go
+   // Good: Reusable tab component
+   type TabBar struct {
+       tabs        []Tab
+       activeIndex int
+       width       int
+       styles      TabStyles
+   }
+   ```
+
+2. **Make components self-contained**
+   ```go
+   // Component should handle its own rendering
+   func (tb *TabBar) Render() string {
+       // Complete rendering logic
+   }
+   ```
+
+3. **Provide flexible configuration**
+   ```go
+   tabBar := components.NewTabBar(tabs, width)
+   tabBar.SetStyles(activeStyle, inactiveStyle, borderColor)
+   tabBar.SetActiveIndex(0)
+   ```
+
+4. **Create visual tests in `test/adhoc/`**
+   ```go
+   // test/adhoc/test_tabs.go
+   func main() {
+       // Initialize theme
+       theme.SetTheme("github-dark")
+       
+       // Create and test component
+       tabBar := components.NewTabBar(tabs, 80)
+       fmt.Println(tabBar.Render())
+   }
+   ```
+
+5. **Document component usage**
+   - Add examples in component files
+   - Update `internal/ui/components/README.md`
+   - Include in `internal/ui/components/CLAUDE.md`
+
+#### Example: TabBar Component
+
+The TabBar component demonstrates best practices:
+- Self-contained rendering logic
+- Theme integration
+- Flexible configuration
+- Multiple test files demonstrating usage
+- Handles edge cases (0 tabs, many tabs, overflow)
+
+See `internal/ui/components/tabs.go` for implementation and `test/adhoc/test_tabs*.go` for examples.
+
 ## Project Structure
 
 ```
@@ -651,6 +804,12 @@ gemini-cli/
 │   │   ├── view.go        # View rendering
 │   │   ├── commands.go    # Async commands
 │   │   └── keys.go        # Key bindings
+│   ├── ui/
+│   │   └── components/    # Reusable UI components
+│   │       ├── tabs.go    # Tab bar component
+│   │       ├── list.go    # List component (future)
+│   │       ├── form.go    # Form component (future)
+│   │       └── README.md  # Component documentation
 │   ├── extension/
 │   │   ├── extension.go   # Extension types
 │   │   ├── loader.go      # Extension loading
@@ -664,9 +823,15 @@ gemini-cli/
 │   │   ├── tool.go        # Tool types
 │   │   ├── registry.go    # Tool registry
 │   │   └── executor.go    # Tool execution
+│   ├── theme/
+│   │   └── theme.go       # Theme management with bubbletint
 │   └── config/
 │       ├── config.go      # Configuration types
 │       └── loader.go      # Config loading
+├── test/
+│   └── adhoc/             # Visual tests for UI components
+│       ├── test_tabs.go   # Tab component tests
+│       └── ...            # Other component tests
 ├── pkg/                   # Public packages (if needed)
 ├── cmd/                   # Additional commands (if needed)
 └── scripts/
