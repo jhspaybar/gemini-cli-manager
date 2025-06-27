@@ -34,7 +34,7 @@ func (m Model) View() string {
 	}
 
 	// Calculate dimensions
-	contentHeight := m.windowHeight - 4 // -4 for tab bar and status bar
+	contentHeight := m.windowHeight - 5 // -5 for tab bar (3 lines) and status bar (2 lines)
 	
 	// Render components
 	tabBar := m.renderTabBar()
@@ -56,7 +56,7 @@ func (m Model) renderTabBar() string {
 	if m.currentView == ViewExtensionDetail {
 		return lipgloss.NewStyle().
 			Width(m.windowWidth).
-			Height(1).
+			Height(3).
 			Render("")
 	}
 	
@@ -66,56 +66,47 @@ func (m Model) renderTabBar() string {
 		view  ViewType
 	}{
 		{"Extensions", "🧩", ViewExtensions},
-		{"Profiles", "👥", ViewProfiles},
+		{"Profiles", "👤", ViewProfiles},
 		{"Settings", "⚙️", ViewSettings},
 		{"Help", "❓", ViewHelp},
 	}
 	
-	// Create flexbox for tab bar
-	fb := flexbox.NewHorizontal(m.windowWidth, 2)
-	row := fb.NewColumn()
-	
-	// Create cells for each tab with equal ratios
-	for i, tab := range tabs {
-		cell := flexbox.NewCell(1, 1) // Equal width for all tabs
-		
+	// Build tab items
+	var tabItems []string
+	for _, tab := range tabs {
 		var tabStyle lipgloss.Style
+		tabContent := fmt.Sprintf("%s %s", tab.icon, tab.title)
+		
 		if tab.view == m.currentView {
-			// Active tab
+			// Active tab - highlighted card
 			tabStyle = lipgloss.NewStyle().
 				Bold(true).
 				Foreground(colorAccent).
-				Background(lipgloss.Color("236")).
-				Padding(0, 2).
-				Align(lipgloss.Center)
+				Background(lipgloss.Color("237")).
+				Padding(0, 3).
+				MarginRight(1).
+				BorderStyle(lipgloss.RoundedBorder()).
+				BorderForeground(lipgloss.Color("240"))
 		} else {
-			// Inactive tab
+			// Inactive tab - subtle card
 			tabStyle = lipgloss.NewStyle().
 				Foreground(colorTextDim).
-				Background(lipgloss.Color("235")).
-				Padding(0, 2).
-				Align(lipgloss.Center)
+				Padding(0, 3).
+				MarginRight(1)
 		}
 		
-		// Add left margin for first tab
-		if i == 0 {
-			tabStyle = tabStyle.MarginLeft(1)
-		}
-		
-		tabContent := fmt.Sprintf("%s %s", tab.icon, tab.title)
-		cell.SetContent(tabStyle.Render(tabContent))
-		row.AddCells(cell)
+		tabItems = append(tabItems, tabStyle.Render(tabContent))
 	}
 	
-	fb.AddColumns([]*flexbox.Column{row})
+	// Join tabs horizontally
+	tabBar := lipgloss.JoinHorizontal(lipgloss.Top, tabItems...)
 	
-	// Wrap with bottom border
+	// Container with padding
 	return lipgloss.NewStyle().
 		Width(m.windowWidth).
-		BorderStyle(lipgloss.NormalBorder()).
-		BorderBottom(true).
-		BorderForeground(colorBorder).
-		Render(fb.Render())
+		Height(3).
+		Padding(0, 2, 1, 2). // top, right, bottom, left
+		Render(tabBar)
 }
 
 // renderContent renders the main content area

@@ -109,6 +109,7 @@ Bubble Tea follows **The Elm Architecture** with three core components:
 - ⚠️ **Use commands for ALL I/O operations**
 - ⚠️ **Keep Update() and View() methods fast** - offload expensive work to commands
 - ⚠️ **State is immutable** - always return a new model from Update()
+- ⚠️ **ALWAYS use theme colors** - never hardcode color values like `lipgloss.Color("87")`
 
 ### 🏗️ Architecture Patterns
 
@@ -409,17 +410,26 @@ func (m Model) View() string {
 
 **See [docs/flexbox-guide.md](../docs/flexbox-guide.md) for comprehensive flexbox usage patterns.**
 
-#### 3. Use Lipgloss for Styling (Within Flexbox Cells)
+#### 3. Use Lipgloss with Theme Colors
+
+**MANDATORY**: Always use theme variables for colors. Never hardcode color values.
+
 ```go
-var (
-    titleStyle = lipgloss.NewStyle().
-        Bold(true).
-        Foreground(lipgloss.Color("87"))
-    
-    selectedStyle = lipgloss.NewStyle().
-        Background(lipgloss.Color("237")).
-        Foreground(lipgloss.Color("255"))
-)
+// ❌ NEVER DO THIS - Hardcoded colors
+var titleStyle = lipgloss.NewStyle().
+    Bold(true).
+    Foreground(lipgloss.Color("87"))  // BAD!
+
+// ✅ ALWAYS DO THIS - Theme colors
+import "github.com/jhspaybar/gemini-cli-manager/internal/theme"
+
+var titleStyle = lipgloss.NewStyle().
+    Bold(true).
+    Foreground(theme.Primary())  // GOOD!
+
+var selectedStyle = lipgloss.NewStyle().
+    Background(theme.Selection()).
+    Foreground(theme.TextPrimary())
 
 func (m Model) renderItem(item string, selected bool) string {
     if selected {
@@ -428,6 +438,8 @@ func (m Model) renderItem(item string, selected bool) string {
     return "  " + item
 }
 ```
+
+**See [docs/theming-guide.md](../docs/theming-guide.md) for comprehensive theming patterns.**
 
 ### 🐛 Debugging Techniques
 
@@ -618,6 +630,9 @@ internal/
 │   │   └── forms.go     # Form layouts
 │   ├── styles/          # Lipgloss styles
 │   │   └── theme.go
+│   ├── theme/           # Theme management (bubbletint)
+│   │   ├── theme.go     # Theme registry and functions
+│   │   └── custom.go    # Custom theme definitions
 │   └── messages/        # Message definitions
 │       └── types.go
 ```
