@@ -194,10 +194,9 @@ func (f ProfileForm) View() string {
 		title = "Edit Profile"
 	}
 
-	// Create form flexbox (fixed width)
-	formWidth := min(60, f.width-4)
-	formHeight := min(40, f.height-4)
-	formFb := flexbox.New(formWidth, formHeight)
+	// Create form flexbox - let Modal handle the sizing
+	// Modal will provide appropriate content dimensions
+	formFb := flexbox.New(0, 0) // Size will be inherited from parent
 
 	// Form fields
 	fieldsRow := formFb.NewRow()

@@ -193,8 +193,8 @@ func (f *ExtensionEditForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		f.height = msg.Height
 		// Update textarea size with proper constraints
 		if f.width > 10 && f.height > 10 {
-			f.textarea.SetWidth(min(f.width-8, 120))   // Max width of 120
-			f.textarea.SetHeight(min(f.height-10, 30)) // Max height of 30
+			f.textarea.SetWidth(min(f.width, 120))   // Max width of 120
+			f.textarea.SetHeight(min(f.height/2, 30)) // Max height of 30
 		}
 	}
 
@@ -270,17 +270,15 @@ func (f *ExtensionEditForm) View() string {
 		if f.previewActive {
 			content = f.renderMarkdownPreview()
 		} else {
-			// Size textarea appropriately
-			availableHeight := f.height - 8 // Account for header, tabs, help, error
-			f.textarea.SetHeight(min(availableHeight, 30))
-			f.textarea.SetWidth(min(f.width-4, 120))
+			// Let flexbox handle sizing - just set max dimensions
+			f.textarea.SetHeight(min(30, f.height/2)) // Use proportional height
+			f.textarea.SetWidth(min(120, f.width))     // Let textarea use available width
 			content = f.renderTextarea()
 		}
 	case EditModeJSON:
-		// Size textarea appropriately
-		availableHeight := f.height - 8
-		f.textarea.SetHeight(min(availableHeight, 30))
-		f.textarea.SetWidth(min(f.width-4, 120))
+		// Let flexbox handle sizing - just set max dimensions
+		f.textarea.SetHeight(min(30, f.height/2)) // Use proportional height
+		f.textarea.SetWidth(min(120, f.width))     // Let textarea use available width
 		content = f.renderTextarea()
 	}
 	contentCell.SetContent(content)
@@ -313,8 +311,8 @@ func (f *ExtensionEditForm) View() string {
 
 // renderConfigForm renders the configuration form fields
 func (f *ExtensionEditForm) renderConfigForm() string {
-	// Create flexbox for form layout
-	fb := flexbox.New(f.width-4, 0) // Height will auto-adjust
+	// Create flexbox for form layout - let parent determine size
+	fb := flexbox.New(0, 0) // Size inherited from parent
 
 	fields := []struct {
 		label string
@@ -411,10 +409,10 @@ func (f *ExtensionEditForm) renderMarkdownPreview() string {
 		return fmt.Sprintf("Preview error: %v", err)
 	}
 
-	// Wrap in a scrollable container
+	// Wrap in a scrollable container with proper constraints
 	return lipgloss.NewStyle().
-		MaxHeight(f.height - 10).
-		MaxWidth(min(f.width-10, 80)).
+		MaxHeight(f.height/2). // Use proportional height
+		MaxWidth(80).          // Fixed max width for readability
 		Render(preview)
 }
 
@@ -530,8 +528,8 @@ func (f *ExtensionEditForm) SetSize(width, height int) {
 	f.height = height
 	// Set textarea with reasonable constraints
 	if width > 10 && height > 10 {
-		f.textarea.SetWidth(min(width-8, 120))   // Max width of 120
-		f.textarea.SetHeight(min(height-10, 30)) // Max height of 30
+		f.textarea.SetWidth(min(width, 120))   // Max width of 120
+		f.textarea.SetHeight(min(height/2, 30)) // Max height of 30
 	}
 }
 
