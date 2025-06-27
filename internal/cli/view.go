@@ -82,26 +82,33 @@ func (m Model) renderTabsWithContent(width, height int) string {
 	}
 	
 	// Calculate content dimensions
-	contentHeight := height - 3 // Account for tab height
+	tabHeight := 3
+	statusBarHeight := 1
+	separatorHeight := 1
+	totalUIHeight := tabHeight + statusBarHeight + separatorHeight
+	contentHeight := height - totalUIHeight
 	
 	// Render content - pass full width, let renderContent handle margins
-	mainContent := m.renderContent(width, contentHeight-1)
+	mainContent := m.renderContent(width, contentHeight)
 	statusContent := m.renderStatusBarContent(width)
 	
-	// Combine content and status
+	// Create separator line that accounts for padding
+	separator := lipgloss.NewStyle().
+		Foreground(colorBorder).
+		Width(width).
+		Align(lipgloss.Center).
+		Render(strings.Repeat("─", width-4)) // Subtract 4 for padding (2 on each side)
+	
+	// Combine content and status with proper spacing
 	contentWithStatus := lipgloss.JoinVertical(
 		lipgloss.Left,
 		mainContent,
-		lipgloss.NewStyle().
-			Foreground(colorBorder).
-			MaxWidth(width).
-			Padding(0, 2). // Add horizontal padding
-			Render(strings.Repeat("─", width)),
+		separator,
 		statusContent,
 	)
 	
-	// Use the tab bar's RenderWithContent method
-	return tabBar.RenderWithContent(contentWithStatus, contentHeight)
+	// Use the tab bar's RenderWithContent method with total content height
+	return tabBar.RenderWithContent(contentWithStatus, height-tabHeight)
 }
 
 // Helper function
@@ -160,8 +167,8 @@ func (m Model) renderContent(width, height int) string {
 	// Create a content container with padding
 	contentContainer := lipgloss.NewStyle().
 		Padding(2, 3).
-		MaxWidth(width).
-		MaxHeight(height)
+		Width(width).
+		Height(height)
 	
 	// Calculate available space after padding
 	availableWidth := width - 6  // 3 padding on each side
