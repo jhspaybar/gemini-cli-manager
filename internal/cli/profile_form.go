@@ -188,20 +188,16 @@ func (f ProfileForm) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View renders the form
 func (f ProfileForm) View() string {
-	// Create form flexbox (fixed width)
-	formWidth := min(60, f.width-4)
-	formHeight := min(40, f.height-4)
-	formFb := flexbox.New(formWidth, formHeight)
-
-	// Title row
-	titleRow := formFb.NewRow()
-	titleCell := flexbox.NewCell(1, 1)
+	// Determine title
 	title := "Create New Profile"
 	if f.isEdit {
 		title = "Edit Profile"
 	}
-	titleCell.SetContent(h1Style.Render(title))
-	titleRow.AddCells(titleCell)
+
+	// Create form flexbox (fixed width)
+	formWidth := min(60, f.width-4)
+	formHeight := min(40, f.height-4)
+	formFb := flexbox.New(formWidth, formHeight)
 
 	// Form fields
 	fieldsRow := formFb.NewRow()
@@ -215,20 +211,16 @@ func (f ProfileForm) View() string {
 	extCell.SetContent(f.renderExtensions())
 	extRow.AddCells(extCell)
 
-	// Help text row
-	helpRow := formFb.NewRow()
-	helpCell := flexbox.NewCell(1, 1)
+	// Help text as footer
 	helpText := []string{
 		"Tab/Shift+Tab: Navigate",
 		"Space: Toggle",
 		"Ctrl+S: Save",
 		"Esc: Cancel",
 	}
-	helpCell.SetContent(keyDescStyle.Render(strings.Join(helpText, " • ")))
-	helpRow.AddCells(helpCell)
 
 	// Add all rows to form
-	formFb.AddRows([]*flexbox.Row{titleRow, fieldsRow, extRow, helpRow})
+	formFb.AddRows([]*flexbox.Row{fieldsRow, extRow})
 
 	// Add error row if needed
 	if f.err != nil {
@@ -242,9 +234,11 @@ func (f ProfileForm) View() string {
 	// Render form content
 	formContent := formFb.Render()
 	
-	// Use the Modal component
+	// Use the Modal component with proper title
 	modal := components.NewModal(f.width, f.height).
+		SetTitle(title, "👤").
 		SetContent(formContent).
+		SetFooter(strings.Join(helpText, " • ")).
 		SetWidth(80) // Profile form is wider
 		
 	return modal.Render()
