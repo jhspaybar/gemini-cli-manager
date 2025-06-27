@@ -35,11 +35,21 @@ type MetadataItem struct {
 }
 
 // NewCard creates a new card component
+// The width parameter represents the maximum outer width the card can occupy
 func NewCard(width int) *Card {
 	// Default styles using theme
 	borderColor := theme.Border()
 	accentColor := theme.Primary()
 	successColor := theme.Success()
+	
+	// Calculate inner width by accounting for borders (2) and padding (4)
+	// This ensures the total card width doesn't exceed the given width
+	borderWidth := 2  // 1 char on each side
+	paddingWidth := 4 // 2 chars on each side
+	innerWidth := width - borderWidth - paddingWidth
+	if innerWidth < 10 {
+		innerWidth = 10 // Minimum width to prevent display issues
+	}
 
 	return &Card{
 		width:    width,
@@ -49,25 +59,25 @@ func NewCard(width int) *Card {
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(borderColor).
 			Padding(1, 2).
-			Width(width),
+			Width(innerWidth),
 
 		selectedStyle: lipgloss.NewStyle().
 			Border(lipgloss.ThickBorder()).
 			BorderForeground(accentColor).
 			Padding(1, 2).
-			Width(width),
+			Width(innerWidth),
 
 		focusedStyle: lipgloss.NewStyle().
 			Border(lipgloss.DoubleBorder()).
 			BorderForeground(accentColor).
 			Padding(1, 2).
-			Width(width),
+			Width(innerWidth),
 
 		activeStyle: lipgloss.NewStyle().
 			Border(lipgloss.RoundedBorder()).
 			BorderForeground(successColor).
 			Padding(1, 2).
-			Width(width),
+			Width(innerWidth),
 	}
 }
 
@@ -126,11 +136,18 @@ func (c *Card) SetStyles(normal, selected, focused, active lipgloss.Style) *Card
 // SetWidth updates the card width
 func (c *Card) SetWidth(width int) *Card {
 	c.width = width
-	// Update all styles with new width
-	c.normalStyle = c.normalStyle.Width(width)
-	c.selectedStyle = c.selectedStyle.Width(width)
-	c.focusedStyle = c.focusedStyle.Width(width)
-	c.activeStyle = c.activeStyle.Width(width)
+	// Calculate inner width accounting for borders and padding
+	borderWidth := 2  // 1 char on each side
+	paddingWidth := 4 // 2 chars on each side
+	innerWidth := width - borderWidth - paddingWidth
+	if innerWidth < 10 {
+		innerWidth = 10
+	}
+	// Update all styles with new inner width
+	c.normalStyle = c.normalStyle.Width(innerWidth)
+	c.selectedStyle = c.selectedStyle.Width(innerWidth)
+	c.focusedStyle = c.focusedStyle.Width(innerWidth)
+	c.activeStyle = c.activeStyle.Width(innerWidth)
 	return c
 }
 
@@ -221,14 +238,22 @@ func (c *Card) Render() string {
 
 // RenderCompact renders a more compact version of the card
 func (c *Card) RenderCompact() string {
+	// Calculate inner width for compact mode (less padding)
+	borderWidth := 2  // 1 char on each side
+	paddingWidth := 2 // 1 char on each side (compact padding)
+	innerWidth := c.width - borderWidth - paddingWidth
+	if innerWidth < 10 {
+		innerWidth = 10
+	}
+	
 	// Use compact styles (less padding)
-	compactStyle := c.normalStyle.Copy().Padding(0, 1).Width(c.width)
+	compactStyle := c.normalStyle.Copy().Padding(0, 1).Width(innerWidth)
 	if c.active {
-		compactStyle = c.activeStyle.Copy().Padding(0, 1).Width(c.width)
+		compactStyle = c.activeStyle.Copy().Padding(0, 1).Width(innerWidth)
 	} else if c.focused {
-		compactStyle = c.focusedStyle.Copy().Padding(0, 1).Width(c.width)
+		compactStyle = c.focusedStyle.Copy().Padding(0, 1).Width(innerWidth)
 	} else if c.selected {
-		compactStyle = c.selectedStyle.Copy().Padding(0, 1).Width(c.width)
+		compactStyle = c.selectedStyle.Copy().Padding(0, 1).Width(innerWidth)
 	}
 
 	// Build compact title line
