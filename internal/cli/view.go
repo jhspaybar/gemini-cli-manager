@@ -84,13 +84,55 @@ func (m Model) renderTabsWithContent(width, height int) string {
 	// Render main content
 	mainContent := m.renderContent(width)
 	
-	// Render status bar with top border as separator
-	statusContent := m.renderStatusBarContent(width)
-	statusWithBorder := lipgloss.NewStyle().
-		Border(lipgloss.NormalBorder(), true, false, false, false).
-		BorderForeground(colorBorder).
-		Width(width).
-		Render(statusContent)
+	// Create status bar using the StatusBar component
+	statusBar := components.NewStatusBar(width)
+	
+	// Set left section - profile and extension count
+	enabledCount := 0
+	profileName := "No Profile"
+	if m.currentProfile != nil {
+		profileName = m.currentProfile.Name
+		for _, extRef := range m.currentProfile.Extensions {
+			if extRef.Enabled {
+				enabledCount++
+			}
+		}
+	}
+	statusBar.SetLeftItems(components.ProfileStatusItems(profileName, enabledCount, len(m.extensions)))
+	
+	// Set middle section - error/info messages
+	if m.err != nil {
+		if uiErr, ok := m.err.(UIError); ok {
+			if uiErr.Type == ErrorTypeInfo {
+				statusBar.SetErrorMessage(components.ErrorMessage{
+					Type:    components.ErrorTypeInfo,
+					Message: uiErr.Message,
+					Details: uiErr.Details,
+				})
+			} else {
+				statusBar.SetErrorMessage(components.ErrorMessage{
+					Type:    components.ErrorTypeError,
+					Message: uiErr.Message,
+				})
+			}
+		} else {
+			statusBar.SetErrorMessage(components.ErrorMessage{
+				Type:    components.ErrorTypeError,
+				Message: m.err.Error(),
+			})
+		}
+	}
+	
+	// Set right section - key bindings
+	statusBar.SetKeyBindings([]components.KeyBinding{
+		{"Tab", "Switch"},
+		{"L", "Launch"},
+		{"?", "Help"},
+		{"q", "Quit"},
+	})
+	
+	// Render status bar with top border
+	statusWithBorder := statusBar.Render()
 	
 	// Calculate heights
 	tabHeight := 3
