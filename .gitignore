@@ -52,3 +52,10 @@ dist/
 tests/examples/extensions/*.zip
 tests/examples/extensions/*.tar.gz
 .gemini-test/
+
+# VHS test outputs
+vhs-tests/output/
+vhs-tests/temp/
+vhs-tests/**/*.gif
+vhs-tests/**/*.png
+vhs-tests/**/*.mp4
