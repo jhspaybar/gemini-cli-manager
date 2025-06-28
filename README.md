@@ -27,11 +27,35 @@ make build
 ## Usage
 
 ```bash
-# Run the TUI
+# Run the TUI with default state directory (~/.gemini-cli-manager)
 ./gemini-cli-manager
+
+# Run with custom state directory
+./gemini-cli-manager --state-dir /path/to/state
 
 # Run with debug logging
 ./gemini-cli-manager --debug
+
+# Show help
+./gemini-cli-manager --help
+```
+
+### State Directory
+
+By default, the application stores all data (extensions, profiles, settings) in `~/.gemini-cli-manager`. You can override this with the `--state-dir` flag to:
+
+- Run multiple independent setups
+- Test without affecting your main configuration
+- Store data on different volumes
+
+Examples:
+```bash
+# Separate work and personal setups
+./gemini-cli-manager --state-dir ~/gemini-work
+./gemini-cli-manager --state-dir ~/gemini-personal
+
+# Testing
+./gemini-cli-manager --state-dir /tmp/gemini-test
 ```
 
 ### Keyboard Shortcuts

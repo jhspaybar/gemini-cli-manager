@@ -18,10 +18,11 @@ type SimpleLauncher struct {
 	extensionManager *extension.Manager
 	geminiPath       string
 	homeDir          string
+	stateDir         string
 }
 
 // NewSimpleLauncher creates a new launcher instance
-func NewSimpleLauncher(pm *profile.Manager, em *extension.Manager, geminiPath string) *SimpleLauncher {
+func NewSimpleLauncher(pm *profile.Manager, em *extension.Manager, geminiPath string, stateDir string) *SimpleLauncher {
 	homeDir := os.Getenv("HOME")
 	if homeDir == "" {
 		homeDir = "."
@@ -32,6 +33,7 @@ func NewSimpleLauncher(pm *profile.Manager, em *extension.Manager, geminiPath st
 		extensionManager: em,
 		geminiPath:       geminiPath,
 		homeDir:          homeDir,
+		stateDir:         stateDir,
 	}
 }
 
@@ -52,7 +54,7 @@ func (l *SimpleLauncher) Launch(profile *profile.Profile, extensions []*extensio
 	// Prepare the environment by setting up extension symlinks
 	// This is all we need! Each extension has its own gemini-extension.json
 	// with mcpServers configuration that Gemini CLI will automatically load
-	envPreparer := NewEnvironmentPreparer()
+	envPreparer := NewEnvironmentPreparer(l.stateDir)
 	if err := envPreparer.PrepareExtensions(extensions); err != nil {
 		if debugLog != nil {
 			fmt.Fprintf(debugLog, "ERROR: Failed to prepare extensions: %v\n", err)

@@ -501,7 +501,7 @@ func (m Model) renderSettings(width int) string {
 	// Other settings sections (read-only for now)
 	lines = append(lines, h2Style.Render("🔧 General"))
 	lines = append(lines, textDimStyle.Render("  Gemini CLI Path:    /usr/local/bin/gemini"))
-	lines = append(lines, textDimStyle.Render("  Config Directory:   ~/.gemini-cli-manager"))
+	lines = append(lines, textDimStyle.Render(fmt.Sprintf("  Config Directory:   %s", m.stateDir)))
 	lines = append(lines, "")
 
 	lines = append(lines, h2Style.Render("📦 Extensions"))

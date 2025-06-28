@@ -13,15 +13,15 @@ type EnvironmentPreparer struct {
 	geminiExtDir  string // Gemini's extension directory (~/.gemini/extensions)
 }
 
-// NewEnvironmentPreparer creates a new environment preparer
-func NewEnvironmentPreparer() *EnvironmentPreparer {
+// NewEnvironmentPreparer creates a new environment preparer with a custom state directory
+func NewEnvironmentPreparer(stateDir string) *EnvironmentPreparer {
 	homeDir := os.Getenv("HOME")
 	if homeDir == "" {
 		homeDir = "."
 	}
 
 	return &EnvironmentPreparer{
-		managerExtDir: filepath.Join(homeDir, ".gemini-cli-manager", "extensions"),
+		managerExtDir: filepath.Join(stateDir, "extensions"),
 		geminiExtDir:  filepath.Join(homeDir, ".gemini", "extensions"),
 	}
 }

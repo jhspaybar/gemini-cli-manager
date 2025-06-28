@@ -86,6 +86,9 @@ type Model struct {
 	// Theme state
 	currentThemeIndex int
 	settingsCursor    int // Cursor for settings list
+	
+	// Configuration
+	stateDir string // State directory path
 }
 
 // PaneType represents which pane is focused
@@ -153,25 +156,18 @@ var keys = keyMap{
 	),
 }
 
-// NewModel creates a new application model
-func NewModel() Model {
-	// Initialize managers
-	homePath := os.Getenv("HOME")
-	if homePath == "" {
-		homePath = "."
-	}
-	// Use our own state directory, separate from Gemini's
-	managerPath := filepath.Join(homePath, ".gemini-cli-manager")
+// NewModel creates a new application model with a custom state directory
+func NewModel(stateDir string) Model {
+	// Use provided state directory
+	extManager := extension.NewManager(filepath.Join(stateDir, "extensions"))
+	profManager := profile.NewManager(filepath.Join(stateDir, "profiles"))
 
-	extManager := extension.NewManager(filepath.Join(managerPath, "extensions"))
-	profManager := profile.NewManager(filepath.Join(managerPath, "profiles"))
-
-	// Create launcher
+	// Create launcher with state directory
 	geminiCLIPath := os.Getenv("GEMINI_CLI_PATH")
 	if geminiCLIPath == "" {
 		geminiCLIPath = "gemini" // Assume it's in PATH
 	}
-	launcherInstance := launcher.NewSimpleLauncher(profManager, extManager, geminiCLIPath)
+	launcherInstance := launcher.NewSimpleLauncher(profManager, extManager, geminiCLIPath, stateDir)
 
 	m := Model{
 		currentView:       ViewExtensions,
@@ -193,6 +189,7 @@ func NewModel() Model {
 		help:             help.New(),
 		keys:             keys,
 		searchBar:        components.NewSearchBar(80).SetPlaceholder("Search extensions, profiles..."),
+		stateDir:         stateDir,
 	}
 
 	// Data will be loaded asynchronously in Init()
