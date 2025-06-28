@@ -471,9 +471,62 @@ statusBar := components.NewStatusBar(80).
 output := statusBar.Render()
 ```
 
+### EmptyState
+- **Purpose**: Display empty/no-data states with consistent styling
+- **Features**: Icon, title, description, action hints, centered layout, responsive width
+- **Test files**: 
+  - Visual test: `go run cmd/visual-tests/main.go empty-state`
+- **Usage example**:
+```go
+// No data empty state
+emptyState := components.NewEmptyState(width).
+    SetIcon("📦").
+    SetTitle("No extensions installed").
+    SetAction("Press 'n' to install your first extension")
+
+// Search with no results (using preset)
+emptyState := components.NewEmptyState(width).
+    NoItemsFound().
+    SetAction("Press '/' to modify your search")
+
+// Generic no data
+emptyState := components.NewEmptyState(width).
+    NoData("profiles")
+
+output := emptyState.Render()
+```
+
+### SearchBar
+- **Purpose**: Consistent search input with theme-aware styling and borders
+- **Features**: Rounded borders, focus state, placeholder text, character limit, width management
+- **Test files**: 
+  - Visual test: `go run cmd/visual-tests/main.go search-bar`
+- **Usage example**:
+```go
+// Basic search bar
+searchBar := components.NewSearchBar(60).
+    SetPlaceholder("Search extensions, profiles...").
+    SetActive(true)
+
+// Handle updates in Bubble Tea
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+    if m.searchActive {
+        var cmd tea.Cmd
+        m.searchBar, cmd = m.searchBar.Update(msg)
+        // Filter results based on search
+        query := m.searchBar.Value()
+        m.filteredItems = filterItems(m.items, query)
+        return m, cmd
+    }
+    // ...
+}
+
+// Render the search bar
+output := searchBar.Render()
+```
+
 ### (Future components)
-- **EmptyState** - "No items" displays
-- **SearchBar** - Already exists, needs to be moved to components
+- Additional components can be added as needed
 
 ## Contributing
 

@@ -368,6 +368,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "esc":
 				// Exit search
 				m.searchActive = false
+				m.searchBar.SetActive(false)
 				m.searchBar.Blur()
 				m.searchBar.Clear()
 				// Reset filtered lists
@@ -377,6 +378,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "enter":
 				// Apply search and exit search mode
 				m.searchActive = false
+				m.searchBar.SetActive(false)
 				m.searchBar.Blur()
 				return m, nil
 			default:
@@ -473,6 +475,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// Activate search (not in detail views)
 			if m.currentView != ViewExtensionDetail {
 				m.searchActive = true
+				m.searchBar.SetActive(true)
 				return m, m.searchBar.Focus()
 			}
 			return m, nil

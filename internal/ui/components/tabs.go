@@ -115,19 +115,31 @@ func (tb *TabBar) Render() string {
 	// Join tabs horizontally (no gaps)
 	tabRow := lipgloss.JoinHorizontal(lipgloss.Top, renderedTabs...)
 	
-	// Create a simple gap filler with just a bottom line
+	// Create a gap filler to extend tabs to full width
 	tabRowWidth := lipgloss.Width(tabRow)
 	gapWidth := max(0, tb.width-tabRowWidth)
 	
 	if gapWidth > 0 {
-		// Simple approach: just draw the bottom line
+		// Create gap filler that properly connects to content border
+		// Account for the fact that the content box extends 2 chars further
+		// due to the borders being part of the width
+		adjustedGapWidth := gapWidth + 2
+		
+		// Top two lines are empty, bottom line has the border
+		emptyLine := strings.Repeat(" ", adjustedGapWidth)
+		
+		// For the border line, we need the corner at the end
+		borderLine := ""
+		if adjustedGapWidth > 1 {
+			borderLine = strings.Repeat("─", adjustedGapWidth-1) + "╮"
+		} else {
+			borderLine = "╮"
+		}
+		
 		gapLine := lipgloss.NewStyle().
 			Foreground(tb.borderColor).
-			Render(strings.Repeat("─", gapWidth))
+			Render(borderLine)
 		
-		// We need to position this at the bottom of the tab row
-		// Create empty lines for the top part of the gap
-		emptyLine := strings.Repeat(" ", gapWidth)
 		gapContent := emptyLine + "\n" + emptyLine + "\n" + gapLine
 		
 		tabRow = lipgloss.JoinHorizontal(lipgloss.Top, tabRow, gapContent)
@@ -141,23 +153,19 @@ func (tb *TabBar) RenderWithContent(content string, contentHeight int) string {
 	tabRow := tb.Render()
 	
 	// Create content box with no top border (connects to tabs)
+	// The width needs to match the adjusted tab width
 	contentStyle := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(tb.borderColor).
 		UnsetBorderTop(). // This removes the top border completely
 		Padding(1, 2).
-		Width(tb.width).
+		Width(tb.width). // Use the same width as tabs
 		Height(contentHeight)
 	
 	contentBox := contentStyle.Render(content)
 	
-	// Combine tabs and content using string builder (no gap)
-	var result strings.Builder
-	result.WriteString(tabRow)
-	result.WriteString("\n")
-	result.WriteString(contentBox)
-	
-	return result.String()
+	// Join tabs and content directly with no gap
+	return tabRow + "\n" + contentBox
 }
 
 // Helper function for tab borders

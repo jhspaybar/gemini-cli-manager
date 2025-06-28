@@ -69,12 +69,12 @@ func NewStatusBar(width int) *StatusBar {
 	
 	return &StatusBar{
 		width:            width,
-		leftProportion:   2,
-		middleProportion: 2,
-		rightProportion:  3,
+		leftProportion:   3,  // More space for profile/extension info
+		middleProportion: 3,  // More space for error messages
+		rightProportion:  4,  // More space for key bindings
 		
 		style: lipgloss.NewStyle().
-			Border(lipgloss.NormalBorder(), true, false, false, false).
+			Border(lipgloss.RoundedBorder(), true, true, true, true).
 			BorderForeground(borderColor).
 			Foreground(textDim).
 			Padding(0, 1),
@@ -179,10 +179,11 @@ func (sb *StatusBar) SetRightContent(content string) *StatusBar {
 func (sb *StatusBar) SetKeyBindings(bindings []KeyBinding) *StatusBar {
 	var parts []string
 	for _, binding := range bindings {
-		part := sb.keyStyle.Render(binding.Key) + " " + sb.keyDescStyle.Render(binding.Description)
+		// Use shorter format to prevent wrapping
+		part := sb.keyStyle.Render(binding.Key) + ":" + sb.keyDescStyle.Render(binding.Description)
 		parts = append(parts, part)
 	}
-	sb.rightContent = strings.Join(parts, " • ")
+	sb.rightContent = strings.Join(parts, " ")
 	return sb
 }
 
@@ -207,11 +208,14 @@ func (sb *StatusBar) Render() string {
 		return ""
 	}
 	
+	// Account for the padding in the style (1 char on each side)
+	innerWidth := sb.width - 2
+	
 	// Calculate section widths based on proportions
 	total := sb.leftProportion + sb.middleProportion + sb.rightProportion
-	leftWidth := (sb.width * sb.leftProportion) / total
-	middleWidth := (sb.width * sb.middleProportion) / total
-	rightWidth := sb.width - leftWidth - middleWidth // Ensure exact fit
+	leftWidth := (innerWidth * sb.leftProportion) / total
+	middleWidth := (innerWidth * sb.middleProportion) / total
+	rightWidth := innerWidth - leftWidth - middleWidth // Ensure exact fit
 	
 	// Create sections with calculated widths
 	leftSection := lipgloss.NewStyle().Width(leftWidth).Render(sb.leftContent)
@@ -283,7 +287,6 @@ func CommonKeyBindings() []KeyBinding {
 	return []KeyBinding{
 		{"Tab", "Switch"},
 		{"L", "Launch"},
-		{"?", "Help"},
 		{"q", "Quit"},
 	}
 }

@@ -32,6 +32,8 @@ func init() {
 		"modal":         testModal,
 		"form-field":    testFormField,
 		"status-bar":    testStatusBar,
+		"empty-state":   testEmptyState,
+		"search-bar":    testSearchBar,
 		"all":           runAllTests,
 	}
 }
@@ -106,6 +108,8 @@ func runAllTests() {
 		"modal",
 		"form-field",
 		"status-bar",
+		"empty-state",
+		"search-bar",
 	}
 	
 	for i, testName := range tests {
@@ -1099,4 +1103,118 @@ func testStatusBar() {
 			{"?", "Help"},
 		})
 	fmt.Println(noProfileBar.Render())
+}
+
+func testEmptyState() {
+	fmt.Println("EmptyState Component Visual Test")
+	fmt.Println("================================")
+	fmt.Println()
+
+	// Test 1: Extensions empty state
+	fmt.Println("1. Extensions Empty State:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	extEmpty := components.NewEmptyState(80).
+		SetIcon("📦").
+		SetTitle("No extensions installed").
+		SetAction("Press 'n' to install your first extension")
+	
+	fmt.Println(extEmpty.Render())
+	fmt.Println()
+
+	// Test 2: Profiles empty state
+	fmt.Println("2. Profiles Empty State:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	profEmpty := components.NewEmptyState(80).
+		SetIcon("👤").
+		SetTitle("No profiles configured").
+		SetAction("Press 'n' to create your first profile")
+	
+	fmt.Println(profEmpty.Render())
+	fmt.Println()
+
+	// Test 3: Search no results
+	fmt.Println("3. Search No Results:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	searchEmpty := components.NewEmptyState(80).
+		NoItemsFound().
+		SetAction("Press '/' to modify your search")
+	
+	fmt.Println(searchEmpty.Render())
+	fmt.Println()
+
+	// Test 4: Generic no data
+	fmt.Println("4. Generic No Data:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	genericEmpty := components.NewEmptyState(80).
+		NoData("tools available")
+	
+	fmt.Println(genericEmpty.Render())
+	fmt.Println()
+
+	// Test 5: Different widths
+	fmt.Println("5. Different Widths:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	fmt.Println("Width 40:")
+	narrow := components.NewEmptyState(40).
+		SetIcon("📱").
+		SetTitle("Narrow view").
+		SetDescription("Responsive sizing")
+	fmt.Println(narrow.Render())
+	
+	fmt.Println("\nWidth 100:")
+	wide := components.NewEmptyState(100).
+		SetIcon("🖥️").
+		SetTitle("Wide view").
+		SetDescription("Still constrained to max width")
+	fmt.Println(wide.Render())
+}
+
+func testSearchBar() {
+	fmt.Println("SearchBar Component Visual Test")
+	fmt.Println("===============================")
+	fmt.Println()
+
+	// Test 1: Basic search bar
+	fmt.Println("1. Basic Search Bar:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	search := components.NewSearchBar(60)
+	fmt.Println(search.Render())
+	fmt.Println()
+
+	// Test 2: Active/focused search bar
+	fmt.Println("2. Active/Focused Search Bar:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	activeSearch := components.NewSearchBar(60).
+		SetActive(true)
+	fmt.Println(activeSearch.Render())
+	fmt.Println()
+
+	// Test 3: Search bar with value
+	fmt.Println("3. Search Bar with Value:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	valueSearch := components.NewSearchBar(60).
+		SetValue("extension name").
+		SetActive(true)
+	fmt.Println(valueSearch.Render())
+	fmt.Println()
+
+	// Test 4: Different widths
+	fmt.Println("4. Different Widths:")
+	fmt.Println(strings.Repeat("-", 80))
+	
+	fmt.Println("Width 40:")
+	narrow := components.NewSearchBar(40)
+	fmt.Println(narrow.Render())
+	
+	fmt.Println("\nWidth 80:")
+	wide := components.NewSearchBar(80)
+	fmt.Println(wide.Render())
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/jhspaybar/gemini-cli-manager/internal/launcher"
 	"github.com/jhspaybar/gemini-cli-manager/internal/profile"
 	"github.com/jhspaybar/gemini-cli-manager/internal/theme"
+	"github.com/jhspaybar/gemini-cli-manager/internal/ui/components"
 )
 
 // ViewType represents different views in the application
@@ -63,7 +64,7 @@ type Model struct {
 	modal        tea.Model
 
 	// Search
-	searchBar          SearchBar
+	searchBar          *components.SearchBar
 	searchActive       bool
 	filteredExtensions []*extension.Extension
 	filteredProfiles   []*profile.Profile
@@ -191,7 +192,7 @@ func NewModel() Model {
 		launcher:         launcherInstance,
 		help:             help.New(),
 		keys:             keys,
-		searchBar:        NewSearchBar("Search extensions, profiles..."),
+		searchBar:        components.NewSearchBar(80).SetPlaceholder("Search extensions, profiles..."),
 	}
 
 	// Data will be loaded asynchronously in Init()

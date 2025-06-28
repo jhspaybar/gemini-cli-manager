@@ -41,22 +41,66 @@ func (m Model) View() string {
 
 // renderAppCard renders the entire app as a card with tabs
 func (m Model) renderAppCard() string {
+	// Ensure we have valid dimensions
+	width := m.windowWidth
+	height := m.windowHeight
+	if width == 0 || height == 0 {
+		// Use reasonable defaults if window size not yet received
+		width = 80
+		height = 24
+	}
+	
 	// Calculate dimensions with proper padding
-	horizontalPadding := 3
-	verticalPadding := 2
-	contentWidth := m.windowWidth - (horizontalPadding * 2)
-	contentHeight := m.windowHeight - (verticalPadding * 2)
+	horizontalPadding := 2  // Reduced to better align components
+	verticalPadding := 0  // No vertical padding to maximize space
+	contentWidth := width - (horizontalPadding * 2)
+	contentHeight := height - (verticalPadding * 2)
+	
+	LogDebug("renderAppCard: windowSize=%dx%d, contentSize=%dx%d", 
+		width, height, contentWidth, contentHeight)
 
-	// Render tabs and main content area
-	tabsAndContent := m.renderTabsWithContent(contentWidth, contentHeight)
+	// Create tabs and get the tab bar instance
+	tabBar := m.createTabBar(contentWidth)
+	
+	// Render status bar with same width as content to ensure alignment
+	statusBar := m.renderStatusBar(contentWidth)
+	statusHeight := lipgloss.Height(statusBar)
+	
+	// Render tabs separately to get height
+	tabs := tabBar.Render()
+	tabHeight := lipgloss.Height(tabs)
+	
+	// Calculate height for content box
+	contentBoxHeight := contentHeight - statusHeight - tabHeight - 1 // -1 for newline between content and status
+	
+	// Ensure we have at least some height for content
+	if contentBoxHeight < 5 {
+		contentBoxHeight = 5
+	}
+	
+	LogDebug("Heights: content=%d, status=%d, tabs=%d, contentBox=%d", 
+		contentHeight, statusHeight, tabHeight, contentBoxHeight)
+	
+	// Render content  
+	content := m.renderContent(contentWidth - 4) // Account for borders and padding
+	
+	// Use TabBar's RenderWithContent for seamless connection
+	tabsAndContent := tabBar.RenderWithContent(content, contentBoxHeight)
+	
+	// Combine tabs+content with status bar
+	fullContent := lipgloss.JoinVertical(
+		lipgloss.Left,
+		tabsAndContent,
+		statusBar,
+	)
 
 	return lipgloss.NewStyle().
 		Padding(verticalPadding, horizontalPadding).
-		Render(tabsAndContent)
+		Render(fullContent)
 }
 
-// renderTabsWithContent renders tabs with content area below
-func (m Model) renderTabsWithContent(width, height int) string {
+// createTabBar creates and configures the tab bar component
+func (m Model) createTabBar(width int) *components.TabBar {
 	// Define our tabs
 	tabs := []components.Tab{
 		{Title: "Extensions", Icon: "🧩", ID: "extensions"},
@@ -81,17 +125,22 @@ func (m Model) renderTabsWithContent(width, height int) string {
 		tabBar.SetActiveByID("help")
 	}
 	
-	// Render main content
-	mainContent := m.renderContent(width)
-	
-	// Create status bar using the StatusBar component
+	return tabBar
+}
+
+
+// renderStatusBar renders the status bar component
+func (m Model) renderStatusBar(width int) string {
+	// Create and populate status bar component
 	statusBar := components.NewStatusBar(width)
 	
-	// Set left section - profile and extension count
-	enabledCount := 0
+	// Profile and extension count
 	profileName := "No Profile"
 	if m.currentProfile != nil {
 		profileName = m.currentProfile.Name
+	}
+	enabledCount := 0
+	if m.currentProfile != nil {
 		for _, extRef := range m.currentProfile.Extensions {
 			if extRef.Enabled {
 				enabledCount++
@@ -100,21 +149,20 @@ func (m Model) renderTabsWithContent(width, height int) string {
 	}
 	statusBar.SetLeftItems(components.ProfileStatusItems(profileName, enabledCount, len(m.extensions)))
 	
-	// Set middle section - error/info messages
+	// Error/info messages
 	if m.err != nil {
 		if uiErr, ok := m.err.(UIError); ok {
+			var msgType components.ErrorType
 			if uiErr.Type == ErrorTypeInfo {
-				statusBar.SetErrorMessage(components.ErrorMessage{
-					Type:    components.ErrorTypeInfo,
-					Message: uiErr.Message,
-					Details: uiErr.Details,
-				})
+				msgType = components.ErrorTypeInfo
 			} else {
-				statusBar.SetErrorMessage(components.ErrorMessage{
-					Type:    components.ErrorTypeError,
-					Message: uiErr.Message,
-				})
+				msgType = components.ErrorTypeError
 			}
+			statusBar.SetErrorMessage(components.ErrorMessage{
+				Type:    msgType,
+				Message: uiErr.Message,
+				Details: uiErr.Details,
+			})
 		} else {
 			statusBar.SetErrorMessage(components.ErrorMessage{
 				Type:    components.ErrorTypeError,
@@ -123,41 +171,10 @@ func (m Model) renderTabsWithContent(width, height int) string {
 		}
 	}
 	
-	// Set right section - key bindings
-	statusBar.SetKeyBindings([]components.KeyBinding{
-		{"Tab", "Switch"},
-		{"L", "Launch"},
-		{"?", "Help"},
-		{"q", "Quit"},
-	})
+	// Key bindings
+	statusBar.SetKeyBindings(components.CommonKeyBindings())
 	
-	// Render status bar with top border
-	statusWithBorder := statusBar.Render()
-	
-	// Calculate heights
-	tabHeight := 3
-	statusHeight := 2 // includes border
-	availableHeight := height - tabHeight
-	contentAreaHeight := availableHeight - statusHeight
-	
-	// Place content in a box that fills available space
-	expandedContent := lipgloss.Place(
-		width,
-		contentAreaHeight,
-		lipgloss.Left,
-		lipgloss.Top,
-		mainContent,
-	)
-	
-	// Combine expanded content with status bar
-	contentWithStatus := lipgloss.JoinVertical(
-		lipgloss.Left,
-		expandedContent,
-		statusWithBorder,
-	)
-	
-	// Let the tab bar handle the complete layout
-	return tabBar.RenderWithContent(contentWithStatus, availableHeight)
+	return statusBar.Render()
 }
 
 // Helper function
@@ -252,15 +269,10 @@ func (m Model) renderExtensions(width int) string {
 	// Show search bar if active or has query
 	if m.searchActive || m.searchBar.Value() != "" {
 		lines = append(lines, "")
-		// Ensure search box fits within available width
+		// Set search bar width and placeholder for extensions
 		searchWidth := min(60, width)
-		searchBox := lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(colorBorderFocus).
-			Padding(0, 1).
-			MaxWidth(searchWidth).
-			Render(m.searchBar.View())
-		lines = append(lines, searchBox)
+		m.searchBar.SetWidth(searchWidth).SetPlaceholder("Search extensions by name or description...")
+		lines = append(lines, m.searchBar.Render())
 	}
 
 	lines = append(lines, "")
@@ -276,25 +288,22 @@ func (m Model) renderExtensions(width int) string {
 
 	if len(m.filteredExtensions) == 0 {
 		// Empty state
-		// Create centered empty state
-		emptyBox := lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(colorBorder).
-			Padding(2, 4).
-			MaxWidth(50).
-			Align(lipgloss.Center).
-			Render(
-				lipgloss.JoinVertical(
-					lipgloss.Center,
-					"📦",
-					"",
-					"No extensions installed",
-					textDimStyle.Render("Press 'n' to install your first extension"),
-				),
-			)
-		// Center the empty box in the available width
+		var emptyState *components.EmptyState
+		if m.searchBar.Value() != "" {
+			// Search with no results
+			emptyState = components.NewEmptyState(width).
+				NoItemsFound().
+				SetAction("Press '/' to modify your search")
+		} else {
+			// No extensions at all
+			emptyState = components.NewEmptyState(width).
+				SetIcon("📦").
+				SetTitle("No extensions installed").
+				SetAction("Press 'n' to install your first extension")
+		}
+		
 		lines = append(lines, "")
-		lines = append(lines, lipgloss.Place(width, 1, lipgloss.Center, lipgloss.Center, emptyBox))
+		lines = append(lines, emptyState.Render())
 	} else {
 		// Extension list with cards
 		for i, ext := range m.filteredExtensions {
@@ -361,7 +370,7 @@ func (m Model) renderProfiles(width int) string {
 	badgeText := fmt.Sprintf("● Active: %s", activeProfile)
 	activeBadge := lipgloss.NewStyle().
 		Background(colorSuccess).
-		Foreground(lipgloss.Color("0")).
+		Foreground(theme.Black()).
 		Bold(true).
 		Padding(0, 1).
 		MaxWidth(width).
@@ -371,15 +380,10 @@ func (m Model) renderProfiles(width int) string {
 	// Show search bar if active or has query
 	if m.searchActive || m.searchBar.Value() != "" {
 		lines = append(lines, "")
-		// Ensure search box fits within available width
+		// Set search bar width and placeholder for profiles
 		searchWidth := min(60, width)
-		searchBox := lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(colorBorderFocus).
-			Padding(0, 1).
-			MaxWidth(searchWidth).
-			Render(m.searchBar.View())
-		lines = append(lines, searchBox)
+		m.searchBar.SetWidth(searchWidth).SetPlaceholder("Search profiles by name or tags...")
+		lines = append(lines, m.searchBar.Render())
 	}
 
 	lines = append(lines, "")
@@ -395,26 +399,22 @@ func (m Model) renderProfiles(width int) string {
 
 	if len(m.filteredProfiles) == 0 {
 		// Empty state
-		// Ensure empty box fits within available width
-		emptyBoxWidth := min(50, width-4)
-		emptyBox := lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(colorBorder).
-			Padding(2, 4).
-			Width(emptyBoxWidth).
-			MaxWidth(emptyBoxWidth).
-			Align(lipgloss.Center).
-			Render(
-				lipgloss.JoinVertical(
-					lipgloss.Center,
-					"👤",
-					"",
-					"No profiles configured",
-					textDimStyle.Render("Press 'n' to create your first profile"),
-				),
-			)
+		var emptyState *components.EmptyState
+		if m.searchBar.Value() != "" {
+			// Search with no results
+			emptyState = components.NewEmptyState(width).
+				NoItemsFound().
+				SetAction("Press '/' to modify your search")
+		} else {
+			// No profiles at all
+			emptyState = components.NewEmptyState(width).
+				SetIcon("👤").
+				SetTitle("No profiles configured").
+				SetAction("Press 'n' to create your first profile")
+		}
+		
 		lines = append(lines, "")
-		lines = append(lines, lipgloss.NewStyle().Width(width-4).Align(lipgloss.Center).Render(emptyBox))
+		lines = append(lines, emptyState.Render())
 	} else {
 		// Profile list with cards
 		for i, prof := range m.filteredProfiles {
@@ -831,22 +831,16 @@ func (m Model) renderLoading() string {
 }
 
 // renderStatusBarContent renders the content of the status bar
+// Kept for backward compatibility - new code should use StatusBar component
 func (m Model) renderStatusBarContent(width int) string {
-	// Create flexbox for status bar
-	fb := flexbox.NewHorizontal(width, 1)
-	row := fb.NewColumn()
-
-	// Left section (profile and extension count)
-	var leftParts []string
-
-	// Profile indicator
+	// Create StatusBar component
+	statusBar := components.NewStatusBar(width)
+	
+	// Profile and extension count
+	profileName := "No Profile"
 	if m.currentProfile != nil {
-		leftParts = append(leftParts, fmt.Sprintf("👤 %s", m.currentProfile.Name))
-	} else {
-		leftParts = append(leftParts, "👤 No Profile")
+		profileName = m.currentProfile.Name
 	}
-
-	// Extension count
 	enabledCount := 0
 	if m.currentProfile != nil {
 		for _, extRef := range m.currentProfile.Extensions {
@@ -855,50 +849,35 @@ func (m Model) renderStatusBarContent(width int) string {
 			}
 		}
 	}
-	leftParts = append(leftParts, fmt.Sprintf("🧩 %d/%d", enabledCount, len(m.extensions)))
-
-	leftCell := flexbox.NewCell(3, 1) // Takes 3/7 of width
-	leftCell.SetContent(strings.Join(leftParts, " • "))
-
-	// Middle section (error/info messages)
-	middleCell := flexbox.NewCell(2, 1) // Takes 2/7 of width
-
+	statusBar.SetLeftItems(components.ProfileStatusItems(profileName, enabledCount, len(m.extensions)))
+	
+	// Error/info messages
 	if m.err != nil {
-		var errorMsg string
 		if uiErr, ok := m.err.(UIError); ok {
+			var msgType components.ErrorType
 			if uiErr.Type == ErrorTypeInfo {
-				// Info message - use different styling
-				errorMsg = accentStyle.Render(fmt.Sprintf(" ℹ️  %s ", uiErr.Message))
-				if uiErr.Details != "" {
-					errorMsg += textDimStyle.Render(fmt.Sprintf(" - %s", uiErr.Details))
-				}
+				msgType = components.ErrorTypeInfo
 			} else {
-				errorMsg = errorStyle.Render(fmt.Sprintf(" ❌ %s ", uiErr.Message))
+				msgType = components.ErrorTypeError
 			}
+			statusBar.SetErrorMessage(components.ErrorMessage{
+				Type:    msgType,
+				Message: uiErr.Message,
+				Details: uiErr.Details,
+			})
 		} else {
-			errorMsg = errorStyle.Render(fmt.Sprintf(" ❌ %s ", m.err.Error()))
+			statusBar.SetErrorMessage(components.ErrorMessage{
+				Type:    components.ErrorTypeError,
+				Message: m.err.Error(),
+			})
 		}
-		middleCell.SetContent(lipgloss.NewStyle().Align(lipgloss.Center).Render(errorMsg))
-	} else {
-		middleCell.SetContent("")
 	}
-
-	// Right section (key hints)
-	var hints []string
-	hints = append(hints, "Tab: Switch")
-	hints = append(hints, "L: Launch")
-	hints = append(hints, "?: Help")
-	hints = append(hints, "q: Quit")
-
-	rightCell := flexbox.NewCell(2, 1) // Takes 2/7 of width
-	rightCell.SetContent(lipgloss.NewStyle().Align(lipgloss.Right).Render(strings.Join(hints, " • ")))
-
-	// Add cells to column
-	row.AddCells(leftCell, middleCell, rightCell)
-	fb.AddColumns([]*flexbox.Column{row})
-
-	// Return just the content
-	return fb.Render()
+	
+	// Key bindings
+	statusBar.SetKeyBindings(components.CommonKeyBindings())
+	
+	// Return just the content without border styling
+	return statusBar.RenderContent()
 }
 
 // Helper methods

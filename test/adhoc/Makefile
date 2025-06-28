@@ -17,6 +17,8 @@ help:
 	@echo "  make modal     - Modal component"
 	@echo "  make form-field - FormField component"
 	@echo "  make status-bar - StatusBar component"
+	@echo "  make empty-state - EmptyState component"
+	@echo "  make search-bar - SearchBar component"
 	@echo ""
 	@echo "Run specific test: make <test-name>"
 	@echo "Example: make tabs-dynamic"
@@ -66,6 +68,12 @@ form-field:
 
 status-bar:
 	@go run ../../cmd/visual-tests/main.go status-bar
+
+empty-state:
+	@go run ../../cmd/visual-tests/main.go empty-state
+
+search-bar:
+	@go run ../../cmd/visual-tests/main.go search-bar
 
 # Clean backup files
 clean:
