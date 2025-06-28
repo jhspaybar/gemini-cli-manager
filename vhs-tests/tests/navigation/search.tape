@@ -6,16 +6,17 @@ Output output/navigation-search.gif
 # VHS Configuration
 Set FontSize 16
 Set Width 1200
-Set Height 800
-Set Theme "github-dark"
+Set Height 1000
+Set Theme "Builtin Solarized Light"
 Set TypingSpeed 75ms
 
-Type "cd ../.."
+# Start from the project root directory
+Type "cd /Users/williamthurston/repos/gemini-cli-manager"
 Enter
 Sleep 1s
 
-# Start with test directory
-Type "./gemini-cli-manager --state-dir /tmp/vhs-search-test"
+# Start with test directory using go run
+Type "go run . --state-dir /tmp/vhs-search-test"
 Enter
 Sleep 3s
 Screenshot output/search-01-start.png

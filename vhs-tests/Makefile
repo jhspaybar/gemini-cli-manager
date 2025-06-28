@@ -1,4 +1,4 @@
-.PHONY: all test-all test-navigation test-extensions test-profiles test-state-dir clean setup help
+.PHONY: all test-all test-navigation test-extensions test-profiles test-state-dir test-e2e clean setup help
 
 # Default target
 all: help
@@ -11,7 +11,7 @@ setup:
 	@./helpers/setup-test-env.sh
 
 # Run all tests
-test-all: setup test-navigation test-extensions test-profiles test-state-dir
+test-all: setup test-navigation test-extensions test-profiles test-state-dir test-e2e
 	@echo "✅ All VHS tests completed!"
 	@echo "View results in output/ directory"
 
@@ -47,6 +47,14 @@ test-state-dir: setup
 		vhs $$tape || exit 1; \
 	done
 
+# End-to-end tests
+test-e2e: setup
+	@echo "Running end-to-end tests..."
+	@for tape in tests/end-to-end/*.tape; do \
+		echo "  Running $$tape..."; \
+		vhs $$tape || exit 1; \
+	done
+
 # Run a specific test
 test: setup
 	@if [ -z "$(TAPE)" ]; then \
@@ -76,6 +84,7 @@ help:
 	@echo "  make test-extensions - Run extension tests"
 	@echo "  make test-profiles   - Run profile tests"
 	@echo "  make test-state-dir  - Run state directory tests"
+	@echo "  make test-e2e        - Run end-to-end tests"
 	@echo "  make test TAPE=...   - Run specific tape file"
 	@echo "  make clean           - Clean generated files"
 	@echo "  make help            - Show this help"

@@ -6,16 +6,17 @@ Output output/state-dir-multiple.gif
 # VHS Configuration
 Set FontSize 14
 Set Width 1400
-Set Height 900
-Set Theme "github-dark"
+Set Height 1000
+Set Theme "Builtin Solarized Light"
 Set TypingSpeed 50ms
 
-Type "cd ../.."
+# Start from the project root directory
+Type "cd /Users/williamthurston/repos/gemini-cli-manager"
 Enter
 Sleep 1s
 
 # Show the help to demonstrate the feature
-Type "./gemini-cli-manager --help"
+Type "go run . --help"
 Enter
 Sleep 3s
 Screenshot output/state-01-help.png
@@ -27,7 +28,7 @@ Sleep 500ms
 # First setup - Work profile
 Type "# Setup 1: Work Environment"
 Enter
-Type "./gemini-cli-manager --state-dir ~/vhs-work-setup"
+Type "go run . --state-dir ~/vhs-work-setup"
 Enter
 Sleep 3s
 Screenshot output/state-02-work-start.png
@@ -79,7 +80,7 @@ Sleep 500ms
 # Second setup - Personal profile
 Type "# Setup 2: Personal Environment"
 Enter
-Type "./gemini-cli-manager --state-dir ~/vhs-personal-setup"
+Type "go run . --state-dir ~/vhs-personal-setup"
 Enter
 Sleep 3s
 Screenshot output/state-07-personal-start.png

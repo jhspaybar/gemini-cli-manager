@@ -64,6 +64,7 @@ func NewCard(width int) *Card {
 		selectedStyle: lipgloss.NewStyle().
 			Border(lipgloss.ThickBorder()).
 			BorderForeground(accentColor).
+			Background(theme.Selection()).    // Add subtle background
 			Padding(1, 2).
 			Width(innerWidth),
 
@@ -171,8 +172,10 @@ func (c *Card) Render() string {
 	// Title line with optional subtitle
 	titleParts := []string{}
 	
-	// Add active indicator if active
-	if c.active {
+	// Add selection indicator
+	if c.selected {
+		titleParts = append(titleParts, "▶")
+	} else if c.active {
 		titleParts = append(titleParts, "●")
 	}
 	

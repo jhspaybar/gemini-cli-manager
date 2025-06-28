@@ -84,7 +84,19 @@ func main() {
 
 	// Create and run the program with state directory
 	model := cli.NewModel(*stateDir)
-	p := tea.NewProgram(model, tea.WithAltScreen())
+	
+	// Create program with options
+	opts := []tea.ProgramOption{
+		tea.WithAltScreen(),
+	}
+	
+	// If running in a non-interactive environment (like VHS), use stdin/stdout
+	if os.Getenv("VHS") == "true" {
+		opts = append(opts, tea.WithInput(os.Stdin))
+		opts = append(opts, tea.WithOutput(os.Stdout))
+	}
+	
+	p := tea.NewProgram(model, opts...)
 	finalModel, err := p.Run()
 	if err != nil {
 		log.Fatal(err)

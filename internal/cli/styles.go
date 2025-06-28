@@ -177,10 +177,11 @@ func updateInteractiveStyles() {
 		PaddingLeft(2)
 
 	menuItemSelectedStyle = lipgloss.NewStyle().
-		Foreground(colorText).
-		Background(colorHighlight).
+		Foreground(colorBg).            // Inverse colors for better visibility
+		Background(colorAccent).        // Use accent color for selection
 		PaddingLeft(1).
-		PaddingRight(1)
+		PaddingRight(1).
+		Bold(true)                      // Add bold for emphasis
 
 	menuItemActiveStyle = lipgloss.NewStyle().
 		Foreground(colorAccent).
@@ -271,18 +272,19 @@ func updateTabStyles() {
 	// Active tab has no bottom border to connect with content
 	activeTabBorder = tabBorderWithBottom("┘", " ", "└")
 
-	// Inactive tab style
+	// Inactive tab style - more subdued
 	inactiveTabStyle = lipgloss.NewStyle().
 		Border(inactiveTabBorder, true).
-		BorderForeground(colorBorder).
+		BorderForeground(colorBorderDim).
 		Padding(0, 2).
-		Foreground(colorText)
+		Foreground(colorTextMuted)      // Use muted text for better contrast
 
-	// Active tab style
+	// Active tab style - more prominent with background
 	activeTabStyle = lipgloss.NewStyle().
 		Border(activeTabBorder, true).
 		BorderForeground(colorAccent).
-		Padding(0, 2).
+		Background(colorBgLight).       // Add background for visibility
+		Padding(0, 3).                  // Slightly wider
 		Foreground(colorAccent).
 		Bold(true)
 

@@ -45,6 +45,8 @@ make test-all
 make test-navigation
 make test-extensions
 make test-profiles
+make test-state-dir
+make test-e2e
 
 # Run single test
 vhs tests/navigation/sidebar.tape

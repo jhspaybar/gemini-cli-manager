@@ -59,3 +59,7 @@ vhs-tests/temp/
 vhs-tests/**/*.gif
 vhs-tests/**/*.png
 vhs-tests/**/*.mp4
+
+# Test output directories
+output/
+temp/
