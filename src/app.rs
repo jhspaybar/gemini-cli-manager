@@ -139,7 +139,7 @@ impl App {
             if action != Action::Tick && action != Action::Render {
                 debug!("{action:?}");
             }
-            match action {
+            match action.clone() {
                 Action::Tick => {
                     self.last_tick_key_events.drain(..);
                 }
@@ -149,6 +149,9 @@ impl App {
                 Action::ClearScreen => tui.terminal.clear()?,
                 Action::Resize(w, h) => self.handle_resize(tui, w, h)?,
                 Action::Render => self.render(tui)?,
+                Action::LaunchWithProfile(profile_id) => {
+                    self.handle_launch_profile(profile_id, tui)?;
+                }
                 _ => {}
             }
             for component in self.components.iter_mut() {
@@ -176,6 +179,57 @@ impl App {
                 }
             }
         })?;
+        Ok(())
+    }
+
+    fn handle_launch_profile(&mut self, profile_id: String, tui: &mut Tui) -> Result<()> {
+        use crate::{launcher::Launcher, models::Profile};
+        
+        // Get the profile
+        let profiles = Profile::mock_profiles();
+        if let Some(profile) = profiles.iter().find(|p| p.id == profile_id) {
+            // Exit TUI mode before launching
+            tui.exit()?;
+            
+            // Display launch message
+            println!("Preparing to launch profile: {}", profile.display_name());
+            println!();
+            
+            // Launch the profile
+            let launcher = Launcher::new();
+            match launcher.launch_with_profile(profile) {
+                Ok(_) => {
+                    println!();
+                    println!("✅ Gemini CLI session ended successfully.");
+                    println!("Press Enter to return to the manager...");
+                    
+                    // Wait for user input
+                    let mut input = String::new();
+                    std::io::stdin().read_line(&mut input).ok();
+                    
+                    // Re-enter TUI mode
+                    tui.enter()?;
+                    self.action_tx.send(Action::ClearScreen)?;
+                    self.action_tx.send(Action::Render)?;
+                }
+                Err(e) => {
+                    eprintln!("❌ Error launching profile: {}", e);
+                    eprintln!("Press Enter to return to the manager...");
+                    
+                    // Wait for user input
+                    let mut input = String::new();
+                    std::io::stdin().read_line(&mut input).ok();
+                    
+                    // Re-enter TUI mode
+                    tui.enter()?;
+                    self.action_tx.send(Action::ClearScreen)?;
+                    self.action_tx.send(Action::Error(format!("Failed to launch profile: {}", e)))?;
+                }
+            }
+        } else {
+            self.action_tx.send(Action::Error(format!("Profile not found: {}", profile_id)))?;
+        }
+        
         Ok(())
     }
 }
