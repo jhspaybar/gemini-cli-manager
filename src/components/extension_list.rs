@@ -156,7 +156,7 @@ impl Component for ExtensionList {
             
             // Use tui-input's widget with proper styling
             let input_widget = Paragraph::new(self.search_input.value())
-                .style(Style::default())
+                .style(Style::default().fg(theme::text_primary()))
                 .block(search_block);
             
             frame.render_widget(input_widget, search_area);
@@ -209,26 +209,26 @@ impl Component for ExtensionList {
                                 Style::default().fg(theme::text_primary())
                             },
                         ),
-                        Span::raw(" "),
+                        Span::styled(" ", Style::default().fg(theme::text_primary())),
                         Span::styled(
                             format!("v{}", ext.version),
                             Style::default().fg(theme::text_muted()),
                         ),
                     ]),
                     Line::from(vec![
-                        Span::raw("  "),
+                        Span::styled("  ", Style::default().fg(theme::text_primary())),
                         Span::styled(
                             ext.description.as_deref().unwrap_or("No description"),
                             Style::default().fg(theme::text_secondary()),
                         ),
                     ]),
                     Line::from(vec![
-                        Span::raw("  "),
+                        Span::styled("  ", Style::default().fg(theme::text_primary())),
                         Span::styled(
                             format!("{} MCP servers", ext.mcp_servers.len()),
                             Style::default().fg(theme::accent()),
                         ),
-                        Span::raw(" | "),
+                        Span::styled(" | ", Style::default().fg(theme::text_secondary())),
                         Span::styled(
                             format!("{} tags", ext.metadata.tags.len()),
                             Style::default().fg(theme::primary()),

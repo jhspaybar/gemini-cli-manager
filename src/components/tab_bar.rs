@@ -74,20 +74,20 @@ impl Component for TabBar {
 
                 if is_active {
                     Line::from(vec![
-                        Span::raw(" "),
+                        Span::styled(" ", Style::default().fg(theme::primary())),
                         Span::styled(
                             title,
                             Style::default()
                                 .fg(theme::primary())
                                 .add_modifier(Modifier::BOLD),
                         ),
-                        Span::raw(" "),
+                        Span::styled(" ", Style::default().fg(theme::primary())),
                     ])
                 } else {
                     Line::from(vec![
-                        Span::raw(" "),
+                        Span::styled(" ", Style::default().fg(theme::text_muted())),
                         Span::styled(title, Style::default().fg(theme::text_muted())),
-                        Span::raw(" "),
+                        Span::styled(" ", Style::default().fg(theme::text_muted())),
                     ])
                 }
             })
@@ -106,7 +106,7 @@ impl Component for TabBar {
                     .bg(theme::selection())
                     .add_modifier(Modifier::BOLD),
             )
-            .divider(Span::raw(" │ "));
+            .divider(Span::styled(" │ ", Style::default().fg(theme::border())));
 
         // Select the active tab
         let selected = match self.current_view {

@@ -195,15 +195,15 @@ impl Component for ProfileDetail {
         } else {
             for ext in &self.extensions {
                 content.push(Line::from(vec![
-                    Span::raw("  "),
+                    Span::styled("  ", Style::default().fg(theme::text_primary())),
                     Span::styled(format!("• {}", ext.name), Style::default().fg(theme::success())),
-                    Span::raw(" "),
+                    Span::styled(" ", Style::default().fg(theme::text_primary())),
                     Span::styled(format!("v{}", ext.version), Style::default().fg(theme::text_muted())),
                 ]));
                 
                 if let Some(desc) = &ext.description {
                     content.push(Line::from(vec![
-                        Span::raw("    "),
+                        Span::styled("    ", Style::default().fg(theme::text_primary())),
                         Span::styled(desc, Style::default().fg(theme::text_secondary())),
                     ]));
                 }
@@ -211,7 +211,7 @@ impl Component for ProfileDetail {
                 // Show MCP servers
                 if !ext.mcp_servers.is_empty() {
                     content.push(Line::from(vec![
-                        Span::raw("    "),
+                        Span::styled("    ", Style::default().fg(theme::text_primary())),
                         Span::styled(
                             format!("MCP Servers: {}", ext.mcp_servers.keys().cloned().collect::<Vec<_>>().join(", ")),
                             Style::default().fg(theme::text_muted()),
@@ -245,9 +245,9 @@ impl Component for ProfileDetail {
                 };
                 
                 content.push(Line::from(vec![
-                    Span::raw("  "),
+                    Span::styled("  ", Style::default().fg(theme::text_primary())),
                     Span::styled(key, Style::default().fg(theme::highlight())),
-                    Span::raw(" = "),
+                    Span::styled(" = ", Style::default().fg(theme::text_secondary())),
                     Span::styled(display_value, Style::default().fg(theme::text_primary())),
                 ]));
             }

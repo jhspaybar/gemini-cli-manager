@@ -318,11 +318,11 @@ impl Component for ProfileForm {
                 
                 let prefix = if is_selected { "[✓] " } else { "[ ] " };
                 let style = if is_cursor {
-                    Style::default().bg(theme::selection())
+                    Style::default().bg(theme::selection()).fg(theme::text_primary())
                 } else if is_selected {
                     Style::default().fg(theme::success())
                 } else {
-                    Style::default()
+                    Style::default().fg(theme::text_primary())
                 };
                 
                 ListItem::new(format!("{}{}", prefix, ext.name)).style(style)

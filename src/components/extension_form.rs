@@ -350,7 +350,7 @@ impl Component for ExtensionForm {
         let name_style = if matches!(self.current_field, FormField::Name) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::text_primary())
         };
         let name_block = Block::default()
             .borders(Borders::NONE);
@@ -371,7 +371,7 @@ impl Component for ExtensionForm {
         let version_style = if matches!(self.current_field, FormField::Version) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::text_primary())
         };
         let version_area = first_row[1];
         let version_label = "Version: ";
@@ -388,7 +388,7 @@ impl Component for ExtensionForm {
         let desc_style = if matches!(self.current_field, FormField::Description) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::text_primary())
         };
         let desc_area = second_row[0];
         let desc_label = "Description: ";
@@ -405,7 +405,7 @@ impl Component for ExtensionForm {
         let tags_style = if matches!(self.current_field, FormField::Tags) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::text_primary())
         };
         let tags_area = second_row[1];
         let tags_label = "Tags: ";
@@ -573,7 +573,7 @@ impl Component for ExtensionForm {
                 let style = if i == self.server_field_cursor {
                     Style::default().fg(theme::highlight())
                 } else {
-                    Style::default()
+                    Style::default().fg(theme::text_primary())
                 };
                 
                 let line = Line::from(vec![
@@ -614,9 +614,9 @@ impl Component for ExtensionForm {
                     let is_selected = i == self.mcp_server_cursor && matches!(self.current_field, FormField::McpServers);
                     
                     let style = if is_selected {
-                        Style::default().bg(theme::selection())
+                        Style::default().bg(theme::selection()).fg(theme::text_primary())
                     } else {
-                        Style::default()
+                        Style::default().fg(theme::text_primary())
                     };
                     
                     let content = if let Some(url) = &server.url {

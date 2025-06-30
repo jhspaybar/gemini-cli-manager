@@ -165,7 +165,7 @@ impl Component for ExtensionDetail {
 
             for (name, config) in &extension.mcp_servers {
                 content.push(Line::from(vec![
-                    Span::raw("  "),
+                    Span::styled("  ", Style::default().fg(theme::text_primary())),
                     Span::styled(format!("• {}", name), Style::default().fg(theme::success())),
                 ]));
 
@@ -174,14 +174,14 @@ impl Component for ExtensionDetail {
                     content.push(Line::from(vec![
                         Span::styled("    Type: ", Style::default().fg(theme::text_secondary())),
                         Span::styled("URL", Style::default().fg(theme::primary())),
-                        Span::raw(" - "),
+                        Span::styled(" - ", Style::default().fg(theme::text_secondary())),
                         Span::styled(url, Style::default().fg(theme::text_primary())),
                     ]));
                 } else if let Some(cmd) = &config.command {
                     content.push(Line::from(vec![
                         Span::styled("    Type: ", Style::default().fg(theme::text_secondary())),
                         Span::styled("Command", Style::default().fg(theme::primary())),
-                        Span::raw(" - "),
+                        Span::styled(" - ", Style::default().fg(theme::text_secondary())),
                         Span::styled(cmd, Style::default().fg(theme::text_primary())),
                     ]));
                     
@@ -199,7 +199,7 @@ impl Component for ExtensionDetail {
                         content.push(Line::from(vec![
                             Span::styled("    Env: ", Style::default().fg(theme::text_secondary())),
                             Span::styled(key, Style::default().fg(theme::highlight())),
-                            Span::raw(" = "),
+                            Span::styled(" = ", Style::default().fg(theme::text_secondary())),
                             Span::styled(value, Style::default().fg(theme::text_primary())),
                         ]));
                     }
@@ -237,7 +237,7 @@ impl Component for ExtensionDetail {
             // Add context file content with proper indentation
             for line in content_text.lines() {
                 content.push(Line::from(vec![
-                    Span::raw("  "),
+                    Span::styled("  ", Style::default().fg(theme::text_primary())),
                     Span::styled(line, Style::default().fg(theme::text_primary())),
                 ]));
             }

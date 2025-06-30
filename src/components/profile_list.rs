@@ -155,7 +155,7 @@ impl Component for ProfileList {
             
             // Use tui-input's widget with proper styling
             let input_widget = Paragraph::new(self.search_input.value())
-                .style(Style::default())
+                .style(Style::default().fg(theme::text_primary()))
                 .block(search_block);
             
             frame.render_widget(input_widget, search_area);
@@ -212,7 +212,7 @@ impl Component for ProfileList {
                         if is_default {
                             Span::styled(" (default)", Style::default().fg(theme::primary()))
                         } else {
-                            Span::raw("")
+                            Span::styled("", Style::default().fg(theme::text_primary()))
                         },
                     ]),
                 ];
@@ -220,19 +220,19 @@ impl Component for ProfileList {
                 // Add description
                 if let Some(desc) = &profile.description {
                     lines.push(Line::from(vec![
-                        Span::raw("  "),
+                        Span::styled("  ", Style::default().fg(theme::text_primary())),
                         Span::styled(desc, Style::default().fg(theme::text_secondary())),
                     ]));
                 }
 
                 // Add summary
                 lines.push(Line::from(vec![
-                    Span::raw("  "),
+                    Span::styled("  ", Style::default().fg(theme::text_primary())),
                     Span::styled(
                         profile.summary(),
                         Style::default().fg(theme::text_muted()),
                     ),
-                    Span::raw(" | "),
+                    Span::styled(" | ", Style::default().fg(theme::text_secondary())),
                     Span::styled(
                         format!("{} tags", profile.metadata.tags.len()),
                         Style::default().fg(theme::accent()),
@@ -242,7 +242,7 @@ impl Component for ProfileList {
                 // Add working directory if specified
                 if let Some(dir) = &profile.working_directory {
                     lines.push(Line::from(vec![
-                        Span::raw("  "),
+                        Span::styled("  ", Style::default().fg(theme::text_primary())),
                         Span::styled("📂 ", Style::default().fg(theme::info())),
                         Span::styled(dir, Style::default().fg(theme::info())),
                     ]));
