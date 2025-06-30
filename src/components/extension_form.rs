@@ -311,8 +311,8 @@ impl Component for ExtensionForm {
             .direction(ratatui::layout::Direction::Vertical)
             .margin(1)
             .constraints([
-                Constraint::Length(2),  // Name/Version row
-                Constraint::Length(2),  // Description/Tags row  
+                Constraint::Length(4),  // Name/Version row (increased from 2 to 4 for borders)
+                Constraint::Length(4),  // Description/Tags row (increased from 2 to 4 for borders)
                 Constraint::Min(10),    // Editors area
                 Constraint::Length(2),  // Help
             ])
@@ -322,8 +322,8 @@ impl Component for ExtensionForm {
         let first_row = ratatui::layout::Layout::default()
             .direction(ratatui::layout::Direction::Horizontal)
             .constraints([
-                Constraint::Percentage(70), // Name (increased from 60%)
-                Constraint::Percentage(30), // Version (decreased from 40% but still adequate)
+                Constraint::Percentage(70), // Name
+                Constraint::Percentage(30), // Version
             ])
             .split(main_chunks[0]);
         
@@ -331,8 +331,8 @@ impl Component for ExtensionForm {
         let second_row = ratatui::layout::Layout::default()
             .direction(ratatui::layout::Direction::Horizontal)
             .constraints([
-                Constraint::Percentage(60), // Description (decreased from 70%)
-                Constraint::Percentage(40), // Tags (increased from 30%)
+                Constraint::Percentage(70), // Description (consistent with first row)
+                Constraint::Percentage(30), // Tags (consistent with first row)
             ])
             .split(main_chunks[1]);
         
