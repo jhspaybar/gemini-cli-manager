@@ -184,7 +184,7 @@ impl Component for ProfileList {
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(theme::success()));
+            .border_style(Style::default().fg(theme::text_secondary()));
 
         // Create list items
         let items: Vec<ListItem> = self

@@ -127,7 +127,7 @@ impl Component for ProfileDetail {
             .title(format!(" {} ", profile.display_name()))
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(theme::success()));
+            .border_style(Style::default().fg(theme::text_secondary()));
 
         let inner_area = block.inner(chunks[0]);
 

@@ -152,7 +152,7 @@ impl Component for ExtensionList {
                 .title(" Search (Esc to close) ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .border_style(Style::default().fg(theme::warning()));
+                .border_style(Style::default().fg(theme::highlight()));
             
             // Use tui-input's widget with proper styling
             let input_widget = Paragraph::new(self.search_input.value())
@@ -185,7 +185,7 @@ impl Component for ExtensionList {
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(theme::primary()));
+            .border_style(Style::default().fg(theme::text_secondary()));
 
         // Create list items
         let items: Vec<ListItem> = self

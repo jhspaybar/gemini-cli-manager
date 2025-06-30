@@ -99,14 +99,14 @@ impl Component for TabBar {
                 Block::default()
                     .borders(Borders::ALL)
                     .border_type(BorderType::Rounded)
-                    .border_style(Style::default().fg(theme::border())),
+                    .border_style(Style::default().fg(theme::text_secondary())),
             )
             .highlight_style(
                 Style::default()
                     .bg(theme::selection())
                     .add_modifier(Modifier::BOLD),
             )
-            .divider(Span::styled(" │ ", Style::default().fg(theme::border())));
+            .divider(Span::styled(" │ ", Style::default().fg(theme::text_secondary())));
 
         // Select the active tab
         let selected = match self.current_view {

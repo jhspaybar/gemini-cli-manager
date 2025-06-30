@@ -301,7 +301,7 @@ impl Component for ExtensionForm {
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(theme::info()));
+            .border_style(Style::default().fg(theme::text_secondary()));
         
         let inner = block.inner(area);
         frame.render_widget(block, area);

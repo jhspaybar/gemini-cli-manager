@@ -105,7 +105,7 @@ impl Component for ExtensionDetail {
             .title(format!(" {} v{} ", extension.name, extension.version))
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(theme::info()));
+            .border_style(Style::default().fg(theme::text_secondary()));
 
         let inner_area = block.inner(chunks[0]);
 
@@ -260,7 +260,8 @@ impl Component for ExtensionDetail {
             .block(
                 Block::default()
                     .borders(Borders::ALL)
-                    .border_type(BorderType::Rounded),
+                    .border_type(BorderType::Rounded)
+                    .border_style(Style::default().fg(theme::text_secondary())),
             );
 
         frame.render_widget(help_bar, chunks[1]);
