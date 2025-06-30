@@ -1,0 +1,989 @@
+2025/06/28 17:33:14 logger.go:29: === Gemini CLI Manager Debug Log Started ===
+2025/06/28 17:33:15 logger.go:35: Model.View called, ready=false, loading=true, showingModal=false
+2025/06/28 17:33:15 logger.go:42: [Model.Update] Message: tea.enterAltScreenMsg {}
+2025/06/28 17:33:15 logger.go:35: Model.View called, ready=false, loading=true, showingModal=false
+2025/06/28 17:33:15 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:245 Height:55}
+2025/06/28 17:33:15 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 17:33:15 logger.go:42: [Model.Update] Message: cli.managersInitializedMsg {err:<nil>}
+2025/06/28 17:33:15 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 17:33:15 logger.go:42: [Model.Update] Message: cli.extensionsLoadedMsg {extensions:[0x1400024c2d0 0x1400024c3f0] err:<nil>}
+2025/06/28 17:33:15 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 17:33:15 logger.go:42: [Model.Update] Message: cli.profilesLoadedMsg {profiles:[0x1400027a0f0 0x1400027a1e0] err:<nil>}
+2025/06/28 17:33:15 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 17:33:15 logger.go:42: [Model.Update] Message: cli.profileActivatedMsg {profile:0x1400027a1e0 err:<nil>}
+2025/06/28 17:33:15 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 17:33:15 logger.go:42: [Model.Update] Message: cli.initCompleteMsg {err:<nil>}
+2025/06/28 17:33:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:15 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:33:15 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:33:18 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:197 Height:41}
+2025/06/28 17:33:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:18 logger.go:35: renderAppCard: windowSize=197x41, contentSize=193x41
+2025/06/28 17:33:18 logger.go:35: Heights: window=41, tabs=3, status=3, chrome=11, contentBox=30, viewport=28
+2025/06/28 17:33:18 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:189 Height:36}
+2025/06/28 17:33:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:18 logger.go:35: renderAppCard: windowSize=189x36, contentSize=185x36
+2025/06/28 17:33:18 logger.go:35: Heights: window=36, tabs=3, status=3, chrome=11, contentBox=25, viewport=23
+2025/06/28 17:33:19 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:176 Height:32}
+2025/06/28 17:33:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:19 logger.go:35: renderAppCard: windowSize=176x32, contentSize=172x32
+2025/06/28 17:33:19 logger.go:35: Heights: window=32, tabs=3, status=3, chrome=11, contentBox=21, viewport=19
+2025/06/28 17:33:19 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:175 Height:31}
+2025/06/28 17:33:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:19 logger.go:35: renderAppCard: windowSize=175x31, contentSize=171x31
+2025/06/28 17:33:19 logger.go:35: Heights: window=31, tabs=3, status=3, chrome=11, contentBox=20, viewport=18
+2025/06/28 17:33:19 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:173 Height:30}
+2025/06/28 17:33:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:19 logger.go:35: renderAppCard: windowSize=173x30, contentSize=169x30
+2025/06/28 17:33:19 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:33:19 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:168 Height:28}
+2025/06/28 17:33:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:19 logger.go:35: renderAppCard: windowSize=168x28, contentSize=164x28
+2025/06/28 17:33:19 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:33:19 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:151 Height:28}
+2025/06/28 17:33:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:19 logger.go:35: renderAppCard: windowSize=151x28, contentSize=147x28
+2025/06/28 17:33:19 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:33:20 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:141 Height:27}
+2025/06/28 17:33:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:20 logger.go:35: renderAppCard: windowSize=141x27, contentSize=137x27
+2025/06/28 17:33:20 logger.go:35: Heights: window=27, tabs=3, status=3, chrome=11, contentBox=16, viewport=14
+2025/06/28 17:33:20 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:118 Height:30}
+2025/06/28 17:33:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:20 logger.go:35: renderAppCard: windowSize=118x30, contentSize=114x30
+2025/06/28 17:33:20 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:33:20 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:93 Height:36}
+2025/06/28 17:33:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:20 logger.go:35: renderAppCard: windowSize=93x36, contentSize=89x36
+2025/06/28 17:33:20 logger.go:35: Heights: window=36, tabs=3, status=3, chrome=11, contentBox=25, viewport=23
+2025/06/28 17:33:20 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:92 Height:33}
+2025/06/28 17:33:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:20 logger.go:35: renderAppCard: windowSize=92x33, contentSize=88x33
+2025/06/28 17:33:20 logger.go:35: Heights: window=33, tabs=3, status=3, chrome=11, contentBox=22, viewport=20
+2025/06/28 17:33:22 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:90 Height:23}
+2025/06/28 17:33:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:22 logger.go:35: renderAppCard: windowSize=90x23, contentSize=86x23
+2025/06/28 17:33:22 logger.go:35: Heights: window=23, tabs=3, status=3, chrome=11, contentBox=12, viewport=10
+2025/06/28 17:33:22 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:89 Height:20}
+2025/06/28 17:33:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:22 logger.go:35: renderAppCard: windowSize=89x20, contentSize=85x20
+2025/06/28 17:33:22 logger.go:35: Heights: window=20, tabs=3, status=3, chrome=11, contentBox=9, viewport=7
+2025/06/28 17:33:22 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:88 Height:17}
+2025/06/28 17:33:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:22 logger.go:35: renderAppCard: windowSize=88x17, contentSize=84x17
+2025/06/28 17:33:22 logger.go:35: Heights: window=17, tabs=3, status=3, chrome=11, contentBox=6, viewport=4
+2025/06/28 17:33:23 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:88 Height:18}
+2025/06/28 17:33:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:23 logger.go:35: renderAppCard: windowSize=88x18, contentSize=84x18
+2025/06/28 17:33:23 logger.go:35: Heights: window=18, tabs=3, status=3, chrome=11, contentBox=7, viewport=5
+2025/06/28 17:33:23 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:88 Height:22}
+2025/06/28 17:33:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:23 logger.go:35: renderAppCard: windowSize=88x22, contentSize=84x22
+2025/06/28 17:33:23 logger.go:35: Heights: window=22, tabs=3, status=3, chrome=11, contentBox=11, viewport=9
+2025/06/28 17:33:24 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:87 Height:24}
+2025/06/28 17:33:24 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:24 logger.go:35: renderAppCard: windowSize=87x24, contentSize=83x24
+2025/06/28 17:33:24 logger.go:35: Heights: window=24, tabs=3, status=3, chrome=11, contentBox=13, viewport=11
+2025/06/28 17:33:25 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:25 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:25 logger.go:35: renderAppCard: windowSize=87x24, contentSize=83x24
+2025/06/28 17:33:25 logger.go:35: Heights: window=24, tabs=3, status=3, chrome=11, contentBox=13, viewport=11
+2025/06/28 17:33:27 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:27 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:27 logger.go:35: renderAppCard: windowSize=87x24, contentSize=83x24
+2025/06/28 17:33:27 logger.go:35: Heights: window=24, tabs=3, status=3, chrome=11, contentBox=13, viewport=11
+2025/06/28 17:33:27 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:33:27 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:27 logger.go:35: renderAppCard: windowSize=87x24, contentSize=83x24
+2025/06/28 17:33:27 logger.go:35: Heights: window=24, tabs=3, status=3, chrome=11, contentBox=13, viewport=11
+2025/06/28 17:33:30 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:89 Height:30}
+2025/06/28 17:33:30 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:30 logger.go:35: renderAppCard: windowSize=89x30, contentSize=85x30
+2025/06/28 17:33:30 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:33:30 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:90 Height:30}
+2025/06/28 17:33:30 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:30 logger.go:35: renderAppCard: windowSize=90x30, contentSize=86x30
+2025/06/28 17:33:30 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:33:32 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:32 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:32 logger.go:35: renderAppCard: windowSize=90x30, contentSize=86x30
+2025/06/28 17:33:32 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:33:33 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:33:33 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:33 logger.go:35: renderAppCard: windowSize=90x30, contentSize=86x30
+2025/06/28 17:33:33 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:33:33 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:33 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:33 logger.go:35: renderAppCard: windowSize=90x30, contentSize=86x30
+2025/06/28 17:33:33 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:33:34 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:34 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:34 logger.go:35: renderAppCard: windowSize=90x30, contentSize=86x30
+2025/06/28 17:33:34 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:33:34 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:33:34 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:34 logger.go:35: renderAppCard: windowSize=90x30, contentSize=86x30
+2025/06/28 17:33:34 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:33:36 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:83 Height:28}
+2025/06/28 17:33:36 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:36 logger.go:35: renderAppCard: windowSize=83x28, contentSize=79x28
+2025/06/28 17:33:36 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:33:37 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:82 Height:28}
+2025/06/28 17:33:37 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:37 logger.go:35: renderAppCard: windowSize=82x28, contentSize=78x28
+2025/06/28 17:33:37 logger.go:35: Heights: window=28, tabs=3, status=4, chrome=12, contentBox=16, viewport=14
+2025/06/28 17:33:37 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:82 Height:27}
+2025/06/28 17:33:37 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:37 logger.go:35: renderAppCard: windowSize=82x27, contentSize=78x27
+2025/06/28 17:33:37 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:33:38 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:38 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:38 logger.go:35: renderAppCard: windowSize=82x27, contentSize=78x27
+2025/06/28 17:33:38 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:33:39 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:33:39 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:39 logger.go:35: renderAppCard: windowSize=82x27, contentSize=78x27
+2025/06/28 17:33:39 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:33:41 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:33:41 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:41 logger.go:35: renderAppCard: windowSize=82x27, contentSize=78x27
+2025/06/28 17:33:41 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:33:43 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:43 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:43 logger.go:35: renderAppCard: windowSize=82x27, contentSize=78x27
+2025/06/28 17:33:43 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:33:44 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:44 logger.go:35: renderAppCard: windowSize=82x27, contentSize=78x27
+2025/06/28 17:33:44 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:33:45 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:33:45 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:45 logger.go:35: renderAppCard: windowSize=82x27, contentSize=78x27
+2025/06/28 17:33:45 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:33:49 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:90 Height:35}
+2025/06/28 17:33:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:49 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:49 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:51 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:33:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:51 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:51 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:52 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:52 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:52 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:53 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:53 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:54 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:54 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:54 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:54 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:54 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:54 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:54 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:54 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:54 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:54 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:54 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:54 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:54 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:54 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:54 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:55 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:55 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:55 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:55 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:33:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:55 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:33:55 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:33:58 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:69 Height:29}
+2025/06/28 17:33:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:58 logger.go:35: renderAppCard: windowSize=69x29, contentSize=65x29
+2025/06/28 17:33:58 logger.go:35: Heights: window=29, tabs=3, status=4, chrome=12, contentBox=17, viewport=15
+2025/06/28 17:33:58 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:63 Height:27}
+2025/06/28 17:33:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:33:58 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:33:58 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:00 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:00 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:00 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:00 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:01 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:01 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:01 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:01 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:01 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:01 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:01 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:01 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:01 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:01 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:01 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:01 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:02 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:02 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:02 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:02 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:02 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:02 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:02 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:02 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:02 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:02 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:02 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:02 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:02 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:02 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:02 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:02 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:03 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:03 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:03 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:03 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:03 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:03 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:03 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:03 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:03 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:03 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:03 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:03 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:04 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:04 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:04 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:04 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:04 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:04 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:04 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:04 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:04 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:04 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:04 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:04 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:04 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:04 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:04 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:04 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:04 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:04 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:04 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:04 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:04 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:04 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:04 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:04 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:05 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:05 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:05 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:05 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:05 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:05 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:05 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:05 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:05 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:05 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:05 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:05 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:05 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:05 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:05 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:05 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:05 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:05 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:05 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:05 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:05 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:05 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:05 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:05 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:06 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:06 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:06 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:06 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:06 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:06 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:06 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:06 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:06 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:07 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:07 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:08 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:08 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:08 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:08 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:08 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:08 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:08 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:08 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:08 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:08 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:08 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:08 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:08 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:08 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:08 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:08 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:08 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:08 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:08 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:08 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:08 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:09 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:09 logger.go:35: renderAppCard: windowSize=63x27, contentSize=59x27
+2025/06/28 17:34:09 logger.go:35: Heights: window=27, tabs=3, status=4, chrome=12, contentBox=15, viewport=13
+2025/06/28 17:34:11 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:126 Height:42}
+2025/06/28 17:34:11 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:11 logger.go:35: renderAppCard: windowSize=126x42, contentSize=122x42
+2025/06/28 17:34:11 logger.go:35: Heights: window=42, tabs=3, status=3, chrome=11, contentBox=31, viewport=29
+2025/06/28 17:34:11 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:137 Height:45}
+2025/06/28 17:34:11 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:11 logger.go:35: renderAppCard: windowSize=137x45, contentSize=133x45
+2025/06/28 17:34:11 logger.go:35: Heights: window=45, tabs=3, status=3, chrome=11, contentBox=34, viewport=32
+2025/06/28 17:34:11 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:150 Height:48}
+2025/06/28 17:34:11 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:11 logger.go:35: renderAppCard: windowSize=150x48, contentSize=146x48
+2025/06/28 17:34:11 logger.go:35: Heights: window=48, tabs=3, status=3, chrome=11, contentBox=37, viewport=35
+2025/06/28 17:34:12 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:165 Height:50}
+2025/06/28 17:34:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:12 logger.go:35: renderAppCard: windowSize=165x50, contentSize=161x50
+2025/06/28 17:34:12 logger.go:35: Heights: window=50, tabs=3, status=3, chrome=11, contentBox=39, viewport=37
+2025/06/28 17:34:12 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:170 Height:50}
+2025/06/28 17:34:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:12 logger.go:35: renderAppCard: windowSize=170x50, contentSize=166x50
+2025/06/28 17:34:12 logger.go:35: Heights: window=50, tabs=3, status=3, chrome=11, contentBox=39, viewport=37
+2025/06/28 17:34:12 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:184 Height:52}
+2025/06/28 17:34:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:12 logger.go:35: renderAppCard: windowSize=184x52, contentSize=180x52
+2025/06/28 17:34:12 logger.go:35: Heights: window=52, tabs=3, status=3, chrome=11, contentBox=41, viewport=39
+2025/06/28 17:34:12 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:227 Height:55}
+2025/06/28 17:34:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:12 logger.go:35: renderAppCard: windowSize=227x55, contentSize=223x55
+2025/06/28 17:34:12 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:12 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:238 Height:55}
+2025/06/28 17:34:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:12 logger.go:35: renderAppCard: windowSize=238x55, contentSize=234x55
+2025/06/28 17:34:12 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:13 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:243 Height:55}
+2025/06/28 17:34:13 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:13 logger.go:35: renderAppCard: windowSize=243x55, contentSize=239x55
+2025/06/28 17:34:13 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:13 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:245 Height:55}
+2025/06/28 17:34:13 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:13 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:13 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:17 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:17 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:17 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:17 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:17 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:17 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:17 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:17 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:17 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:17 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:17 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:17 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:18 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:18 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:18 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:18 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:18 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:18 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:18 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:18 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:18 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:19 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:19 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:19 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:19 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:19 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:19 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:19 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:19 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:19 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:19 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:19 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:19 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:19 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:19 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:19 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:19 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:19 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:19 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:19 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:19 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:19 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:19 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:19 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:19 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:20 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:20 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:20 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:20 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:20 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:20 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:20 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:20 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:20 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:21 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:21 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:21 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:21 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:21 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:21 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:21 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:21 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:21 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:21 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:21 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:21 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:21 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:21 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:21 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:21 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:21 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:21 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:21 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:21 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:21 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:21 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:21 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:21 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:21 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:21 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:21 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:22 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:22 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:22 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:22 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:22 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:22 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:28 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:34:28 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:28 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:28 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:29 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:34:29 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:29 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:29 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:31 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:34:31 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:31 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:31 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:43 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:34:43 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:43 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:43 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:44 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:34:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:44 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:34:44 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:34:47 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:133 Height:50}
+2025/06/28 17:34:47 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:47 logger.go:35: renderAppCard: windowSize=133x50, contentSize=129x50
+2025/06/28 17:34:47 logger.go:35: Heights: window=50, tabs=3, status=3, chrome=11, contentBox=39, viewport=37
+2025/06/28 17:34:47 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:121 Height:46}
+2025/06/28 17:34:47 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:47 logger.go:35: renderAppCard: windowSize=121x46, contentSize=117x46
+2025/06/28 17:34:47 logger.go:35: Heights: window=46, tabs=3, status=3, chrome=11, contentBox=35, viewport=33
+2025/06/28 17:34:48 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:102 Height:41}
+2025/06/28 17:34:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:48 logger.go:35: renderAppCard: windowSize=102x41, contentSize=98x41
+2025/06/28 17:34:48 logger.go:35: Heights: window=41, tabs=3, status=3, chrome=11, contentBox=30, viewport=28
+2025/06/28 17:34:48 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:90 Height:35}
+2025/06/28 17:34:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:48 logger.go:35: renderAppCard: windowSize=90x35, contentSize=86x35
+2025/06/28 17:34:48 logger.go:35: Heights: window=35, tabs=3, status=3, chrome=11, contentBox=24, viewport=22
+2025/06/28 17:34:48 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:91 Height:31}
+2025/06/28 17:34:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:48 logger.go:35: renderAppCard: windowSize=91x31, contentSize=87x31
+2025/06/28 17:34:48 logger.go:35: Heights: window=31, tabs=3, status=3, chrome=11, contentBox=20, viewport=18
+2025/06/28 17:34:48 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:99 Height:29}
+2025/06/28 17:34:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:48 logger.go:35: renderAppCard: windowSize=99x29, contentSize=95x29
+2025/06/28 17:34:48 logger.go:35: Heights: window=29, tabs=3, status=3, chrome=11, contentBox=18, viewport=16
+2025/06/28 17:34:49 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:92 Height:29}
+2025/06/28 17:34:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:49 logger.go:35: renderAppCard: windowSize=92x29, contentSize=88x29
+2025/06/28 17:34:49 logger.go:35: Heights: window=29, tabs=3, status=3, chrome=11, contentBox=18, viewport=16
+2025/06/28 17:34:49 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:92 Height:28}
+2025/06/28 17:34:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:49 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:49 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:50 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:50 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:50 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:50 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:50 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:50 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:51 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:51 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:51 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:52 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:52 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:52 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:52 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:52 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:52 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:52 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:52 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:52 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:52 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:52 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:52 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:52 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:52 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:52 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:52 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:52 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:52 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:53 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:53 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:53 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:53 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:53 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:53 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:53 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:53 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:53 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:53 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:34:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:53 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:53 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:53 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:53 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:54 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:54 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:54 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:55 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:55 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:55 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:55 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:34:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:55 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:55 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:56 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:34:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:56 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:56 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:57 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:57 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:57 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:57 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:57 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:57 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:58 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:34:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:58 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:58 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:34:59 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:34:59 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:34:59 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:34:59 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:00 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:35:00 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:00 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:00 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:00 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:00 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:00 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:00 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:00 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:00 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:00 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:00 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:00 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:00 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:00 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:00 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:01 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:01 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:01 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:01 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:01 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:35:01 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:01 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:01 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:01 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:01 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:01 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:01 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:02 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:02 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:02 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:02 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:35:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:02 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:02 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:03 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:35:03 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:03 logger.go:35: renderAppCard: windowSize=92x28, contentSize=88x28
+2025/06/28 17:35:03 logger.go:35: Heights: window=28, tabs=3, status=3, chrome=11, contentBox=17, viewport=15
+2025/06/28 17:35:09 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:131 Height:33}
+2025/06/28 17:35:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:09 logger.go:35: renderAppCard: windowSize=131x33, contentSize=127x33
+2025/06/28 17:35:09 logger.go:35: Heights: window=33, tabs=3, status=3, chrome=11, contentBox=22, viewport=20
+2025/06/28 17:35:09 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:157 Height:38}
+2025/06/28 17:35:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:09 logger.go:35: renderAppCard: windowSize=157x38, contentSize=153x38
+2025/06/28 17:35:09 logger.go:35: Heights: window=38, tabs=3, status=3, chrome=11, contentBox=27, viewport=25
+2025/06/28 17:35:10 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:217 Height:53}
+2025/06/28 17:35:10 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:10 logger.go:35: renderAppCard: windowSize=217x53, contentSize=213x53
+2025/06/28 17:35:10 logger.go:35: Heights: window=53, tabs=3, status=3, chrome=11, contentBox=42, viewport=40
+2025/06/28 17:35:10 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:245 Height:55}
+2025/06/28 17:35:10 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:10 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:10 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:13 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:13 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:13 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:13 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:14 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:35:14 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:14 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:14 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:14 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:35:14 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:14 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:14 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:16 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:35:16 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:16 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:16 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:17 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:17 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:17 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:17 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:18 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:18 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:18 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:18 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:18 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:18 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:18 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:18 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:18 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:18 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:35:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:18 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:18 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:19 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:35:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:19 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:19 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:20 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 17:35:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:20 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:20 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:23 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:164 Height:51}
+2025/06/28 17:35:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:23 logger.go:35: renderAppCard: windowSize=164x51, contentSize=160x51
+2025/06/28 17:35:23 logger.go:35: Heights: window=51, tabs=3, status=3, chrome=11, contentBox=40, viewport=38
+2025/06/28 17:35:23 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:164 Height:52}
+2025/06/28 17:35:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:23 logger.go:35: renderAppCard: windowSize=164x52, contentSize=160x52
+2025/06/28 17:35:23 logger.go:35: Heights: window=52, tabs=3, status=3, chrome=11, contentBox=41, viewport=39
+2025/06/28 17:35:23 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:164 Height:54}
+2025/06/28 17:35:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:23 logger.go:35: renderAppCard: windowSize=164x54, contentSize=160x54
+2025/06/28 17:35:23 logger.go:35: Heights: window=54, tabs=3, status=3, chrome=11, contentBox=43, viewport=41
+2025/06/28 17:35:23 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:164 Height:53}
+2025/06/28 17:35:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:23 logger.go:35: renderAppCard: windowSize=164x53, contentSize=160x53
+2025/06/28 17:35:23 logger.go:35: Heights: window=53, tabs=3, status=3, chrome=11, contentBox=42, viewport=40
+2025/06/28 17:35:23 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:145 Height:50}
+2025/06/28 17:35:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:23 logger.go:35: renderAppCard: windowSize=145x50, contentSize=141x50
+2025/06/28 17:35:23 logger.go:35: Heights: window=50, tabs=3, status=3, chrome=11, contentBox=39, viewport=37
+2025/06/28 17:35:24 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:144 Height:36}
+2025/06/28 17:35:24 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:24 logger.go:35: renderAppCard: windowSize=144x36, contentSize=140x36
+2025/06/28 17:35:24 logger.go:35: Heights: window=36, tabs=3, status=3, chrome=11, contentBox=25, viewport=23
+2025/06/28 17:35:24 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:143 Height:30}
+2025/06/28 17:35:24 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:24 logger.go:35: renderAppCard: windowSize=143x30, contentSize=139x30
+2025/06/28 17:35:24 logger.go:35: Heights: window=30, tabs=3, status=3, chrome=11, contentBox=19, viewport=17
+2025/06/28 17:35:25 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:142 Height:39}
+2025/06/28 17:35:25 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:25 logger.go:35: renderAppCard: windowSize=142x39, contentSize=138x39
+2025/06/28 17:35:25 logger.go:35: Heights: window=39, tabs=3, status=3, chrome=11, contentBox=28, viewport=26
+2025/06/28 17:35:25 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:142 Height:42}
+2025/06/28 17:35:25 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:25 logger.go:35: renderAppCard: windowSize=142x42, contentSize=138x42
+2025/06/28 17:35:25 logger.go:35: Heights: window=42, tabs=3, status=3, chrome=11, contentBox=31, viewport=29
+2025/06/28 17:35:26 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:156 Height:55}
+2025/06/28 17:35:26 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:26 logger.go:35: renderAppCard: windowSize=156x55, contentSize=152x55
+2025/06/28 17:35:26 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:26 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:166 Height:55}
+2025/06/28 17:35:26 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:26 logger.go:35: renderAppCard: windowSize=166x55, contentSize=162x55
+2025/06/28 17:35:26 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:26 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:167 Height:55}
+2025/06/28 17:35:26 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:26 logger.go:35: renderAppCard: windowSize=167x55, contentSize=163x55
+2025/06/28 17:35:26 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:28 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:245 Height:55}
+2025/06/28 17:35:28 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:28 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:28 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:46 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:46 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:46 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:46 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:47 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:47 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:47 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:47 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:47 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:47 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:47 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:47 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:47 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:47 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:47 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:47 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:47 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/28 17:35:47 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:47 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:47 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:35:48 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/28 17:35:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:35:48 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:35:48 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:42:10 logger.go:42: [Model.Update] Message: tea.KeyMsg q
+2025/06/28 17:42:10 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:42:10 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:42:10 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42
+2025/06/28 17:42:10 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 17:42:10 logger.go:35: renderAppCard: windowSize=245x55, contentSize=241x55
+2025/06/28 17:42:10 logger.go:35: Heights: window=55, tabs=3, status=3, chrome=11, contentBox=44, viewport=42

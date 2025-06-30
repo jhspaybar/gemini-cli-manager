@@ -1,0 +1,994 @@
+2025/06/26 18:56:20 logger.go:29: === Gemini CLI Manager Debug Log Started ===
+2025/06/26 18:56:20 logger.go:35: Model.View called, ready=false, loading=true, showingModal=false
+2025/06/26 18:56:20 logger.go:42: [Model.Update] Message: tea.enterAltScreenMsg {}
+2025/06/26 18:56:20 logger.go:35: Model.View called, ready=false, loading=true, showingModal=false
+2025/06/26 18:56:20 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:204 Height:51}
+2025/06/26 18:56:20 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/26 18:56:20 logger.go:42: [Model.Update] Message: cli.managersInitializedMsg {err:<nil>}
+2025/06/26 18:56:20 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/26 18:56:20 logger.go:42: [Model.Update] Message: cli.extensionsLoadedMsg {extensions:[0x140004a61b0 0x140004a62d0] err:<nil>}
+2025/06/26 18:56:20 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/26 18:56:20 logger.go:42: [Model.Update] Message: cli.profilesLoadedMsg {profiles:[0x1400049e000 0x1400049e0f0] err:<nil>}
+2025/06/26 18:56:20 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/26 18:56:20 logger.go:42: [Model.Update] Message: cli.profileActivatedMsg {profile:0x1400049e0f0 err:<nil>}
+2025/06/26 18:56:20 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/26 18:56:20 logger.go:42: [Model.Update] Message: cli.initCompleteMsg {err:<nil>}
+2025/06/26 18:56:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:20 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:56:20 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:56:22 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:56:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:22 logger.go:35: renderContent called, view=1, width=204, height=46
+2025/06/26 18:56:22 logger.go:35: renderContent returning, content length=4273
+2025/06/26 18:56:23 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:56:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:23 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:56:23 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:56:25 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:56:25 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:25 logger.go:35: renderContent called, view=3, width=204, height=46
+2025/06/26 18:56:25 logger.go:35: renderContent returning, content length=1212
+2025/06/26 18:56:28 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:56:28 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:28 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:56:28 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:56:28 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:56:28 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:28 logger.go:35: renderContent called, view=1, width=204, height=46
+2025/06/26 18:56:28 logger.go:35: renderContent returning, content length=4273
+2025/06/26 18:56:29 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:56:29 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:29 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:56:29 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:56:30 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:56:30 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:30 logger.go:35: renderContent called, view=3, width=204, height=46
+2025/06/26 18:56:30 logger.go:35: renderContent returning, content length=1212
+2025/06/26 18:56:31 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:56:31 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:31 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:56:31 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:56:32 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:56:32 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:32 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:56:32 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:56:33 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:56:33 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:33 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:56:33 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:56:33 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:56:33 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:33 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:56:33 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:56:36 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:56:36 logger.go:35: Selected extension: mcp-extension, switching to detail view
+2025/06/26 18:56:36 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:36 logger.go:35: renderContent called, view=4, width=204, height=46
+2025/06/26 18:56:36 logger.go:35: Calling renderExtensionDetail
+2025/06/26 18:56:36 logger.go:35: renderExtensionDetail called, width=200, height=46
+2025/06/26 18:56:36 logger.go:35: Rendering detail for extension: mcp-extension
+2025/06/26 18:56:36 logger.go:35: Checking context file at: /Users/williamthurston/.gemini-cli-manager/extensions/mcp-extension/GEMINI.md
+2025/06/26 18:56:36 logger.go:35: Context file found, size: 1126 bytes
+2025/06/26 18:56:36 logger.go:35: Using cached glamour renderer
+2025/06/26 18:56:36 logger.go:35: renderContent returning, content length=16490
+2025/06/26 18:56:40 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/26 18:56:40 logger.go:35: updateExtensionDetail: key=e
+2025/06/26 18:56:40 logger.go:35: Edit extension requested: mcp-extension
+2025/06/26 18:56:40 logger.go:35: showExtensionEditForm called for extension: mcp-extension
+2025/06/26 18:56:40 logger.go:35: Created form, setting size to 204x51
+2025/06/26 18:56:40 logger.go:35: Modal set, showingModal=true, calling Init
+2025/06/26 18:56:40 logger.go:35: ExtensionEditForm.Init called, mode=0
+2025/06/26 18:56:40 logger.go:35: Init returned cmd: 0x10054d7f0
+2025/06/26 18:56:40 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:40 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:40 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:40 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:40 logger.go:42: [Model.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:40 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:40 logger.go:35: Calling modal.Update with message: cursor.initialBlinkMsg
+2025/06/26 18:56:40 logger.go:42: [ExtensionEditForm.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:40 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:40 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:40 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:40 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:40 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:40 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:40 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:40 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:2}
+2025/06/26 18:56:40 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:40 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:40 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:2}
+2025/06/26 18:56:40 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:40 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:40 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:40 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:40 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:40 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:40 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:41 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:3}
+2025/06/26 18:56:41 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:41 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:41 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:3}
+2025/06/26 18:56:41 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:41 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:41 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:41 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:41 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:41 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:41 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:41 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:56:41 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:41 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/26 18:56:41 logger.go:42: [ExtensionEditForm.Update] Message: tea.KeyMsg down
+2025/06/26 18:56:41 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:41 logger.go:35: ExtensionEditForm.Update returning with 0 commands
+2025/06/26 18:56:41 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/26 18:56:41 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:41 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:41 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:41 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:41 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:4}
+2025/06/26 18:56:41 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:41 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:41 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:4}
+2025/06/26 18:56:41 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:41 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:41 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:41 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:41 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:41 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:41 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:42 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:5}
+2025/06/26 18:56:42 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:42 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:42 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:5}
+2025/06/26 18:56:42 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:42 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:42 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:42 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:42 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:42 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:42 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:42 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:56:42 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:42 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/26 18:56:42 logger.go:42: [ExtensionEditForm.Update] Message: tea.KeyMsg down
+2025/06/26 18:56:42 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:42 logger.go:35: ExtensionEditForm.Update returning with 0 commands
+2025/06/26 18:56:42 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/26 18:56:42 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:42 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:42 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:42 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:42 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:6}
+2025/06/26 18:56:42 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:42 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:42 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:6}
+2025/06/26 18:56:42 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:42 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:42 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:42 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:42 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:42 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:42 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:42 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:56:42 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:42 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/26 18:56:42 logger.go:42: [ExtensionEditForm.Update] Message: tea.KeyMsg right
+2025/06/26 18:56:42 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:42 logger.go:35: ExtensionEditForm.Update returning with 0 commands
+2025/06/26 18:56:42 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/26 18:56:42 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:42 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:42 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:42 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:43 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:7}
+2025/06/26 18:56:43 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:43 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:43 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:7}
+2025/06/26 18:56:43 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:43 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:43 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:43 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:43 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:43 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:43 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:44 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:8}
+2025/06/26 18:56:44 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:44 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:44 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:8}
+2025/06/26 18:56:44 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:44 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:44 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:44 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:44 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:44 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:44 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:9}
+2025/06/26 18:56:44 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:44 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:44 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:9}
+2025/06/26 18:56:44 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:44 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:44 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:44 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:44 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:44 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:44 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/26 18:56:44 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:44 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/26 18:56:44 logger.go:42: [ExtensionEditForm.Update] Message: tea.KeyMsg tab
+2025/06/26 18:56:44 logger.go:35: Modal.Update returned, cmd: 0x10054d7f0
+2025/06/26 18:56:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:44 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:44 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:44 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:44 logger.go:42: [Model.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:44 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:44 logger.go:35: Calling modal.Update with message: cursor.initialBlinkMsg
+2025/06/26 18:56:44 logger.go:42: [ExtensionEditForm.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:44 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:44 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:44 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:44 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:44 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:44 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:45 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:10}
+2025/06/26 18:56:45 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:45 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:10}
+2025/06/26 18:56:45 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:45 logger.go:35: ExtensionEditForm.Update returning with 0 commands
+2025/06/26 18:56:45 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/26 18:56:45 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:45 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:45 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:45 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:2}
+2025/06/26 18:56:45 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:45 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:2}
+2025/06/26 18:56:45 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:45 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:45 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:45 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:45 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:45 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:45 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:3}
+2025/06/26 18:56:45 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:45 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:3}
+2025/06/26 18:56:45 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:45 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:45 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:45 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:45 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:45 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:45 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/26 18:56:45 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/26 18:56:45 logger.go:42: [ExtensionEditForm.Update] Message: tea.KeyMsg tab
+2025/06/26 18:56:45 logger.go:35: Modal.Update returned, cmd: 0x10054d7f0
+2025/06/26 18:56:45 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:45 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:45 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:45 logger.go:42: [Model.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:45 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: Calling modal.Update with message: cursor.initialBlinkMsg
+2025/06/26 18:56:45 logger.go:42: [ExtensionEditForm.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:45 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:45 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:45 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:45 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:45 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:45 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:45 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:46 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:4}
+2025/06/26 18:56:46 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:46 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:46 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:4}
+2025/06/26 18:56:46 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:46 logger.go:35: ExtensionEditForm.Update returning with 0 commands
+2025/06/26 18:56:46 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/26 18:56:46 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:46 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:46 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:46 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:46 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:2}
+2025/06/26 18:56:46 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:46 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:46 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:2}
+2025/06/26 18:56:46 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:46 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:46 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:46 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:46 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:46 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:46 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:46 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:3}
+2025/06/26 18:56:46 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:46 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:46 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:3}
+2025/06/26 18:56:46 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:46 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:46 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:46 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:46 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:46 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:46 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:47 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:4}
+2025/06/26 18:56:47 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:47 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:47 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:4}
+2025/06/26 18:56:47 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:47 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:47 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:47 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:47 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:47 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:47 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:48 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:5}
+2025/06/26 18:56:48 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:48 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:48 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:5}
+2025/06/26 18:56:48 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:48 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:48 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:48 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:48 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:48 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:48 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:6}
+2025/06/26 18:56:48 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:48 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:48 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:6}
+2025/06/26 18:56:48 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:48 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:48 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:48 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:48 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:48 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:49 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:7}
+2025/06/26 18:56:49 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:49 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:49 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:7}
+2025/06/26 18:56:49 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:49 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:49 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:49 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:49 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:49 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:49 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:8}
+2025/06/26 18:56:49 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:49 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:49 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:8}
+2025/06/26 18:56:49 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:49 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:49 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:49 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:49 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:49 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:50 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:9}
+2025/06/26 18:56:50 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:50 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:50 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:9}
+2025/06/26 18:56:50 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:50 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:50 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:50 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:50 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:50 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:50 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:10}
+2025/06/26 18:56:50 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:50 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:50 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:10}
+2025/06/26 18:56:50 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:50 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:50 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:50 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:50 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:50 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:51 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:11}
+2025/06/26 18:56:51 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:51 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:51 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:11}
+2025/06/26 18:56:51 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:51 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:51 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:51 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:51 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:51 logger.go:35: View: Modal rendered, length: 10762
+2025/06/26 18:56:51 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:12}
+2025/06/26 18:56:51 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:51 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:51 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:12}
+2025/06/26 18:56:51 logger.go:35: Updating inputs in config mode
+2025/06/26 18:56:51 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:51 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:51 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:51 logger.go:35: ExtensionEditForm.View called, mode=0, width=204, height=51
+2025/06/26 18:56:51 logger.go:35: View: Modal rendered, length: 10754
+2025/06/26 18:56:51 logger.go:42: [Model.Update] Message: tea.KeyMsg ctrl+t
+2025/06/26 18:56:51 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/26 18:56:51 logger.go:42: [ExtensionEditForm.Update] Message: tea.KeyMsg ctrl+t
+2025/06/26 18:56:51 logger.go:35: Modal.Update returned, cmd: 0x100545870
+2025/06/26 18:56:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:51 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:51 logger.go:35: ExtensionEditForm.View called, mode=1, width=204, height=51
+2025/06/26 18:56:51 logger.go:35: View: Modal rendered, length: 11438
+2025/06/26 18:56:51 logger.go:42: [Model.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:51 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:51 logger.go:35: Calling modal.Update with message: cursor.initialBlinkMsg
+2025/06/26 18:56:51 logger.go:42: [ExtensionEditForm.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:51 logger.go:35: Updating textarea in 1 mode
+2025/06/26 18:56:51 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:51 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:51 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:51 logger.go:35: ExtensionEditForm.View called, mode=1, width=204, height=51
+2025/06/26 18:56:51 logger.go:35: View: Modal rendered, length: 11545
+2025/06/26 18:56:52 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:13}
+2025/06/26 18:56:52 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:52 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:52 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:13}
+2025/06/26 18:56:52 logger.go:35: Updating textarea in 1 mode
+2025/06/26 18:56:52 logger.go:35: ExtensionEditForm.Update returning with 0 commands
+2025/06/26 18:56:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/26 18:56:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:52 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:52 logger.go:35: ExtensionEditForm.View called, mode=1, width=204, height=51
+2025/06/26 18:56:52 logger.go:35: View: Modal rendered, length: 11545
+2025/06/26 18:56:52 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:2}
+2025/06/26 18:56:52 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:52 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:52 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:2}
+2025/06/26 18:56:52 logger.go:35: Updating textarea in 1 mode
+2025/06/26 18:56:52 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:52 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:52 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:52 logger.go:35: ExtensionEditForm.View called, mode=1, width=204, height=51
+2025/06/26 18:56:52 logger.go:35: View: Modal rendered, length: 11552
+2025/06/26 18:56:53 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:3}
+2025/06/26 18:56:53 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:53 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:3}
+2025/06/26 18:56:53 logger.go:35: Updating textarea in 1 mode
+2025/06/26 18:56:53 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:53 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:53 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: ExtensionEditForm.View called, mode=1, width=204, height=51
+2025/06/26 18:56:53 logger.go:35: View: Modal rendered, length: 11545
+2025/06/26 18:56:53 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:4}
+2025/06/26 18:56:53 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:53 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:4}
+2025/06/26 18:56:53 logger.go:35: Updating textarea in 1 mode
+2025/06/26 18:56:53 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:53 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:53 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: ExtensionEditForm.View called, mode=1, width=204, height=51
+2025/06/26 18:56:53 logger.go:35: View: Modal rendered, length: 11552
+2025/06/26 18:56:53 logger.go:42: [Model.Update] Message: tea.KeyMsg ctrl+t
+2025/06/26 18:56:53 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/26 18:56:53 logger.go:42: [ExtensionEditForm.Update] Message: tea.KeyMsg ctrl+t
+2025/06/26 18:56:53 logger.go:35: Modal.Update returned, cmd: 0x100545870
+2025/06/26 18:56:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:53 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: ExtensionEditForm.View called, mode=2, width=204, height=51
+2025/06/26 18:56:53 logger.go:35: View: Modal rendered, length: 11376
+2025/06/26 18:56:53 logger.go:42: [Model.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:53 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: Calling modal.Update with message: cursor.initialBlinkMsg
+2025/06/26 18:56:53 logger.go:42: [ExtensionEditForm.Update] Message: cursor.initialBlinkMsg {}
+2025/06/26 18:56:53 logger.go:35: Updating textarea in 2 mode
+2025/06/26 18:56:53 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:53 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:53 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: ExtensionEditForm.View called, mode=2, width=204, height=51
+2025/06/26 18:56:53 logger.go:35: View: Modal rendered, length: 11490
+2025/06/26 18:56:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/26 18:56:53 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/26 18:56:53 logger.go:42: [ExtensionEditForm.Update] Message: cursor.blinkCanceled {}
+2025/06/26 18:56:53 logger.go:35: Updating textarea in 2 mode
+2025/06/26 18:56:53 logger.go:35: ExtensionEditForm.Update returning with 0 commands
+2025/06/26 18:56:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/26 18:56:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:53 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:53 logger.go:35: ExtensionEditForm.View called, mode=2, width=204, height=51
+2025/06/26 18:56:53 logger.go:35: View: Modal rendered, length: 11490
+2025/06/26 18:56:54 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:6}
+2025/06/26 18:56:54 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:54 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:54 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:6}
+2025/06/26 18:56:54 logger.go:35: Updating textarea in 2 mode
+2025/06/26 18:56:54 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:54 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:54 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:54 logger.go:35: ExtensionEditForm.View called, mode=2, width=204, height=51
+2025/06/26 18:56:54 logger.go:35: View: Modal rendered, length: 11483
+2025/06/26 18:56:54 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:7}
+2025/06/26 18:56:54 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:54 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:54 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:7}
+2025/06/26 18:56:54 logger.go:35: Updating textarea in 2 mode
+2025/06/26 18:56:54 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:54 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:54 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:54 logger.go:35: ExtensionEditForm.View called, mode=2, width=204, height=51
+2025/06/26 18:56:54 logger.go:35: View: Modal rendered, length: 11490
+2025/06/26 18:56:55 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:8}
+2025/06/26 18:56:55 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:55 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:55 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:8}
+2025/06/26 18:56:55 logger.go:35: Updating textarea in 2 mode
+2025/06/26 18:56:55 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:55 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:55 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:55 logger.go:35: ExtensionEditForm.View called, mode=2, width=204, height=51
+2025/06/26 18:56:55 logger.go:35: View: Modal rendered, length: 11483
+2025/06/26 18:56:55 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:9}
+2025/06/26 18:56:55 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:55 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:55 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:9}
+2025/06/26 18:56:55 logger.go:35: Updating textarea in 2 mode
+2025/06/26 18:56:55 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:55 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:55 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:55 logger.go:35: ExtensionEditForm.View called, mode=2, width=204, height=51
+2025/06/26 18:56:55 logger.go:35: View: Modal rendered, length: 11490
+2025/06/26 18:56:56 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:10}
+2025/06/26 18:56:56 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:56 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/26 18:56:56 logger.go:42: [ExtensionEditForm.Update] Message: cursor.BlinkMsg {id:0 tag:10}
+2025/06/26 18:56:56 logger.go:35: Updating textarea in 2 mode
+2025/06/26 18:56:56 logger.go:35: ExtensionEditForm.Update returning with 1 commands
+2025/06/26 18:56:56 logger.go:35: Modal.Update returned, cmd: 0x100531730
+2025/06/26 18:56:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:56 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:56 logger.go:35: ExtensionEditForm.View called, mode=2, width=204, height=51
+2025/06/26 18:56:56 logger.go:35: View: Modal rendered, length: 11483
+2025/06/26 18:56:56 logger.go:42: [Model.Update] Message: tea.KeyMsg esc
+2025/06/26 18:56:56 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/26 18:56:56 logger.go:42: [ExtensionEditForm.Update] Message: tea.KeyMsg esc
+2025/06/26 18:56:56 logger.go:35: Modal.Update returned, cmd: 0x1009403c0
+2025/06/26 18:56:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/26 18:56:56 logger.go:35: View: Rendering modal, type: *cli.ExtensionEditForm
+2025/06/26 18:56:56 logger.go:35: ExtensionEditForm.View called, mode=2, width=204, height=51
+2025/06/26 18:56:56 logger.go:35: View: Modal rendered, length: 11483
+2025/06/26 18:56:56 logger.go:42: [Model.Update] Message: cli.closeModalMsg {}
+2025/06/26 18:56:56 logger.go:35: Modal is showing, type: *cli.ExtensionEditForm
+2025/06/26 18:56:56 logger.go:35: Calling modal.Update with message: cli.closeModalMsg
+2025/06/26 18:56:56 logger.go:42: [ExtensionEditForm.Update] Message: cli.closeModalMsg {}
+2025/06/26 18:56:56 logger.go:35: Updating textarea in 2 mode
+2025/06/26 18:56:56 logger.go:35: ExtensionEditForm.Update returning with 0 commands
+2025/06/26 18:56:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/26 18:56:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:56 logger.go:35: renderContent called, view=4, width=204, height=46
+2025/06/26 18:56:56 logger.go:35: Calling renderExtensionDetail
+2025/06/26 18:56:56 logger.go:35: renderExtensionDetail called, width=200, height=46
+2025/06/26 18:56:56 logger.go:35: Rendering detail for extension: mcp-extension
+2025/06/26 18:56:56 logger.go:35: Checking context file at: /Users/williamthurston/.gemini-cli-manager/extensions/mcp-extension/GEMINI.md
+2025/06/26 18:56:56 logger.go:35: Context file found, size: 1126 bytes
+2025/06/26 18:56:56 logger.go:35: Using cached glamour renderer
+2025/06/26 18:56:56 logger.go:35: renderContent returning, content length=16490
+2025/06/26 18:56:56 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:11}
+2025/06/26 18:56:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:56:56 logger.go:35: renderContent called, view=4, width=204, height=46
+2025/06/26 18:56:56 logger.go:35: Calling renderExtensionDetail
+2025/06/26 18:56:56 logger.go:35: renderExtensionDetail called, width=200, height=46
+2025/06/26 18:56:56 logger.go:35: Rendering detail for extension: mcp-extension
+2025/06/26 18:56:56 logger.go:35: Checking context file at: /Users/williamthurston/.gemini-cli-manager/extensions/mcp-extension/GEMINI.md
+2025/06/26 18:56:56 logger.go:35: Context file found, size: 1126 bytes
+2025/06/26 18:56:56 logger.go:35: Using cached glamour renderer
+2025/06/26 18:56:56 logger.go:35: renderContent returning, content length=16490
+2025/06/26 18:57:00 logger.go:42: [Model.Update] Message: tea.KeyMsg esc
+2025/06/26 18:57:00 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:00 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:57:00 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:57:02 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:57:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:02 logger.go:35: renderContent called, view=1, width=204, height=46
+2025/06/26 18:57:02 logger.go:35: renderContent returning, content length=4273
+2025/06/26 18:57:03 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:57:03 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:03 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:57:03 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:57:09 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:57:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:09 logger.go:35: renderContent called, view=1, width=204, height=46
+2025/06/26 18:57:09 logger.go:35: renderContent returning, content length=4273
+2025/06/26 18:57:10 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:57:10 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:10 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:57:10 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:57:42 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:57:42 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:42 logger.go:35: renderContent called, view=1, width=204, height=46
+2025/06/26 18:57:42 logger.go:35: renderContent returning, content length=4273
+2025/06/26 18:57:43 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:57:43 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:43 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:43 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:57:44 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:57:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:44 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:44 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:57:44 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:57:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:44 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:44 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:57:44 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:57:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:44 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:44 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:57:45 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:57:45 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:45 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:45 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:57:45 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:57:45 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:45 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:45 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:57:46 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:57:46 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:46 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:46 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:57:48 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:57:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:48 logger.go:35: renderContent called, view=1, width=204, height=46
+2025/06/26 18:57:48 logger.go:35: renderContent returning, content length=4275
+2025/06/26 18:57:49 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:57:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:49 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:57:49 logger.go:35: renderContent returning, content length=3984
+2025/06/26 18:57:49 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:57:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:49 logger.go:35: renderContent called, view=1, width=204, height=46
+2025/06/26 18:57:49 logger.go:35: renderContent returning, content length=4275
+2025/06/26 18:57:49 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:57:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:49 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:49 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:57:50 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:57:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:50 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:50 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:57:52 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:57:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:52 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:52 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:57:53 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:57:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:53 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:53 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:57:54 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:57:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:54 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:54 logger.go:35: renderContent returning, content length=949
+2025/06/26 18:57:55 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:57:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:55 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:55 logger.go:35: renderContent returning, content length=949
+2025/06/26 18:57:56 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:57:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:56 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:56 logger.go:35: renderContent returning, content length=949
+2025/06/26 18:57:56 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:57:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:56 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:56 logger.go:35: renderContent returning, content length=949
+2025/06/26 18:57:56 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:57:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:56 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:56 logger.go:35: renderContent returning, content length=949
+2025/06/26 18:57:57 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:57:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:57 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:57 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:57:57 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:57:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:57 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:57 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:57:58 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:57:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:58 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:58 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:57:59 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:57:59 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:57:59 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:57:59 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:00 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:00 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:00 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:00 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:00 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:00 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:00 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:00 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:01 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:01 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:01 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:01 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:02 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:02 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:02 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:02 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:02 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:03 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:03 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:03 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:03 logger.go:35: renderContent returning, content length=949
+2025/06/26 18:58:03 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:03 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:03 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:03 logger.go:35: renderContent returning, content length=949
+2025/06/26 18:58:04 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:04 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:04 logger.go:35: renderContent returning, content length=949
+2025/06/26 18:58:04 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:04 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:04 logger.go:35: renderContent returning, content length=949
+2025/06/26 18:58:05 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:05 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:05 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:05 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:05 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:05 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:06 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:06 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:06 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:58:06 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:06 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:06 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:58:07 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:07 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:07 logger.go:35: renderContent returning, content length=970
+2025/06/26 18:58:07 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:07 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:07 logger.go:35: renderContent returning, content length=970
+2025/06/26 18:58:08 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:08 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:08 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:09 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:09 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:09 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:09 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:09 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:09 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:09 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:09 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:09 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:10 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:10 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:10 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:10 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:10 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:10 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:10 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:10 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:11 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:11 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:11 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:11 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:58:11 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:11 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:11 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:11 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:58:12 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:12 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:12 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:58:12 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:12 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:12 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:58:12 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:12 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:12 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:13 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:13 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:13 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:13 logger.go:35: renderContent returning, content length=967
+2025/06/26 18:58:14 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:14 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:14 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:14 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:15 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:15 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:15 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:16 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:16 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:16 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:16 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:17 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:17 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:17 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:17 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:18 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:18 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:18 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:18 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:18 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:18 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:18 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:18 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:18 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:18 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:19 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:19 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:19 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:19 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:19 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:19 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:19 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:19 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:19 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:19 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:19 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:19 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:19 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:19 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:19 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:19 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:20 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:20 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:20 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:20 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:20 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:20 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:20 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:20 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:20 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:20 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:21 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:21 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:21 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:21 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:22 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:22 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:22 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:22 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:22 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:22 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:22 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:22 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:22 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:22 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:22 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:22 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:22 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:23 logger.go:42: [Model.Update] Message: tea.KeyMsg down
+2025/06/26 18:58:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:23 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:23 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:23 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:23 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:23 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:23 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:58:24 logger.go:42: [Model.Update] Message: tea.KeyMsg up
+2025/06/26 18:58:24 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:24 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:24 logger.go:35: renderContent returning, content length=963
+2025/06/26 18:58:25 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/26 18:58:25 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:25 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:25 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:28 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:58:28 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:28 logger.go:35: renderContent called, view=1, width=204, height=46
+2025/06/26 18:58:28 logger.go:35: renderContent returning, content length=4273
+2025/06/26 18:58:29 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:58:29 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:29 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:29 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:29 logger.go:42: [Model.Update] Message: tea.KeyMsg right
+2025/06/26 18:58:29 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:29 logger.go:35: renderContent called, view=3, width=204, height=46
+2025/06/26 18:58:29 logger.go:35: renderContent returning, content length=1212
+2025/06/26 18:58:32 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:58:32 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:32 logger.go:35: renderContent called, view=2, width=204, height=46
+2025/06/26 18:58:32 logger.go:35: renderContent returning, content length=945
+2025/06/26 18:58:32 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:58:32 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:32 logger.go:35: renderContent called, view=1, width=204, height=46
+2025/06/26 18:58:32 logger.go:35: renderContent returning, content length=4273
+2025/06/26 18:58:32 logger.go:42: [Model.Update] Message: tea.KeyMsg left
+2025/06/26 18:58:32 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:32 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:58:32 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:58:35 logger.go:42: [Model.Update] Message: tea.KeyMsg q
+2025/06/26 18:58:35 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:35 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:58:35 logger.go:35: renderContent returning, content length=3982
+2025/06/26 18:58:35 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/26 18:58:35 logger.go:35: renderContent called, view=0, width=204, height=46
+2025/06/26 18:58:35 logger.go:35: renderContent returning, content length=3982

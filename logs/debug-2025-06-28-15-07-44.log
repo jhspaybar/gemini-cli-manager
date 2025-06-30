@@ -1,0 +1,2000 @@
+2025/06/28 15:07:44 logger.go:29: === Gemini CLI Manager Debug Log Started ===
+2025/06/28 15:07:44 logger.go:35: Model.View called, ready=false, loading=true, showingModal=false
+2025/06/28 15:07:44 logger.go:42: [Model.Update] Message: tea.enterAltScreenMsg {}
+2025/06/28 15:07:44 logger.go:35: Model.View called, ready=false, loading=true, showingModal=false
+2025/06/28 15:07:44 logger.go:42: [Model.Update] Message: tea.WindowSizeMsg {Width:105 Height:45}
+2025/06/28 15:07:44 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 15:07:44 logger.go:42: [Model.Update] Message: cli.managersInitializedMsg {err:<nil>}
+2025/06/28 15:07:44 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 15:07:44 logger.go:42: [Model.Update] Message: cli.extensionsLoadedMsg {extensions:[] err:<nil>}
+2025/06/28 15:07:44 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 15:07:44 logger.go:42: [Model.Update] Message: cli.profilesLoadedMsg {profiles:[0x140003e02d0] err:<nil>}
+2025/06/28 15:07:44 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 15:07:44 logger.go:42: [Model.Update] Message: cli.profileActivatedMsg {profile:0x140003e02d0 err:<nil>}
+2025/06/28 15:07:44 logger.go:35: Model.View called, ready=true, loading=true, showingModal=false
+2025/06/28 15:07:44 logger.go:42: [Model.Update] Message: cli.initCompleteMsg {err:<nil>}
+2025/06/28 15:07:44 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:07:44 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:07:44 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:07:44 logger.go:35: renderContent called, view=0, width=97
+2025/06/28 15:07:44 logger.go:35: renderContent returning, content length=1655
+2025/06/28 15:07:47 logger.go:42: [Model.Update] Message: tea.KeyMsg n
+2025/06/28 15:07:47 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:47 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:47 logger.go:35: View: Modal rendered, length: 6846
+2025/06/28 15:07:47 logger.go:42: [Model.Update] Message: cursor.initialBlinkMsg {}
+2025/06/28 15:07:47 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:47 logger.go:35: Calling modal.Update with message: cursor.initialBlinkMsg
+2025/06/28 15:07:47 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:47 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:47 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:47 logger.go:35: View: Modal rendered, length: 6846
+2025/06/28 15:07:48 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:2}
+2025/06/28 15:07:48 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/28 15:07:48 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:48 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: View: Modal rendered, length: 6853
+2025/06/28 15:07:48 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:3}
+2025/06/28 15:07:48 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/28 15:07:48 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:48 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: View: Modal rendered, length: 6846
+2025/06/28 15:07:48 logger.go:42: [Model.Update] Message: tea.KeyMsg /
+2025/06/28 15:07:48 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:48 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:48 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:48 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:48 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:48 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:48 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:48 logger.go:42: [Model.Update] Message: tea.KeyMsg U
+2025/06/28 15:07:48 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:48 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:48 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:48 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:48 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:48 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:48 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:48 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:48 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: tea.KeyMsg r
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: tea.KeyMsg /
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: tea.KeyMsg w
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: tea.KeyMsg l
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: tea.KeyMsg l
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:49 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:49 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:49 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:49 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:49 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:49 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: tea.KeyMsg a
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: tea.KeyMsg m
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: tea.KeyMsg t
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: tea.KeyMsg h
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: tea.KeyMsg u
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: tea.KeyMsg r
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: tea.KeyMsg t
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:50 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:50 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:50 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:50 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:50 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:50 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg o
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg n
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg /
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg r
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg p
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg o
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg /
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: tea.KeyMsg g
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:51 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:51 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:51 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:51 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:51 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:51 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: tea.KeyMsg m
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: tea.KeyMsg n
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: tea.KeyMsg -
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: tea.KeyMsg c
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: tea.KeyMsg l
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:52 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:52 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:52 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:52 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:52 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:52 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: tea.KeyMsg -
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: tea.KeyMsg m
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: tea.KeyMsg a
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: tea.KeyMsg n
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: tea.KeyMsg a
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: tea.KeyMsg g
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: tea.KeyMsg r
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: tea.KeyMsg /
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:53 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:53 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:53 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:53 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:53 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:53 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: tea.KeyMsg x
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: tea.KeyMsg a
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: tea.KeyMsg m
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: tea.KeyMsg p
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: tea.KeyMsg l
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: tea.KeyMsg /
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:54 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:54 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:54 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:54 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:54 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:54 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: tea.KeyMsg x
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: tea.KeyMsg t
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: tea.KeyMsg n
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: tea.KeyMsg o
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: tea.KeyMsg n
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:55 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:55 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:55 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:55 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:55 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:55 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: tea.KeyMsg /
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: tea.KeyMsg f
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: tea.KeyMsg l
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: tea.KeyMsg y
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:56 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:56 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:56 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:56 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:56 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:56 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: tea.KeyMsg t
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: tea.KeyMsg m
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: tea.KeyMsg -
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: tea.KeyMsg n
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: tea.KeyMsg h
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: tea.KeyMsg a
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: tea.KeyMsg n
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:57 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:57 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:57 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:57 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:57 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:57 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: tea.KeyMsg c
+2025/06/28 15:07:58 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:58 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:58 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:58 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:58 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:58 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:07:58 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:58 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:58 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:58 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:58 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:58 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: tea.KeyMsg d
+2025/06/28 15:07:58 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:58 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:58 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:07:58 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:07:58 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:58 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: View: Modal rendered, length: 6816
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/28 15:07:58 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:07:58 logger.go:35: Modal.Update returned, cmd: 0x104bebc10
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:58 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: View: Modal rendered, length: 5643
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: cli.installStartMsg {source:/Users/williamthurston/repos/gemini-cli-manager/examples/extensions/filesystem-enhanced isPath:true}
+2025/06/28 15:07:58 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: Calling modal.Update with message: cli.installStartMsg
+2025/06/28 15:07:58 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:07:58 logger.go:35: View: Rendering modal, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: View: Modal rendered, length: 5643
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: cli.installCompleteMsg {extension:0x1400001c090 err:<nil>}
+2025/06/28 15:07:58 logger.go:35: Modal is showing, type: cli.ExtensionInstallForm
+2025/06/28 15:07:58 logger.go:35: Calling modal.Update with message: cli.installCompleteMsg
+2025/06/28 15:07:58 logger.go:35: Modal.Update returned, cmd: 0x104bebc90
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:07:58 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:07:58 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:07:58 logger.go:35: renderContent called, view=0, width=97
+2025/06/28 15:07:58 logger.go:35: renderContent returning, content length=1655
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: cli.extensionsLoadedMsg {extensions:[0x1400001c240] err:<nil>}
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:07:58 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:07:58 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:07:58 logger.go:35: renderContent called, view=0, width=97
+2025/06/28 15:07:58 logger.go:35: renderContent returning, content length=1705
+2025/06/28 15:07:58 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:91}
+2025/06/28 15:07:58 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:07:58 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:07:58 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:07:58 logger.go:35: renderContent called, view=0, width=97
+2025/06/28 15:07:58 logger.go:35: renderContent returning, content length=1705
+2025/06/28 15:08:01 logger.go:42: [Model.Update] Message: tea.KeyMsg esc
+2025/06/28 15:08:01 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:01 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:01 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:01 logger.go:35: renderContent called, view=0, width=97
+2025/06/28 15:08:01 logger.go:35: renderContent returning, content length=1705
+2025/06/28 15:08:02 logger.go:42: [Model.Update] Message: tea.KeyMsg esc
+2025/06/28 15:08:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:02 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:02 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:02 logger.go:35: renderContent called, view=0, width=97
+2025/06/28 15:08:02 logger.go:35: renderContent returning, content length=1705
+2025/06/28 15:08:02 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 15:08:02 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:02 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:02 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:02 logger.go:35: renderContent called, view=1, width=97
+2025/06/28 15:08:02 logger.go:35: renderContent returning, content length=1599
+2025/06/28 15:08:03 logger.go:42: [Model.Update] Message: tea.KeyMsg n
+2025/06/28 15:08:03 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:03 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:03 logger.go:35: View: Modal rendered, length: 7309
+2025/06/28 15:08:03 logger.go:42: [Model.Update] Message: cursor.initialBlinkMsg {}
+2025/06/28 15:08:03 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:03 logger.go:35: Calling modal.Update with message: cursor.initialBlinkMsg
+2025/06/28 15:08:03 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:03 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:03 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:03 logger.go:35: View: Modal rendered, length: 7309
+2025/06/28 15:08:04 logger.go:42: [Model.Update] Message: tea.KeyMsg T
+2025/06/28 15:08:04 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:04 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:04 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:04 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:04 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:04 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg t
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg  
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg P
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg r
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg o
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg f
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: tea.KeyMsg l
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:05 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:05 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:05 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:05 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:05 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:05 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7279
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7264
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: tea.KeyMsg S
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: tea.KeyMsg m
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:13}
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: tea.KeyMsg p
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: tea.KeyMsg l
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: tea.KeyMsg  
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:06 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:06 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:06 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:06 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:06 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:06 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: tea.KeyMsg t
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: tea.KeyMsg s
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: tea.KeyMsg t
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: tea.KeyMsg  
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: tea.KeyMsg p
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: tea.KeyMsg r
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: tea.KeyMsg o
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: tea.KeyMsg f
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:07 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:07 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:07 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:07 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:07 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:07 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:08 logger.go:42: [Model.Update] Message: tea.KeyMsg i
+2025/06/28 15:08:08 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:08 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:08 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:08 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:08 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:08 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:08 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:08 logger.go:42: [Model.Update] Message: tea.KeyMsg l
+2025/06/28 15:08:08 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:08 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:08 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:08 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:08 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:08 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:08 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:08 logger.go:42: [Model.Update] Message: tea.KeyMsg e
+2025/06/28 15:08:08 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:08 logger.go:35: Modal.Update returned, cmd: 0x1047dd7f0
+2025/06/28 15:08:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:08 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:08 logger.go:42: [Model.Update] Message: cursor.blinkCanceled {}
+2025/06/28 15:08:08 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: Calling modal.Update with message: cursor.blinkCanceled
+2025/06/28 15:08:08 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:08 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: View: Modal rendered, length: 7234
+2025/06/28 15:08:08 logger.go:42: [Model.Update] Message: tea.KeyMsg tab
+2025/06/28 15:08:08 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:08 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:08 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: View: Modal rendered, length: 7230
+2025/06/28 15:08:08 logger.go:42: [Model.Update] Message: cursor.BlinkMsg {id:0 tag:20}
+2025/06/28 15:08:08 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: Calling modal.Update with message: cursor.BlinkMsg
+2025/06/28 15:08:08 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:08 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: View: Modal rendered, length: 7230
+2025/06/28 15:08:08 logger.go:42: [Model.Update] Message: tea.KeyMsg  
+2025/06/28 15:08:08 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:08 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:08 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:08 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:08 logger.go:35: View: Modal rendered, length: 7230
+2025/06/28 15:08:09 logger.go:42: [Model.Update] Message: tea.KeyMsg ctrl+s
+2025/06/28 15:08:09 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:09 logger.go:35: Calling modal.Update with message: tea.KeyMsg
+2025/06/28 15:08:09 logger.go:35: Modal.Update returned, cmd: 0x104be46b0
+2025/06/28 15:08:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:09 logger.go:35: View: Rendering modal, type: cli.ProfileForm
+2025/06/28 15:08:09 logger.go:35: View: Modal rendered, length: 7230
+2025/06/28 15:08:09 logger.go:42: [Model.Update] Message: cli.profileSavedMsg {profile:0x140024d1680 isNew:true}
+2025/06/28 15:08:09 logger.go:35: Modal is showing, type: cli.ProfileForm
+2025/06/28 15:08:09 logger.go:35: Calling modal.Update with message: cli.profileSavedMsg
+2025/06/28 15:08:09 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:09 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:09 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:09 logger.go:35: renderContent called, view=1, width=97
+2025/06/28 15:08:09 logger.go:35: renderContent returning, content length=1599
+2025/06/28 15:08:09 logger.go:42: [Model.Update] Message: cli.profilesLoadedMsg {profiles:[0x140003e02d0 0x140024d1680] err:<nil>}
+2025/06/28 15:08:09 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:09 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:09 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:09 logger.go:35: renderContent called, view=1, width=97
+2025/06/28 15:08:09 logger.go:35: renderContent returning, content length=2916
+2025/06/28 15:08:11 logger.go:42: [Model.Update] Message: tea.KeyMsg esc
+2025/06/28 15:08:11 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:11 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:11 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:11 logger.go:35: renderContent called, view=1, width=97
+2025/06/28 15:08:11 logger.go:35: renderContent returning, content length=2916
+2025/06/28 15:08:12 logger.go:42: [Model.Update] Message: tea.KeyMsg enter
+2025/06/28 15:08:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:12 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:12 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:12 logger.go:35: renderContent called, view=1, width=97
+2025/06/28 15:08:12 logger.go:35: renderContent returning, content length=2916
+2025/06/28 15:08:12 logger.go:42: [Model.Update] Message: cli.profileActivatedMsg {profile:0x140024d1680 err:<nil>}
+2025/06/28 15:08:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:12 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:12 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:12 logger.go:35: renderContent called, view=1, width=97
+2025/06/28 15:08:12 logger.go:35: renderContent returning, content length=2889
+2025/06/28 15:08:12 logger.go:42: [Model.Update] Message: cli.profilesLoadedMsg {profiles:[0x140003e02d0 0x140024d1680] err:<nil>}
+2025/06/28 15:08:12 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:12 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:12 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:12 logger.go:35: renderContent called, view=1, width=97
+2025/06/28 15:08:12 logger.go:35: renderContent returning, content length=2889
+2025/06/28 15:08:14 logger.go:42: [Model.Update] Message: tea.KeyMsg L
+2025/06/28 15:08:14 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:14 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:14 logger.go:35: View: Modal rendered, length: 5841
+2025/06/28 15:08:14 logger.go:42: [Model.Update] Message: cli.launchStepMsg {step:0 message:Validating configuration...}
+2025/06/28 15:08:14 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:14 logger.go:35: Calling modal.Update with message: cli.launchStepMsg
+2025/06/28 15:08:14 logger.go:35: Modal.Update returned, cmd: 0x104bd4f30
+2025/06/28 15:08:14 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:14 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:14 logger.go:35: View: Modal rendered, length: 5969
+2025/06/28 15:08:14 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:14.78833 -0700 PDT m=+30.146443793 tag:0 ID:1}
+2025/06/28 15:08:14 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:14 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:14 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:14 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:14 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:14 logger.go:35: View: Modal rendered, length: 5969
+2025/06/28 15:08:14 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:14.888572625 -0700 PDT m=+30.246687835 tag:1 ID:1}
+2025/06/28 15:08:14 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:14 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:14 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:14 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:14 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:14 logger.go:35: View: Modal rendered, length: 5969
+2025/06/28 15:08:14 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:14.988847 -0700 PDT m=+30.346963251 tag:2 ID:1}
+2025/06/28 15:08:14 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:14 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:14 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:14 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:14 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:14 logger.go:35: View: Modal rendered, length: 5969
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: cli.launchCompleteStepMsg {step:0 status:2 duration:300369959 error:<nil>}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: cli.launchCompleteStepMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5882
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: cli.launchStepMsg {step:1 message:Checking extensions...}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: cli.launchStepMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x104bd4f30
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5994
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.089166542 -0700 PDT m=+30.447283668 tag:3 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5994
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.189273084 -0700 PDT m=+30.547391585 tag:4 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5994
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.289634292 -0700 PDT m=+30.647752960 tag:5 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5994
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.390041667 -0700 PDT m=+30.748162252 tag:6 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5994
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.490495667 -0700 PDT m=+30.848616585 tag:7 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5994
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: cli.launchStepMsg {step:2 message:Configuring environment variables...}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: cli.launchStepMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x104bd4f30
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 6138
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: cli.launchCompleteStepMsg {step:1 status:2 duration:500301583 error:<nil>}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: cli.launchCompleteStepMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 6047
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.590739166 -0700 PDT m=+30.948861542 tag:8 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 6047
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.690941375 -0700 PDT m=+31.049064710 tag:9 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 6047
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: cli.launchStepMsg {step:3 message:Starting Gemini CLI...}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: cli.launchStepMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x104bd4f30
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 6159
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: cli.launchCompleteStepMsg {step:2 status:2 duration:200110417 error:<nil>}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: cli.launchCompleteStepMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 6048
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: cli.launchCompleteStepMsg {step:3 status:2 duration:369167 error:<nil>}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: cli.launchCompleteStepMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5957
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.79153975 -0700 PDT m=+31.149663751 tag:10 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5957
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.891711667 -0700 PDT m=+31.249837252 tag:11 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5957
+2025/06/28 15:08:15 logger.go:42: [Model.Update] Message: spinner.TickMsg {Time:2025-06-28 15:08:15.992372458 -0700 PDT m=+31.350499168 tag:12 ID:1}
+2025/06/28 15:08:15 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: Calling modal.Update with message: spinner.TickMsg
+2025/06/28 15:08:15 logger.go:35: Modal.Update returned, cmd: 0x1047cabc0
+2025/06/28 15:08:15 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:15 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:15 logger.go:35: View: Modal rendered, length: 5957
+2025/06/28 15:08:16 logger.go:42: [Model.Update] Message: cli.LaunchCompleteMsg {Error:<nil>}
+2025/06/28 15:08:16 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:16 logger.go:35: Calling modal.Update with message: cli.LaunchCompleteMsg
+2025/06/28 15:08:16 logger.go:35: Modal.Update returned, cmd: 0x104bd3530
+2025/06/28 15:08:16 logger.go:35: Model.View called, ready=true, loading=false, showingModal=true
+2025/06/28 15:08:16 logger.go:35: View: Rendering modal, type: cli.SimpleLaunchModal
+2025/06/28 15:08:16 logger.go:35: View: Modal rendered, length: 5996
+2025/06/28 15:08:16 logger.go:42: [Model.Update] Message: cli.execGeminiMsg {profile:0x140024d1680 extensions:[0x1400001c240]}
+2025/06/28 15:08:16 logger.go:35: Modal is showing, type: cli.SimpleLaunchModal
+2025/06/28 15:08:16 logger.go:35: Calling modal.Update with message: cli.execGeminiMsg
+2025/06/28 15:08:16 logger.go:35: Modal.Update returned, cmd: <nil>
+2025/06/28 15:08:16 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:16 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:16 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:16 logger.go:35: renderContent called, view=1, width=97
+2025/06/28 15:08:16 logger.go:35: renderContent returning, content length=2889
+2025/06/28 15:08:16 logger.go:35: Model.View called, ready=true, loading=false, showingModal=false
+2025/06/28 15:08:16 logger.go:35: renderAppCard: windowSize=105x45, contentSize=101x45
+2025/06/28 15:08:16 logger.go:35: Heights: content=45, status=3, tabs=3, contentBox=38
+2025/06/28 15:08:16 logger.go:35: renderContent called, view=1, width=97
+2025/06/28 15:08:16 logger.go:35: renderContent returning, content length=2889
