@@ -203,7 +203,7 @@ impl Component for ExtensionList {
                             &ext.name,
                             if is_selected {
                                 Style::default()
-                                    .fg(theme::highlight())
+                                    .fg(theme::text_primary())
                                     .add_modifier(Modifier::BOLD)
                             } else {
                                 Style::default().fg(theme::text_primary())

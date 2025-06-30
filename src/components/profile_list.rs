@@ -203,7 +203,7 @@ impl Component for ProfileList {
                             profile.display_name(),
                             if is_selected {
                                 Style::default()
-                                    .fg(theme::highlight())
+                                    .fg(theme::text_primary())
                                     .add_modifier(Modifier::BOLD)
                             } else {
                                 Style::default().fg(theme::text_primary())
@@ -258,7 +258,7 @@ impl Component for ProfileList {
         // Create the list widget
         let list = List::new(items)
             .block(block)
-            .highlight_style(Style::default().bg(theme::text_muted()))
+            .highlight_style(Style::default().bg(theme::selection()))
             .highlight_symbol("│ ");
 
         // Create a stateful list to track selection

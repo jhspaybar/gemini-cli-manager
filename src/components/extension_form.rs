@@ -613,7 +613,7 @@ impl Component for ExtensionForm {
                     let is_selected = i == self.mcp_server_cursor && matches!(self.current_field, FormField::McpServers);
                     
                     let style = if is_selected {
-                        Style::default().bg(theme::text_muted())
+                        Style::default().bg(theme::selection())
                     } else {
                         Style::default()
                     };
@@ -640,7 +640,7 @@ impl Component for ExtensionForm {
             } else {
                 List::new(server_items)
                     .block(mcp_block)
-                    .highlight_style(Style::default().bg(theme::text_muted()))
+                    .highlight_style(Style::default().bg(theme::selection()))
             };
             
             frame.render_widget(mcp_list, mcp_editor_area);

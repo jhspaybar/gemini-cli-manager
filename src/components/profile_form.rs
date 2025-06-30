@@ -315,7 +315,7 @@ impl Component for ProfileForm {
                 
                 let prefix = if is_selected { "[✓] " } else { "[ ] " };
                 let style = if is_cursor {
-                    Style::default().bg(theme::text_muted())
+                    Style::default().bg(theme::selection())
                 } else if is_selected {
                     Style::default().fg(theme::success())
                 } else {

@@ -68,7 +68,9 @@ impl Theme {
     }
     
     pub fn text_muted(&self) -> Color {
-        self.colors.subtext0.into()
+        // Use overlay1 instead of subtext0 for better contrast
+        // overlay1 has better visibility while still being muted
+        self.colors.overlay1.into()
     }
     
     pub fn text_disabled(&self) -> Color {
@@ -119,7 +121,15 @@ impl Theme {
     }
     
     pub fn selection(&self) -> Color {
-        self.colors.surface2.into()
+        // Use a color with better contrast for selections
+        // Using sapphire with low alpha would be ideal, but ratatui doesn't support alpha
+        // So we'll use surface1 which provides better contrast than surface2
+        self.colors.surface1.into()
+    }
+    
+    pub fn selection_bar(&self) -> Color {
+        // For list selections, use an accent color for better visibility
+        self.colors.sapphire.into()
     }
     
     pub fn cursor(&self) -> Color {
@@ -174,6 +184,7 @@ pub fn highlight() -> Color { with_theme(|t| t.highlight()) }
 pub fn border() -> Color { with_theme(|t| t.border()) }
 pub fn border_focused() -> Color { with_theme(|t| t.border_focused()) }
 pub fn selection() -> Color { with_theme(|t| t.selection()) }
+pub fn selection_bar() -> Color { with_theme(|t| t.selection_bar()) }
 pub fn cursor() -> Color { with_theme(|t| t.cursor()) }
 pub fn success() -> Color { with_theme(|t| t.success()) }
 pub fn error() -> Color { with_theme(|t| t.error()) }
