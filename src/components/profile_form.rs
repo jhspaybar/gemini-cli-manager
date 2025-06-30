@@ -224,7 +224,7 @@ impl Component for ProfileForm {
         let name_style = if matches!(self.current_field, FormField::Name) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::text_secondary())
         };
         let name_block = Block::default()
             .title("Name")
@@ -250,7 +250,7 @@ impl Component for ProfileForm {
         let desc_style = if matches!(self.current_field, FormField::Description) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::text_secondary())
         };
         let desc_block = Block::default()
             .title("Description (optional)")
@@ -276,7 +276,7 @@ impl Component for ProfileForm {
         let dir_style = if matches!(self.current_field, FormField::WorkingDirectory) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::text_secondary())
         };
         let dir_block = Block::default()
             .title("Working Directory (optional)")
@@ -302,7 +302,7 @@ impl Component for ProfileForm {
         let ext_style = if matches!(self.current_field, FormField::Extensions) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::text_secondary())
         };
         let ext_block = Block::default()
             .title("Extensions (↑/↓ to navigate, Space to toggle)")
@@ -336,7 +336,7 @@ impl Component for ProfileForm {
         let tags_style = if matches!(self.current_field, FormField::Tags) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::text_secondary())
         };
         let tags_block = Block::default()
             .title("Tags (comma-separated)")
