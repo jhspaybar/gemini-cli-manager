@@ -3,7 +3,7 @@ use ratatui::{prelude::*, widgets::*};
 use tokio::sync::mpsc::UnboundedSender;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::Extension, storage::Storage};
+use crate::{action::Action, config::Config, models::Extension, storage::Storage, theme};
 
 pub struct ExtensionDetail {
     command_tx: Option<UnboundedSender<Action>>,
@@ -105,7 +105,7 @@ impl Component for ExtensionDetail {
             .title(format!(" {} v{} ", extension.name, extension.version))
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(Color::Cyan));
+            .border_style(Style::default().fg(theme::info()));
 
         let inner_area = block.inner(chunks[0]);
 
@@ -115,7 +115,7 @@ impl Component for ExtensionDetail {
         // Description
         if let Some(desc) = &extension.description {
             content.push(Line::from(vec![
-                Span::styled("Description: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+                Span::styled("Description: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
                 Span::raw(desc),
             ]));
             content.push(Line::from(""));
@@ -123,7 +123,7 @@ impl Component for ExtensionDetail {
 
         // ID
         content.push(Line::from(vec![
-            Span::styled("ID: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+            Span::styled("ID: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
             Span::raw(&extension.id),
         ]));
         content.push(Line::from(""));
@@ -131,10 +131,10 @@ impl Component for ExtensionDetail {
         // Tags
         if !extension.metadata.tags.is_empty() {
             content.push(Line::from(vec![
-                Span::styled("Tags: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+                Span::styled("Tags: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
                 Span::styled(
                     extension.metadata.tags.join(", "),
-                    Style::default().fg(Color::Blue),
+                    Style::default().fg(theme::primary()),
                 ),
             ]));
             content.push(Line::from(""));
@@ -142,14 +142,14 @@ impl Component for ExtensionDetail {
 
         // Import date
         content.push(Line::from(vec![
-            Span::styled("Imported: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+            Span::styled("Imported: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
             Span::raw(extension.metadata.imported_at.format("%Y-%m-%d %H:%M:%S").to_string()),
         ]));
         
         // Source path
         if let Some(path) = &extension.metadata.source_path {
             content.push(Line::from(vec![
-                Span::styled("Source: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+                Span::styled("Source: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
                 Span::raw(path),
             ]));
         }
@@ -159,28 +159,28 @@ impl Component for ExtensionDetail {
         if !extension.mcp_servers.is_empty() {
             content.push(Line::from(Span::styled(
                 "MCP Servers",
-                Style::default().fg(Color::Magenta).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+                Style::default().fg(theme::accent()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
             )));
             content.push(Line::from(""));
 
             for (name, config) in &extension.mcp_servers {
                 content.push(Line::from(vec![
                     Span::raw("  "),
-                    Span::styled(format!("• {}", name), Style::default().fg(Color::Green)),
+                    Span::styled(format!("• {}", name), Style::default().fg(theme::success())),
                 ]));
 
                 // Server type
                 if let Some(url) = &config.url {
                     content.push(Line::from(vec![
                         Span::raw("    Type: "),
-                        Span::styled("URL", Style::default().fg(Color::Blue)),
+                        Span::styled("URL", Style::default().fg(theme::primary())),
                         Span::raw(" - "),
                         Span::raw(url),
                     ]));
                 } else if let Some(cmd) = &config.command {
                     content.push(Line::from(vec![
                         Span::raw("    Type: "),
-                        Span::styled("Command", Style::default().fg(Color::Blue)),
+                        Span::styled("Command", Style::default().fg(theme::primary())),
                         Span::raw(" - "),
                         Span::raw(cmd),
                     ]));
@@ -198,7 +198,7 @@ impl Component for ExtensionDetail {
                     for (key, value) in env {
                         content.push(Line::from(vec![
                             Span::raw("    Env: "),
-                            Span::styled(key, Style::default().fg(Color::Yellow)),
+                            Span::styled(key, Style::default().fg(theme::highlight())),
                             Span::raw(" = "),
                             Span::raw(value),
                         ]));
@@ -211,7 +211,7 @@ impl Component for ExtensionDetail {
                         Span::raw("    Trust: "),
                         Span::styled(
                             if trust { "Yes" } else { "No" },
-                            Style::default().fg(if trust { Color::Green } else { Color::Red }),
+                            Style::default().fg(if trust { theme::success() } else { theme::error() }),
                         ),
                     ]));
                 }
@@ -230,7 +230,7 @@ impl Component for ExtensionDetail {
             
             content.push(Line::from(Span::styled(
                 format!("Context File: {}", filename),
-                Style::default().fg(Color::Magenta).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+                Style::default().fg(theme::accent()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
             )));
             content.push(Line::from(""));
             
@@ -255,7 +255,7 @@ impl Component for ExtensionDetail {
         // Help bar
         let help_text = " ↑/↓: Scroll | b: Back | e: Edit | d: Delete | q: Quit ";
         let help_bar = Paragraph::new(help_text)
-            .style(Style::default().fg(Color::DarkGray))
+            .style(Style::default().fg(theme::text_muted()))
             .alignment(Alignment::Center)
             .block(
                 Block::default()

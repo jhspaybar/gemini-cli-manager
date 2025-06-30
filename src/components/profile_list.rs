@@ -5,7 +5,7 @@ use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::Profile, storage::Storage};
+use crate::{action::Action, config::Config, models::Profile, storage::Storage, theme};
 
 pub struct ProfileList {
     command_tx: Option<UnboundedSender<Action>>,
@@ -151,7 +151,7 @@ impl Component for ProfileList {
                 .title(" Search (Esc to close) ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .border_style(Style::default().fg(Color::Yellow));
+                .border_style(Style::default().fg(theme::highlight()));
             
             // Use tui-input's widget with proper styling
             let input_widget = Paragraph::new(self.search_input.value())
@@ -184,7 +184,7 @@ impl Component for ProfileList {
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(Color::Green));
+            .border_style(Style::default().fg(theme::success()));
 
         // Create list items
         let items: Vec<ListItem> = self
@@ -203,14 +203,14 @@ impl Component for ProfileList {
                             profile.display_name(),
                             if is_selected {
                                 Style::default()
-                                    .fg(Color::Yellow)
+                                    .fg(theme::highlight())
                                     .add_modifier(Modifier::BOLD)
                             } else {
-                                Style::default().fg(Color::White)
+                                Style::default().fg(theme::text_primary())
                             },
                         ),
                         if is_default {
-                            Span::styled(" (default)", Style::default().fg(Color::Blue))
+                            Span::styled(" (default)", Style::default().fg(theme::primary()))
                         } else {
                             Span::raw("")
                         },
@@ -221,7 +221,7 @@ impl Component for ProfileList {
                 if let Some(desc) = &profile.description {
                     lines.push(Line::from(vec![
                         Span::raw("  "),
-                        Span::styled(desc, Style::default().fg(Color::Gray)),
+                        Span::styled(desc, Style::default().fg(theme::text_secondary())),
                     ]));
                 }
 
@@ -230,12 +230,12 @@ impl Component for ProfileList {
                     Span::raw("  "),
                     Span::styled(
                         profile.summary(),
-                        Style::default().fg(Color::DarkGray),
+                        Style::default().fg(theme::text_muted()),
                     ),
                     Span::raw(" | "),
                     Span::styled(
                         format!("{} tags", profile.metadata.tags.len()),
-                        Style::default().fg(Color::Magenta),
+                        Style::default().fg(theme::accent()),
                     ),
                 ]));
 
@@ -243,8 +243,8 @@ impl Component for ProfileList {
                 if let Some(dir) = &profile.working_directory {
                     lines.push(Line::from(vec![
                         Span::raw("  "),
-                        Span::styled("📂 ", Style::default().fg(Color::Cyan)),
-                        Span::styled(dir, Style::default().fg(Color::Cyan)),
+                        Span::styled("📂 ", Style::default().fg(theme::info())),
+                        Span::styled(dir, Style::default().fg(theme::info())),
                     ]));
                 }
 
@@ -258,7 +258,7 @@ impl Component for ProfileList {
         // Create the list widget
         let list = List::new(items)
             .block(block)
-            .highlight_style(Style::default().bg(Color::DarkGray))
+            .highlight_style(Style::default().bg(theme::text_muted()))
             .highlight_symbol("│ ");
 
         // Create a stateful list to track selection
@@ -275,7 +275,7 @@ impl Component for ProfileList {
             } else {
                 " ↑/↓: Navigate | Enter: View | e: Edit | l: Launch | n: New | d: Delete | /: Search | Tab: Extensions | q: Quit "
             };
-            let help_style = Style::default().fg(Color::DarkGray);
+            let help_style = Style::default().fg(theme::text_muted());
             let help_area = Rect {
                 x: area.x + 1,
                 y: area.y + area.height - 1,

@@ -7,7 +7,7 @@ use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::{Extension, Profile, profile::ProfileMetadata}, storage::Storage};
+use crate::{action::Action, config::Config, models::{Extension, Profile, profile::ProfileMetadata}, storage::Storage, theme};
 
 #[derive(Debug, Clone)]
 enum FormField {
@@ -201,7 +201,7 @@ impl Component for ProfileForm {
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(Color::Blue));
+            .border_style(Style::default().fg(theme::primary()));
         
         let inner = block.inner(area);
         frame.render_widget(block, area);
@@ -222,7 +222,7 @@ impl Component for ProfileForm {
         
         // Name field
         let name_style = if matches!(self.current_field, FormField::Name) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -247,7 +247,7 @@ impl Component for ProfileForm {
         
         // Description field
         let desc_style = if matches!(self.current_field, FormField::Description) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -272,7 +272,7 @@ impl Component for ProfileForm {
         
         // Working Directory field
         let dir_style = if matches!(self.current_field, FormField::WorkingDirectory) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -297,7 +297,7 @@ impl Component for ProfileForm {
         
         // Extensions selection
         let ext_style = if matches!(self.current_field, FormField::Extensions) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -315,9 +315,9 @@ impl Component for ProfileForm {
                 
                 let prefix = if is_selected { "[✓] " } else { "[ ] " };
                 let style = if is_cursor {
-                    Style::default().bg(Color::DarkGray)
+                    Style::default().bg(theme::text_muted())
                 } else if is_selected {
-                    Style::default().fg(Color::Green)
+                    Style::default().fg(theme::success())
                 } else {
                     Style::default()
                 };
@@ -331,7 +331,7 @@ impl Component for ProfileForm {
         
         // Tags field
         let tags_style = if matches!(self.current_field, FormField::Tags) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -359,7 +359,7 @@ impl Component for ProfileForm {
             FormField::Extensions => " Tab: Next field | ↑/↓: Navigate | Space: Toggle | Ctrl+S: Save | Esc: Cancel ",
             _ => " Tab: Next field | Type to edit | Ctrl+S: Save | Esc: Cancel ",
         };
-        let help_style = Style::default().fg(Color::DarkGray);
+        let help_style = Style::default().fg(theme::text_muted());
         frame.render_widget(
             Paragraph::new(help_text)
                 .style(help_style)

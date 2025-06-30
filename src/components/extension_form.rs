@@ -7,7 +7,7 @@ use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::{Extension, extension::{ExtensionMetadata, McpServerConfig}}, storage::Storage};
+use crate::{action::Action, config::Config, models::{Extension, extension::{ExtensionMetadata, McpServerConfig}}, storage::Storage, theme};
 
 #[derive(Debug, Clone)]
 enum FormField {
@@ -301,7 +301,7 @@ impl Component for ExtensionForm {
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(Color::Cyan));
+            .border_style(Style::default().fg(theme::info()));
         
         let inner = block.inner(area);
         frame.render_widget(block, area);
@@ -348,7 +348,7 @@ impl Component for ExtensionForm {
         // Render compact fields
         // Name field (left side of first row)
         let name_style = if matches!(self.current_field, FormField::Name) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -369,7 +369,7 @@ impl Component for ExtensionForm {
         
         // Version field (right side of first row)
         let version_style = if matches!(self.current_field, FormField::Version) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -386,7 +386,7 @@ impl Component for ExtensionForm {
         
         // Description field (left side of second row)
         let desc_style = if matches!(self.current_field, FormField::Description) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -403,7 +403,7 @@ impl Component for ExtensionForm {
         
         // Tags field (right side of second row)
         let tags_style = if matches!(self.current_field, FormField::Tags) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -463,7 +463,7 @@ impl Component for ExtensionForm {
         
         // Context file name with default placeholder
         let context_name_style = if matches!(self.current_field, FormField::ContextFileName) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -477,7 +477,7 @@ impl Component for ExtensionForm {
         let display_text = self.context_file_name_input.value();
         let context_name_text = Paragraph::new(display_text)
             .style(if display_text == "GEMINI.md" && !matches!(self.current_field, FormField::ContextFileName) {
-                Style::default().fg(Color::DarkGray).italic()
+                Style::default().fg(theme::text_muted()).italic()
             } else {
                 Style::default()
             });
@@ -485,7 +485,7 @@ impl Component for ExtensionForm {
         
         // Context content editor
         let context_content_style = if matches!(self.current_field, FormField::ContextContent) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -528,7 +528,7 @@ impl Component for ExtensionForm {
         // MCP Servers section (right side)
         let mcp_editor_area = editors_area[1];
         let mcp_style = if matches!(self.current_field, FormField::McpServers) {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(theme::highlight())
         } else {
             Style::default()
         };
@@ -538,7 +538,7 @@ impl Component for ExtensionForm {
             let server_block = Block::default()
                 .title("Add MCP Server (Tab: Next field, Enter to save, Esc to cancel)")
                 .borders(Borders::ALL)
-                .border_style(Style::default().fg(Color::Green));
+                .border_style(Style::default().fg(theme::success()));
             
             let server_inner = server_block.inner(mcp_editor_area);
             frame.render_widget(server_block, mcp_editor_area);
@@ -570,7 +570,7 @@ impl Component for ExtensionForm {
             // Render each field
             for (i, (label, value, _is_bool)) in fields.iter().enumerate() {
                 let style = if i == self.server_field_cursor {
-                    Style::default().fg(Color::Yellow)
+                    Style::default().fg(theme::highlight())
                 } else {
                     Style::default()
                 };
@@ -613,7 +613,7 @@ impl Component for ExtensionForm {
                     let is_selected = i == self.mcp_server_cursor && matches!(self.current_field, FormField::McpServers);
                     
                     let style = if is_selected {
-                        Style::default().bg(Color::DarkGray)
+                        Style::default().bg(theme::text_muted())
                     } else {
                         Style::default()
                     };
@@ -640,7 +640,7 @@ impl Component for ExtensionForm {
             } else {
                 List::new(server_items)
                     .block(mcp_block)
-                    .highlight_style(Style::default().bg(Color::DarkGray))
+                    .highlight_style(Style::default().bg(theme::text_muted()))
             };
             
             frame.render_widget(mcp_list, mcp_editor_area);
@@ -657,7 +657,7 @@ impl Component for ExtensionForm {
                 " Tab: Next field | ↑/↓: Scroll | Type to edit | Ctrl+S: Save | Esc: Cancel ",
             _ => " Tab: Next field | Type to edit | Ctrl+S: Save | Esc: Cancel ",
         };
-        let help_style = Style::default().fg(Color::DarkGray);
+        let help_style = Style::default().fg(theme::text_muted());
         frame.render_widget(
             Paragraph::new(help_text)
                 .style(help_style)

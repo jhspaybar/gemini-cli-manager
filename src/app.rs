@@ -182,6 +182,15 @@ impl App {
 
     fn render(&mut self, tui: &mut Tui) -> Result<()> {
         tui.draw(|frame| {
+            // Fill the entire terminal with the theme background
+            let area = frame.area();
+            frame.render_widget(
+                ratatui::widgets::Block::default()
+                    .style(ratatui::style::Style::default().bg(crate::theme::background())),
+                area,
+            );
+            
+            // Then render components on top
             for component in self.components.iter_mut() {
                 if let Err(err) = component.draw(frame, frame.area()) {
                     let _ = self

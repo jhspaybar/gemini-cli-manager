@@ -3,7 +3,7 @@ use ratatui::{prelude::*, widgets::*};
 use tokio::sync::mpsc::UnboundedSender;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::{Extension, Profile}, storage::Storage};
+use crate::{action::Action, config::Config, models::{Extension, Profile}, storage::Storage, theme};
 
 pub struct ProfileDetail {
     command_tx: Option<UnboundedSender<Action>>,
@@ -127,7 +127,7 @@ impl Component for ProfileDetail {
             .title(format!(" {} ", profile.display_name()))
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(Color::Green));
+            .border_style(Style::default().fg(theme::success()));
 
         let inner_area = block.inner(chunks[0]);
 
@@ -137,7 +137,7 @@ impl Component for ProfileDetail {
         // Description
         if let Some(desc) = &profile.description {
             content.push(Line::from(vec![
-                Span::styled("Description: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+                Span::styled("Description: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
                 Span::raw(desc),
             ]));
             content.push(Line::from(""));
@@ -145,25 +145,25 @@ impl Component for ProfileDetail {
 
         // ID
         content.push(Line::from(vec![
-            Span::styled("ID: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+            Span::styled("ID: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
             Span::raw(&profile.id),
         ]));
 
         // Default status
         if profile.metadata.is_default {
             content.push(Line::from(vec![
-                Span::styled("Status: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
-                Span::styled("Default Profile", Style::default().fg(Color::Blue).add_modifier(Modifier::BOLD)),
+                Span::styled("Status: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
+                Span::styled("Default Profile", Style::default().fg(theme::primary()).add_modifier(Modifier::BOLD)),
             ]));
         }
 
         // Tags
         if !profile.metadata.tags.is_empty() {
             content.push(Line::from(vec![
-                Span::styled("Tags: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+                Span::styled("Tags: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
                 Span::styled(
                     profile.metadata.tags.join(", "),
-                    Style::default().fg(Color::Magenta),
+                    Style::default().fg(theme::accent()),
                 ),
             ]));
         }
@@ -171,14 +171,14 @@ impl Component for ProfileDetail {
         // Working directory
         if let Some(dir) = &profile.working_directory {
             content.push(Line::from(vec![
-                Span::styled("Working Directory: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+                Span::styled("Working Directory: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
                 Span::raw(dir),
             ]));
         }
 
         // Creation date
         content.push(Line::from(vec![
-            Span::styled("Created: ", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+            Span::styled("Created: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
             Span::raw(profile.metadata.created_at.format("%Y-%m-%d %H:%M:%S").to_string()),
         ]));
         content.push(Line::from(""));
@@ -186,7 +186,7 @@ impl Component for ProfileDetail {
         // Extensions section
         content.push(Line::from(Span::styled(
             "Extensions",
-            Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+            Style::default().fg(theme::info()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
         )));
         content.push(Line::from(""));
 
@@ -196,15 +196,15 @@ impl Component for ProfileDetail {
             for ext in &self.extensions {
                 content.push(Line::from(vec![
                     Span::raw("  "),
-                    Span::styled(format!("• {}", ext.name), Style::default().fg(Color::Green)),
+                    Span::styled(format!("• {}", ext.name), Style::default().fg(theme::success())),
                     Span::raw(" "),
-                    Span::styled(format!("v{}", ext.version), Style::default().fg(Color::DarkGray)),
+                    Span::styled(format!("v{}", ext.version), Style::default().fg(theme::text_muted())),
                 ]));
                 
                 if let Some(desc) = &ext.description {
                     content.push(Line::from(vec![
                         Span::raw("    "),
-                        Span::styled(desc, Style::default().fg(Color::Gray)),
+                        Span::styled(desc, Style::default().fg(theme::text_secondary())),
                     ]));
                 }
                 
@@ -214,7 +214,7 @@ impl Component for ProfileDetail {
                         Span::raw("    "),
                         Span::styled(
                             format!("MCP Servers: {}", ext.mcp_servers.keys().cloned().collect::<Vec<_>>().join(", ")),
-                            Style::default().fg(Color::DarkGray),
+                            Style::default().fg(theme::text_muted()),
                         ),
                     ]));
                 }
@@ -227,7 +227,7 @@ impl Component for ProfileDetail {
         if !profile.environment_variables.is_empty() {
             content.push(Line::from(Span::styled(
                 "Environment Variables",
-                Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+                Style::default().fg(theme::info()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
             )));
             content.push(Line::from(""));
 
@@ -246,7 +246,7 @@ impl Component for ProfileDetail {
                 
                 content.push(Line::from(vec![
                     Span::raw("  "),
-                    Span::styled(key, Style::default().fg(Color::Yellow)),
+                    Span::styled(key, Style::default().fg(theme::highlight())),
                     Span::raw(" = "),
                     Span::raw(display_value),
                 ]));
@@ -257,7 +257,7 @@ impl Component for ProfileDetail {
         // Summary
         content.push(Line::from(Span::styled(
             "Summary",
-            Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+            Style::default().fg(theme::info()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
         )));
         content.push(Line::from(""));
         content.push(Line::from(format!("  • {} extensions", self.extensions.len())));
@@ -279,7 +279,7 @@ impl Component for ProfileDetail {
         // Help bar
         let help_text = " ↑/↓: Scroll | Enter: Launch | e: Edit | b: Back | q: Quit ";
         let help_bar = Paragraph::new(help_text)
-            .style(Style::default().fg(Color::DarkGray))
+            .style(Style::default().fg(theme::text_muted()))
             .alignment(Alignment::Center)
             .block(
                 Block::default()

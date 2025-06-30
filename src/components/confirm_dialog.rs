@@ -3,7 +3,7 @@ use ratatui::{prelude::*, widgets::*};
 use tokio::sync::mpsc::UnboundedSender;
 
 use super::Component;
-use crate::{action::Action, config::Config};
+use crate::{action::Action, config::Config, theme};
 
 pub struct ConfirmDialog {
     command_tx: Option<UnboundedSender<Action>>,
@@ -65,7 +65,7 @@ impl Component for ConfirmDialog {
         
         // Clear the background
         let clear = Block::default()
-            .style(Style::default().bg(Color::Black));
+            .style(Style::default().bg(theme::overlay()));
         frame.render_widget(clear, dialog_area);
         
         // Create the dialog block
@@ -74,7 +74,7 @@ impl Component for ConfirmDialog {
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Double)
-            .border_style(Style::default().fg(Color::Red));
+            .border_style(Style::default().fg(theme::error()));
         
         let inner = block.inner(dialog_area);
         frame.render_widget(block, dialog_area);
@@ -107,11 +107,11 @@ impl Component for ConfirmDialog {
         // Cancel button
         let cancel_style = if !self.selected_button {
             Style::default()
-                .fg(Color::Black)
-                .bg(Color::White)
+                .fg(theme::background())
+                .bg(theme::text_primary())
                 .add_modifier(Modifier::BOLD)
         } else {
-            Style::default().fg(Color::DarkGray)
+            Style::default().fg(theme::text_muted())
         };
         
         let cancel_button = Paragraph::new(" Cancel (Esc) ")
@@ -127,11 +127,11 @@ impl Component for ConfirmDialog {
         // Confirm button
         let confirm_style = if self.selected_button {
             Style::default()
-                .fg(Color::Black)
-                .bg(Color::Red)
+                .fg(theme::background())
+                .bg(theme::error())
                 .add_modifier(Modifier::BOLD)
         } else {
-            Style::default().fg(Color::Red)
+            Style::default().fg(theme::error())
         };
         
         let confirm_button = Paragraph::new(" Delete (Enter) ")
