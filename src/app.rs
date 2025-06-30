@@ -201,11 +201,9 @@ impl App {
                 Ok(_) => {
                     println!();
                     println!("✅ Gemini CLI session ended successfully.");
-                    println!("Press Enter to return to the manager...");
                     
-                    // Wait for user input
-                    let mut input = String::new();
-                    std::io::stdin().read_line(&mut input).ok();
+                    // Small delay to let the user see the message
+                    std::thread::sleep(std::time::Duration::from_millis(500));
                     
                     // Re-enter TUI mode
                     tui.enter()?;
@@ -214,11 +212,9 @@ impl App {
                 }
                 Err(e) => {
                     eprintln!("❌ Error launching profile: {}", e);
-                    eprintln!("Press Enter to return to the manager...");
                     
-                    // Wait for user input
-                    let mut input = String::new();
-                    std::io::stdin().read_line(&mut input).ok();
+                    // Longer delay for errors so user can read the message
+                    std::thread::sleep(std::time::Duration::from_secs(2));
                     
                     // Re-enter TUI mode
                     tui.enter()?;

@@ -67,6 +67,28 @@ impl Launcher {
         println!("🔧 Extensions: {}", profile.extension_ids.join(", "));
         println!();
         
+        // Check if gemini is available (cross-platform)
+        let gemini_check = if cfg!(target_os = "windows") {
+            Command::new("where")
+                .arg("gemini")
+                .output()
+                .map(|output| output.status.success())
+                .unwrap_or(false)
+        } else {
+            Command::new("which")
+                .arg("gemini")
+                .output()
+                .map(|output| output.status.success())
+                .unwrap_or(false)
+        };
+        
+        if !gemini_check {
+            return Err(eyre!(
+                "Gemini CLI not found. Please ensure 'gemini' is installed and in your PATH."
+            ));
+        }
+        
+        // Run gemini
         let mut cmd = Command::new("gemini");
         cmd.current_dir(&working_dir)
             .envs(&env_vars)
@@ -74,14 +96,6 @@ impl Launcher {
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit());
         
-        // Check if gemini is available
-        if cmd.output().is_err() {
-            return Err(eyre!(
-                "Gemini CLI not found. Please ensure 'gemini' is installed and in your PATH."
-            ));
-        }
-        
-        // Run the command
         let status = cmd.status()?;
         
         if !status.success() {
