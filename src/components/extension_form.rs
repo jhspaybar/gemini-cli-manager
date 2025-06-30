@@ -352,20 +352,22 @@ impl Component for ExtensionForm {
         } else {
             Style::default().fg(theme::text_primary())
         };
+        let name_border_style = if matches!(self.current_field, FormField::Name) {
+            Style::default().fg(theme::highlight())
+        } else {
+            Style::default().fg(theme::border())
+        };
         let name_block = Block::default()
-            .borders(Borders::NONE);
+            .title("Name")
+            .borders(Borders::ALL)
+            .border_style(name_border_style);
         let name_area = first_row[0];
-        frame.render_widget(name_block, name_area);
+        frame.render_widget(name_block.clone(), name_area);
         
-        let name_label = "Name: ";
-        frame.render_widget(
-            Span::styled(name_label, Style::default().fg(theme::text_secondary())),
-            Rect::new(name_area.x, name_area.y, name_label.len() as u16, 1)
-        );
-        frame.render_widget(
-            Span::styled(self.name_input.value(), name_style),
-            Rect::new(name_area.x + name_label.len() as u16, name_area.y, name_area.width - name_label.len() as u16, 1)
-        );
+        let name_inner = name_block.inner(name_area);
+        let name_text = Paragraph::new(self.name_input.value())
+            .style(name_style);
+        frame.render_widget(name_text, name_inner);
         
         // Version field (right side of first row)
         let version_style = if matches!(self.current_field, FormField::Version) {
@@ -373,16 +375,22 @@ impl Component for ExtensionForm {
         } else {
             Style::default().fg(theme::text_primary())
         };
+        let version_border_style = if matches!(self.current_field, FormField::Version) {
+            Style::default().fg(theme::highlight())
+        } else {
+            Style::default().fg(theme::border())
+        };
+        let version_block = Block::default()
+            .title("Version")
+            .borders(Borders::ALL)
+            .border_style(version_border_style);
         let version_area = first_row[1];
-        let version_label = "Version: ";
-        frame.render_widget(
-            Span::styled(version_label, Style::default().fg(theme::text_secondary())),
-            Rect::new(version_area.x + 1, version_area.y, version_label.len() as u16, 1)
-        );
-        frame.render_widget(
-            Span::styled(self.version_input.value(), version_style),
-            Rect::new(version_area.x + 1 + version_label.len() as u16, version_area.y, version_area.width - version_label.len() as u16 - 1, 1)
-        );
+        frame.render_widget(version_block.clone(), version_area);
+        
+        let version_inner = version_block.inner(version_area);
+        let version_text = Paragraph::new(self.version_input.value())
+            .style(version_style);
+        frame.render_widget(version_text, version_inner);
         
         // Description field (left side of second row)
         let desc_style = if matches!(self.current_field, FormField::Description) {
@@ -390,16 +398,22 @@ impl Component for ExtensionForm {
         } else {
             Style::default().fg(theme::text_primary())
         };
+        let desc_border_style = if matches!(self.current_field, FormField::Description) {
+            Style::default().fg(theme::highlight())
+        } else {
+            Style::default().fg(theme::border())
+        };
+        let desc_block = Block::default()
+            .title("Description")
+            .borders(Borders::ALL)
+            .border_style(desc_border_style);
         let desc_area = second_row[0];
-        let desc_label = "Description: ";
-        frame.render_widget(
-            Span::styled(desc_label, Style::default().fg(theme::text_secondary())),
-            Rect::new(desc_area.x, desc_area.y, desc_label.len() as u16, 1)
-        );
-        frame.render_widget(
-            Span::styled(self.description_input.value(), desc_style),
-            Rect::new(desc_area.x + desc_label.len() as u16, desc_area.y, desc_area.width - desc_label.len() as u16, 1)
-        );
+        frame.render_widget(desc_block.clone(), desc_area);
+        
+        let desc_inner = desc_block.inner(desc_area);
+        let desc_text = Paragraph::new(self.description_input.value())
+            .style(desc_style);
+        frame.render_widget(desc_text, desc_inner);
         
         // Tags field (right side of second row)
         let tags_style = if matches!(self.current_field, FormField::Tags) {
@@ -407,45 +421,55 @@ impl Component for ExtensionForm {
         } else {
             Style::default().fg(theme::text_primary())
         };
+        let tags_border_style = if matches!(self.current_field, FormField::Tags) {
+            Style::default().fg(theme::highlight())
+        } else {
+            Style::default().fg(theme::border())
+        };
+        let tags_block = Block::default()
+            .title("Tags")
+            .borders(Borders::ALL)
+            .border_style(tags_border_style);
         let tags_area = second_row[1];
-        let tags_label = "Tags: ";
-        frame.render_widget(
-            Span::styled(tags_label, Style::default().fg(theme::text_secondary())),
-            Rect::new(tags_area.x + 1, tags_area.y, tags_label.len() as u16, 1)
-        );
-        frame.render_widget(
-            Span::styled(self.tags_input.value(), tags_style),
-            Rect::new(tags_area.x + 1 + tags_label.len() as u16, tags_area.y, tags_area.width - tags_label.len() as u16 - 1, 1)
-        );
+        frame.render_widget(tags_block.clone(), tags_area);
+        
+        let tags_inner = tags_block.inner(tags_area);
+        let tags_text = Paragraph::new(self.tags_input.value())
+            .style(tags_style);
+        frame.render_widget(tags_text, tags_inner);
         
         // Set cursor for compact fields
         match self.current_field {
             FormField::Name => {
                 let cursor_pos = self.name_input.visual_cursor();
+                let name_inner = Block::default().title("Name").borders(Borders::ALL).inner(first_row[0]);
                 frame.set_cursor_position((
-                    first_row[0].x + name_label.len() as u16 + cursor_pos as u16,
-                    first_row[0].y
+                    name_inner.x + cursor_pos as u16,
+                    name_inner.y
                 ));
             }
             FormField::Version => {
                 let cursor_pos = self.version_input.visual_cursor();
+                let version_inner = Block::default().title("Version").borders(Borders::ALL).inner(first_row[1]);
                 frame.set_cursor_position((
-                    first_row[1].x + 1 + version_label.len() as u16 + cursor_pos as u16,
-                    first_row[1].y
+                    version_inner.x + cursor_pos as u16,
+                    version_inner.y
                 ));
             }
             FormField::Description => {
                 let cursor_pos = self.description_input.visual_cursor();
+                let desc_inner = Block::default().title("Description").borders(Borders::ALL).inner(second_row[0]);
                 frame.set_cursor_position((
-                    second_row[0].x + desc_label.len() as u16 + cursor_pos as u16,
-                    second_row[0].y
+                    desc_inner.x + cursor_pos as u16,
+                    desc_inner.y
                 ));
             }
             FormField::Tags => {
                 let cursor_pos = self.tags_input.visual_cursor();
+                let tags_inner = Block::default().title("Tags").borders(Borders::ALL).inner(second_row[1]);
                 frame.set_cursor_position((
-                    second_row[1].x + 1 + tags_label.len() as u16 + cursor_pos as u16,
-                    second_row[1].y
+                    tags_inner.x + cursor_pos as u16,
+                    tags_inner.y
                 ));
             }
             _ => {}
@@ -465,7 +489,7 @@ impl Component for ExtensionForm {
         let context_name_style = if matches!(self.current_field, FormField::ContextFileName) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::border())
         };
         let context_name_block = Block::default()
             .title("Context File")
@@ -487,7 +511,7 @@ impl Component for ExtensionForm {
         let context_content_style = if matches!(self.current_field, FormField::ContextContent) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::border())
         };
         let context_content_block = Block::default()
             .title("Context Content (Markdown)")
@@ -531,7 +555,7 @@ impl Component for ExtensionForm {
         let mcp_style = if matches!(self.current_field, FormField::McpServers) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default()
+            Style::default().fg(theme::border())
         };
         
         if let Some(_) = &self.editing_server {
