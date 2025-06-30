@@ -12,7 +12,7 @@ use crate::{models::{Extension, Profile}, storage::Storage};
 
 pub struct Launcher {
     workspace_dir: PathBuf,
-    storage: Storage,
+    pub storage: Storage,
 }
 
 impl Launcher {
@@ -30,11 +30,9 @@ impl Launcher {
     }
     
     #[allow(dead_code)]
-    pub fn with_workspace_dir(workspace_dir: PathBuf) -> Self {
-        Self { 
-            workspace_dir,
-            storage: Storage::default(),
-        }
+    pub fn with_workspace_dir(mut self, workspace_dir: PathBuf) -> Self {
+        self.workspace_dir = workspace_dir;
+        self
     }
     
     pub fn with_storage(storage: Storage) -> Self {
@@ -126,7 +124,7 @@ impl Launcher {
     }
     
     /// Set up the workspace directory structure
-    fn setup_workspace(&self, workspace_dir: &Path) -> Result<()> {
+    pub fn setup_workspace(&self, workspace_dir: &Path) -> Result<()> {
         // Create workspace directory
         fs::create_dir_all(workspace_dir)?;
         
@@ -141,7 +139,7 @@ impl Launcher {
     }
     
     /// Install extensions to the workspace
-    fn install_extensions_for_profile(&self, profile: &Profile, workspace_dir: &Path) -> Result<()> {
+    pub fn install_extensions_for_profile(&self, profile: &Profile, workspace_dir: &Path) -> Result<()> {
         let extensions_dir = workspace_dir.join(".gemini").join("extensions");
         
         // Load extensions from storage
@@ -194,7 +192,7 @@ impl Launcher {
     }
     
     /// Prepare environment variables
-    fn prepare_environment(&self, profile: &Profile) -> HashMap<String, String> {
+    pub fn prepare_environment(&self, profile: &Profile) -> HashMap<String, String> {
         let mut env_vars = env::vars().collect::<HashMap<_, _>>();
         
         // Add profile-specific environment variables

@@ -236,3 +236,121 @@ where
 pub trait HandleKeyEvent {
     fn handle_key_event(&mut self, event: crossterm::event::KeyEvent);
 }
+
+/// Helper for verifying workspace setup
+pub struct WorkspaceVerifier;
+
+impl WorkspaceVerifier {
+    /// Verify that a workspace directory has the correct structure
+    pub fn verify_workspace_structure(workspace_dir: &std::path::Path) -> Result<(), String> {
+        use std::fs;
+        
+        // Check workspace exists
+        if !workspace_dir.exists() {
+            return Err("Workspace directory does not exist".to_string());
+        }
+        
+        // Check .gemini directory
+        let gemini_dir = workspace_dir.join(".gemini");
+        if !gemini_dir.exists() {
+            return Err(".gemini directory not found".to_string());
+        }
+        
+        // Check extensions directory
+        let extensions_dir = gemini_dir.join("extensions");
+        if !extensions_dir.exists() {
+            return Err(".gemini/extensions directory not found".to_string());
+        }
+        
+        Ok(())
+    }
+    
+    /// Verify an extension is properly installed
+    pub fn verify_extension_installed(
+        workspace_dir: &std::path::Path,
+        extension_id: &str,
+    ) -> Result<(), String> {
+        use std::fs;
+        
+        let ext_dir = workspace_dir
+            .join(".gemini")
+            .join("extensions")
+            .join(extension_id);
+            
+        if !ext_dir.exists() {
+            return Err(format!("Extension directory '{}' not found", extension_id));
+        }
+        
+        // Check for gemini-extension.json
+        let config_file = ext_dir.join("gemini-extension.json");
+        if !config_file.exists() {
+            return Err("gemini-extension.json not found".to_string());
+        }
+        
+        // Validate JSON content
+        let content = fs::read_to_string(&config_file)
+            .map_err(|e| format!("Failed to read config: {}", e))?;
+            
+        let json: serde_json::Value = serde_json::from_str(&content)
+            .map_err(|e| format!("Invalid JSON: {}", e))?;
+            
+        // Check required fields
+        if !json.get("name").is_some() {
+            return Err("Missing 'name' field in extension config".to_string());
+        }
+        
+        if !json.get("version").is_some() {
+            return Err("Missing 'version' field in extension config".to_string());
+        }
+        
+        Ok(())
+    }
+    
+    /// Verify context file exists and has content
+    pub fn verify_context_file(
+        workspace_dir: &std::path::Path,
+        extension_id: &str,
+        filename: &str,
+    ) -> Result<String, String> {
+        use std::fs;
+        
+        let context_file = workspace_dir
+            .join(".gemini")
+            .join("extensions")
+            .join(extension_id)
+            .join(filename);
+            
+        if !context_file.exists() {
+            return Err(format!("Context file '{}' not found", filename));
+        }
+        
+        let content = fs::read_to_string(&context_file)
+            .map_err(|e| format!("Failed to read context file: {}", e))?;
+            
+        if content.trim().is_empty() {
+            return Err("Context file is empty".to_string());
+        }
+        
+        Ok(content)
+    }
+}
+
+/// Create a test storage backed by a temporary directory
+pub fn create_test_storage() -> Storage {
+    let temp_dir = tempfile::TempDir::new().expect("Failed to create temp dir");
+    let storage = Storage::with_data_dir(temp_dir.path().to_path_buf());
+    // Initialize with empty data (no mock data)
+    let _ = storage.init();
+    // We leak the temp dir here so it persists for the test duration
+    // In a real test framework, we'd manage this lifecycle better
+    std::mem::forget(temp_dir);
+    storage
+}
+
+/// Create a temporary test storage with file system backing and return the temp dir
+pub fn create_temp_storage() -> (Storage, tempfile::TempDir) {
+    let temp_dir = tempfile::TempDir::new().expect("Failed to create temp dir");
+    let storage = Storage::with_data_dir(temp_dir.path().to_path_buf());
+    let _ = storage.init();
+    (storage, temp_dir)
+}
