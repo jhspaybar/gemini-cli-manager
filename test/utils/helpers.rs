@@ -25,7 +25,7 @@ where
 }
 
 /// Convert a buffer to a string representation
-fn buffer_to_string(buffer: &ratatui::buffer::Buffer) -> String {
+pub fn buffer_to_string(buffer: &ratatui::buffer::Buffer) -> String {
     let mut lines = vec![];
     for y in 0..buffer.area.height {
         let mut line = String::new();
