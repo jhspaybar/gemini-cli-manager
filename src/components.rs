@@ -11,6 +11,7 @@ use crate::{action::Action, config::Config, tui::Event};
 pub mod extension_detail;
 pub mod extension_list;
 pub mod fps;
+pub mod profile_list;
 
 /// `Component` is a trait that represents a visual and interactive element of the user interface.
 ///

@@ -3,53 +3,53 @@ use ratatui::{prelude::*, widgets::*};
 use tokio::sync::mpsc::UnboundedSender;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::Extension};
+use crate::{action::Action, config::Config, models::Profile};
 
-pub struct ExtensionList {
+pub struct ProfileList {
     command_tx: Option<UnboundedSender<Action>>,
     config: Config,
-    extensions: Vec<Extension>,
+    profiles: Vec<Profile>,
     selected: usize,
 }
 
-impl Default for ExtensionList {
+impl Default for ProfileList {
     fn default() -> Self {
         Self {
             command_tx: None,
             config: Config::default(),
-            extensions: Extension::mock_extensions(),
+            profiles: Profile::mock_profiles(),
             selected: 0,
         }
     }
 }
 
-impl ExtensionList {
+impl ProfileList {
     pub fn new() -> Self {
         Self::default()
     }
 
     fn next(&mut self) {
-        if !self.extensions.is_empty() {
-            self.selected = (self.selected + 1) % self.extensions.len();
+        if !self.profiles.is_empty() {
+            self.selected = (self.selected + 1) % self.profiles.len();
         }
     }
 
     fn previous(&mut self) {
-        if !self.extensions.is_empty() {
+        if !self.profiles.is_empty() {
             if self.selected > 0 {
                 self.selected -= 1;
             } else {
-                self.selected = self.extensions.len() - 1;
+                self.selected = self.profiles.len() - 1;
             }
         }
     }
 
-    fn get_selected_extension(&self) -> Option<&Extension> {
-        self.extensions.get(self.selected)
+    fn get_selected_profile(&self) -> Option<&Profile> {
+        self.profiles.get(self.selected)
     }
 }
 
-impl Component for ExtensionList {
+impl Component for ProfileList {
     fn register_action_handler(&mut self, tx: UnboundedSender<Action>) -> Result<()> {
         self.command_tx = Some(tx);
         Ok(())
@@ -74,27 +74,28 @@ impl Component for ExtensionList {
     }
 
     fn draw(&mut self, frame: &mut Frame, area: Rect) -> Result<()> {
-        // Create a block for the extension list
+        // Create a block for the profile list
         let block = Block::default()
-            .title(" Extensions ")
+            .title(" Profiles ")
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(Color::Cyan));
+            .border_style(Style::default().fg(Color::Green));
 
         // Create list items
         let items: Vec<ListItem> = self
-            .extensions
+            .profiles
             .iter()
             .enumerate()
-            .map(|(i, ext)| {
+            .map(|(i, profile)| {
                 let is_selected = i == self.selected;
+                let is_default = profile.metadata.is_default;
 
                 // Build the display string
-                let content = vec![
+                let mut lines = vec![
                     Line::from(vec![
                         Span::styled(
-                            &ext.name,
+                            profile.display_name(),
                             if is_selected {
                                 Style::default()
                                     .fg(Color::Yellow)
@@ -103,35 +104,48 @@ impl Component for ExtensionList {
                                 Style::default().fg(Color::White)
                             },
                         ),
-                        Span::raw(" "),
-                        Span::styled(
-                            format!("v{}", ext.version),
-                            Style::default().fg(Color::DarkGray),
-                        ),
+                        if is_default {
+                            Span::styled(" (default)", Style::default().fg(Color::Blue))
+                        } else {
+                            Span::raw("")
+                        },
                     ]),
-                    Line::from(vec![
-                        Span::raw("  "),
-                        Span::styled(
-                            ext.description.as_deref().unwrap_or("No description"),
-                            Style::default().fg(Color::Gray),
-                        ),
-                    ]),
-                    Line::from(vec![
-                        Span::raw("  "),
-                        Span::styled(
-                            format!("{} MCP servers", ext.mcp_servers.len()),
-                            Style::default().fg(Color::Magenta),
-                        ),
-                        Span::raw(" | "),
-                        Span::styled(
-                            format!("{} tags", ext.metadata.tags.len()),
-                            Style::default().fg(Color::Blue),
-                        ),
-                    ]),
-                    Line::from(""), // Empty line for spacing
                 ];
 
-                ListItem::new(content)
+                // Add description
+                if let Some(desc) = &profile.description {
+                    lines.push(Line::from(vec![
+                        Span::raw("  "),
+                        Span::styled(desc, Style::default().fg(Color::Gray)),
+                    ]));
+                }
+
+                // Add summary
+                lines.push(Line::from(vec![
+                    Span::raw("  "),
+                    Span::styled(
+                        profile.summary(),
+                        Style::default().fg(Color::DarkGray),
+                    ),
+                    Span::raw(" | "),
+                    Span::styled(
+                        format!("{} tags", profile.metadata.tags.len()),
+                        Style::default().fg(Color::Magenta),
+                    ),
+                ]));
+
+                // Add working directory if specified
+                if let Some(dir) = &profile.working_directory {
+                    lines.push(Line::from(vec![
+                        Span::raw("  "),
+                        Span::styled("📂 ", Style::default().fg(Color::Cyan)),
+                        Span::styled(dir, Style::default().fg(Color::Cyan)),
+                    ]));
+                }
+
+                lines.push(Line::from("")); // Empty line for spacing
+
+                ListItem::new(lines)
             })
             .collect();
 
@@ -150,7 +164,7 @@ impl Component for ExtensionList {
 
         // Add help text at the bottom
         if area.height > 4 {
-            let help_text = " ↑/↓: Navigate | Enter: View Details | i: Import | n: New | Tab: Profiles | q: Quit ";
+            let help_text = " ↑/↓: Navigate | Enter: Launch | e: Edit | n: New | d: Delete | x: Set Default | q: Quit ";
             let help_style = Style::default().fg(Color::DarkGray);
             let help_area = Rect {
                 x: area.x + 1,
@@ -183,16 +197,33 @@ impl Component for ExtensionList {
                     Ok(Some(Action::Render))
                 }
                 KeyCode::Enter => {
-                    if let Some(ext) = self.get_selected_extension() {
-                        Ok(Some(Action::ViewExtensionDetails(ext.id.clone())))
+                    if let Some(profile) = self.get_selected_profile() {
+                        Ok(Some(Action::LaunchWithProfile(profile.id.clone())))
                     } else {
                         Ok(None)
                     }
                 }
-                KeyCode::Char('i') => Ok(Some(Action::ImportExtension)),
-                KeyCode::Char('n') => Ok(Some(Action::CreateNewExtension)),
+                KeyCode::Char('e') => {
+                    if let Some(profile) = self.get_selected_profile() {
+                        Ok(Some(Action::EditProfile(profile.id.clone())))
+                    } else {
+                        Ok(None)
+                    }
+                }
+                KeyCode::Char('n') => Ok(Some(Action::CreateProfile)),
+                KeyCode::Char('d') => {
+                    if let Some(profile) = self.get_selected_profile() {
+                        Ok(Some(Action::DeleteProfile(profile.id.clone())))
+                    } else {
+                        Ok(None)
+                    }
+                }
+                KeyCode::Char('x') => {
+                    // TODO: Implement set default
+                    Ok(None)
+                }
                 KeyCode::Char('q') => Ok(Some(Action::Quit)),
-                KeyCode::Tab => Ok(Some(Action::NavigateToProfiles)),
+                KeyCode::Tab => Ok(Some(Action::NavigateToExtensions)),
                 _ => Ok(None),
             },
             _ => Ok(None),

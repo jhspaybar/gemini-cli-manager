@@ -6,7 +6,10 @@ use tokio::sync::mpsc::UnboundedSender;
 
 use crate::{
     action::Action,
-    components::{extension_detail::ExtensionDetail, extension_list::ExtensionList, Component},
+    components::{
+        extension_detail::ExtensionDetail, extension_list::ExtensionList,
+        profile_list::ProfileList, Component,
+    },
     config::Config,
 };
 
@@ -33,6 +36,7 @@ impl ViewManager {
         // Initialize views
         views.insert(ViewType::ExtensionList, Box::new(ExtensionList::new()));
         views.insert(ViewType::ExtensionDetail, Box::new(ExtensionDetail::new()));
+        views.insert(ViewType::ProfileList, Box::new(ProfileList::new()));
         
         Self {
             current_view: ViewType::ExtensionList,
