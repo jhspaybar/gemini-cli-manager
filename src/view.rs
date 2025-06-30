@@ -8,7 +8,7 @@ use crate::{
     action::Action,
     components::{
         extension_detail::ExtensionDetail, extension_list::ExtensionList,
-        profile_list::ProfileList, Component,
+        profile_detail::ProfileDetail, profile_list::ProfileList, Component,
     },
     config::Config,
 };
@@ -37,6 +37,7 @@ impl ViewManager {
         views.insert(ViewType::ExtensionList, Box::new(ExtensionList::new()));
         views.insert(ViewType::ExtensionDetail, Box::new(ExtensionDetail::new()));
         views.insert(ViewType::ProfileList, Box::new(ProfileList::new()));
+        views.insert(ViewType::ProfileDetail, Box::new(ProfileDetail::new()));
         
         Self {
             current_view: ViewType::ExtensionList,
@@ -80,6 +81,9 @@ impl ViewManager {
         match &action {
             Action::ViewExtensionDetails(_) => {
                 self.navigate_to(ViewType::ExtensionDetail);
+            }
+            Action::EditProfile(_) => {
+                self.navigate_to(ViewType::ProfileDetail);
             }
             Action::NavigateBack => {
                 if let Some(prev) = self.previous_view {

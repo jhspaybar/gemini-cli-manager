@@ -164,7 +164,7 @@ impl Component for ProfileList {
 
         // Add help text at the bottom
         if area.height > 4 {
-            let help_text = " ↑/↓: Navigate | Enter: Launch | e: Edit | n: New | d: Delete | x: Set Default | q: Quit ";
+            let help_text = " ↑/↓: Navigate | Enter: View Details | l: Launch | n: New | d: Delete | Tab: Extensions | q: Quit ";
             let help_style = Style::default().fg(Color::DarkGray);
             let help_area = Rect {
                 x: area.x + 1,
@@ -198,14 +198,14 @@ impl Component for ProfileList {
                 }
                 KeyCode::Enter => {
                     if let Some(profile) = self.get_selected_profile() {
-                        Ok(Some(Action::LaunchWithProfile(profile.id.clone())))
+                        Ok(Some(Action::EditProfile(profile.id.clone())))
                     } else {
                         Ok(None)
                     }
                 }
-                KeyCode::Char('e') => {
+                KeyCode::Char('l') => {
                     if let Some(profile) = self.get_selected_profile() {
-                        Ok(Some(Action::EditProfile(profile.id.clone())))
+                        Ok(Some(Action::LaunchWithProfile(profile.id.clone())))
                     } else {
                         Ok(None)
                     }
