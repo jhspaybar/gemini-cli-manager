@@ -1,7 +1,0 @@
-2025/06/27 07:54:48 logger.go:29: === Gemini CLI Manager Debug Log Started ===
-2025/06/27 07:54:48 logger.go:35: Checking context file at: /Users/williamthurston/.gemini-cli-manager/extensions/simple-extension/GEMINI.md
-2025/06/27 07:54:48 logger.go:35: Context file found, size: 451 bytes
-2025/06/27 07:54:48 logger.go:35: Checking context file at: /Users/williamthurston/.gemini-cli-manager/extensions/simple-extension/GEMINI.md
-2025/06/27 07:54:48 logger.go:35: Context file found, size: 451 bytes
-2025/06/27 07:54:48 logger.go:35: Checking context file at: /Users/williamthurston/.gemini-cli-manager/extensions/simple-extension/GEMINI.md
-2025/06/27 07:54:48 logger.go:35: Context file found, size: 451 bytes

@@ -5,7 +5,7 @@ use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::Extension, storage::Storage};
+use crate::{action::Action, config::Config, models::Extension, storage::Storage, theme};
 
 pub struct ExtensionList {
     command_tx: Option<UnboundedSender<Action>>,
@@ -152,7 +152,7 @@ impl Component for ExtensionList {
                 .title(" Search (Esc to close) ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .border_style(Style::default().fg(Color::Yellow));
+                .border_style(Style::default().fg(theme::warning()));
             
             // Use tui-input's widget with proper styling
             let input_widget = Paragraph::new(self.search_input.value())
@@ -185,7 +185,7 @@ impl Component for ExtensionList {
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(Color::Cyan));
+            .border_style(Style::default().fg(theme::primary()));
 
         // Create list items
         let items: Vec<ListItem> = self
@@ -203,35 +203,35 @@ impl Component for ExtensionList {
                             &ext.name,
                             if is_selected {
                                 Style::default()
-                                    .fg(Color::Yellow)
+                                    .fg(theme::highlight())
                                     .add_modifier(Modifier::BOLD)
                             } else {
-                                Style::default().fg(Color::White)
+                                Style::default().fg(theme::text_primary())
                             },
                         ),
                         Span::raw(" "),
                         Span::styled(
                             format!("v{}", ext.version),
-                            Style::default().fg(Color::DarkGray),
+                            Style::default().fg(theme::text_muted()),
                         ),
                     ]),
                     Line::from(vec![
                         Span::raw("  "),
                         Span::styled(
                             ext.description.as_deref().unwrap_or("No description"),
-                            Style::default().fg(Color::Gray),
+                            Style::default().fg(theme::text_secondary()),
                         ),
                     ]),
                     Line::from(vec![
                         Span::raw("  "),
                         Span::styled(
                             format!("{} MCP servers", ext.mcp_servers.len()),
-                            Style::default().fg(Color::Magenta),
+                            Style::default().fg(theme::accent()),
                         ),
                         Span::raw(" | "),
                         Span::styled(
                             format!("{} tags", ext.metadata.tags.len()),
-                            Style::default().fg(Color::Blue),
+                            Style::default().fg(theme::primary()),
                         ),
                     ]),
                     Line::from(""), // Empty line for spacing
@@ -245,7 +245,7 @@ impl Component for ExtensionList {
         // Create the list widget
         let list = List::new(items)
             .block(block)
-            .highlight_style(Style::default().bg(Color::DarkGray))
+            .highlight_style(Style::default().bg(theme::selection()))
             .highlight_symbol("│ ");
 
         // Create a stateful list to track selection
@@ -262,7 +262,7 @@ impl Component for ExtensionList {
             } else {
                 " ↑/↓: Navigate | Enter: View | e: Edit | n: New | d: Delete | /: Search | Tab: Profiles | q: Quit "
             };
-            let help_style = Style::default().fg(Color::DarkGray);
+            let help_style = Style::default().fg(theme::text_muted());
             let help_area = Rect {
                 x: area.x + 1,
                 y: area.y + area.height - 1,

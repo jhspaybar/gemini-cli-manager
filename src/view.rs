@@ -15,6 +15,7 @@ use crate::{
     },
     config::Config,
     storage::Storage,
+    theme,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -429,13 +430,13 @@ impl ViewManager {
                 .title_alignment(Alignment::Center)
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .border_style(Style::default().fg(Color::Red))
-                .style(Style::default().bg(Color::Black));
+                .border_style(Style::default().fg(theme::error()))
+                .style(Style::default().bg(theme::overlay()));
             
             let error_content = format!("{}\n\n(Press Esc to dismiss)", message);
             let error_text = Paragraph::new(error_content)
                 .block(error_block)
-                .style(Style::default().fg(Color::White).bg(Color::Black))
+                .style(Style::default().fg(theme::text_primary()).bg(theme::overlay()))
                 .alignment(Alignment::Center)
                 .wrap(Wrap { trim: true });
             

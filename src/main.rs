@@ -14,6 +14,7 @@ mod launcher;
 mod logging;
 mod models;
 mod storage;
+mod theme;
 mod tui;
 mod view;
 
@@ -21,6 +22,9 @@ mod view;
 async fn main() -> Result<()> {
     crate::errors::init()?;
     crate::logging::init()?;
+
+    // Initialize theme with Catppuccin Mocha for better visibility
+    crate::theme::set_flavour(crate::theme::ThemeFlavour::Mocha);
 
     let args = Cli::parse();
     

@@ -2,7 +2,7 @@ use color_eyre::Result;
 use ratatui::{prelude::*, widgets::*};
 
 use super::Component;
-use crate::view::ViewType;
+use crate::{view::ViewType, theme};
 
 pub struct TabBar {
     current_view: ViewType,
@@ -78,7 +78,7 @@ impl Component for TabBar {
                         Span::styled(
                             title,
                             Style::default()
-                                .fg(Color::Yellow)
+                                .fg(theme::primary())
                                 .add_modifier(Modifier::BOLD),
                         ),
                         Span::raw(" "),
@@ -86,7 +86,7 @@ impl Component for TabBar {
                 } else {
                     Line::from(vec![
                         Span::raw(" "),
-                        Span::styled(title, Style::default().fg(Color::DarkGray)),
+                        Span::styled(title, Style::default().fg(theme::text_muted())),
                         Span::raw(" "),
                     ])
                 }
@@ -99,11 +99,11 @@ impl Component for TabBar {
                 Block::default()
                     .borders(Borders::ALL)
                     .border_type(BorderType::Rounded)
-                    .border_style(Style::default().fg(Color::Cyan)),
+                    .border_style(Style::default().fg(theme::border())),
             )
             .highlight_style(
                 Style::default()
-                    .bg(Color::DarkGray)
+                    .bg(theme::selection())
                     .add_modifier(Modifier::BOLD),
             )
             .divider(Span::raw(" │ "));
@@ -137,7 +137,7 @@ impl Component for TabBar {
                 };
 
                 frame.render_widget(
-                    Paragraph::new(breadcrumb).style(Style::default().fg(Color::DarkGray)),
+                    Paragraph::new(breadcrumb).style(Style::default().fg(theme::text_secondary())),
                     breadcrumb_area,
                 );
             }
