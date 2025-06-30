@@ -9,6 +9,7 @@ use crate::{
     action::Action,
     components::{Component, fps::FpsCounter},
     config::Config,
+    storage::Storage,
     tui::{Event, Tui},
     view::ViewManager,
 };
@@ -24,6 +25,7 @@ pub struct App {
     last_tick_key_events: Vec<KeyEvent>,
     action_tx: mpsc::UnboundedSender<Action>,
     action_rx: mpsc::UnboundedReceiver<Action>,
+    storage: Storage,
 }
 
 #[derive(Default, Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -35,11 +37,19 @@ pub enum Mode {
 impl App {
     pub fn new(tick_rate: f64, frame_rate: f64) -> Result<Self> {
         let (action_tx, action_rx) = mpsc::unbounded_channel();
+        
+        // Initialize storage
+        let storage = Storage::new()?;
+        storage.init()?;
+        
+        // Create view manager with storage
+        let view_manager = ViewManager::with_storage(storage.clone());
+        
         Ok(Self {
             tick_rate,
             frame_rate,
             components: vec![
-                Box::new(ViewManager::new()),
+                Box::new(view_manager),
                 Box::new(FpsCounter::default()),
             ],
             should_quit: false,
@@ -49,6 +59,7 @@ impl App {
             last_tick_key_events: Vec::new(),
             action_tx,
             action_rx,
+            storage,
         })
     }
 
@@ -183,47 +194,52 @@ impl App {
     }
 
     fn handle_launch_profile(&mut self, profile_id: String, tui: &mut Tui) -> Result<()> {
-        use crate::{launcher::Launcher, models::Profile};
+        use crate::launcher::Launcher;
         
-        // Get the profile
-        let profiles = Profile::mock_profiles();
-        if let Some(profile) = profiles.iter().find(|p| p.id == profile_id) {
-            // Exit TUI mode before launching
-            tui.exit()?;
-            
-            // Display launch message
-            println!("Preparing to launch profile: {}", profile.display_name());
-            println!();
-            
-            // Launch the profile
-            let launcher = Launcher::new();
-            match launcher.launch_with_profile(profile) {
-                Ok(_) => {
-                    println!();
-                    println!("✅ Gemini CLI session ended successfully.");
-                    
-                    // Small delay to let the user see the message
-                    std::thread::sleep(std::time::Duration::from_millis(500));
-                    
-                    // Re-enter TUI mode
-                    tui.enter()?;
-                    self.action_tx.send(Action::ClearScreen)?;
-                    self.action_tx.send(Action::Render)?;
-                }
-                Err(e) => {
-                    eprintln!("❌ Error launching profile: {}", e);
-                    
-                    // Longer delay for errors so user can read the message
-                    std::thread::sleep(std::time::Duration::from_secs(2));
-                    
-                    // Re-enter TUI mode
-                    tui.enter()?;
-                    self.action_tx.send(Action::ClearScreen)?;
-                    self.action_tx.send(Action::Error(format!("Failed to launch profile: {}", e)))?;
+        // Get the profile from storage
+        match self.storage.load_profile(&profile_id) {
+            Ok(profile) => {
+                // Exit TUI mode before launching
+                tui.exit()?;
+                
+                // Display launch message
+                println!("Preparing to launch profile: {}", profile.display_name());
+                println!();
+                
+                // Launch the profile with storage
+                let launcher = Launcher::with_storage(self.storage.clone());
+                match launcher.launch_with_profile(&profile) {
+                    Ok(_) => {
+                        println!();
+                        println!("✅ Gemini CLI session ended successfully.");
+                        
+                        // Small delay to let the user see the message
+                        std::thread::sleep(std::time::Duration::from_millis(500));
+                        
+                        // Re-enter TUI mode
+                        tui.enter()?;
+                        self.action_tx.send(Action::ClearScreen)?;
+                        self.action_tx.send(Action::Render)?;
+                    }
+                    Err(e) => {
+                        eprintln!("❌ Error launching profile: {}", e);
+                        
+                        // Longer delay for errors so user can read the message
+                        std::thread::sleep(std::time::Duration::from_secs(2));
+                        
+                        // Re-enter TUI mode
+                        tui.enter()?;
+                        self.action_tx.send(Action::ClearScreen)?;
+                        self.action_tx.send(Action::Error(format!("Failed to launch profile: {}", e)))?;
+                    }
                 }
             }
-        } else {
-            self.action_tx.send(Action::Error(format!("Profile not found: {}", profile_id)))?;
+            Err(e) => {
+                // Re-enter TUI mode on error
+                tui.enter()?;
+                self.action_tx.send(Action::ClearScreen)?;
+                self.action_tx.send(Action::Error(format!("Failed to load profile: {}", e)))?;
+            }
         }
         
         Ok(())

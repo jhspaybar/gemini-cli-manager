@@ -3,11 +3,12 @@ use ratatui::{prelude::*, widgets::*};
 use tokio::sync::mpsc::UnboundedSender;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::{Extension, Profile}};
+use crate::{action::Action, config::Config, models::{Extension, Profile}, storage::Storage};
 
 pub struct ProfileDetail {
     command_tx: Option<UnboundedSender<Action>>,
     config: Config,
+    storage: Option<Storage>,
     profile: Option<Profile>,
     extensions: Vec<Extension>, // Full extension data for display
     scroll_offset: u16,
@@ -18,6 +19,7 @@ impl Default for ProfileDetail {
         Self {
             command_tx: None,
             config: Config::default(),
+            storage: None,
             profile: None,
             extensions: Vec::new(),
             scroll_offset: 0,
@@ -26,18 +28,22 @@ impl Default for ProfileDetail {
 }
 
 impl ProfileDetail {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn with_storage(storage: Storage) -> Self {
+        let mut detail = Self::default();
+        detail.storage = Some(storage);
+        detail
     }
 
     pub fn set_profile(&mut self, profile: Profile) {
-        // Load the extensions that are part of this profile
-        // In a real app, we'd fetch these from storage
-        let all_extensions = Extension::mock_extensions();
-        self.extensions = all_extensions
-            .into_iter()
-            .filter(|ext| profile.extension_ids.contains(&ext.id))
-            .collect();
+        // Load the extensions from storage
+        if let Some(storage) = &self.storage {
+            self.extensions = profile.extension_ids
+                .iter()
+                .filter_map(|ext_id| storage.load_extension(ext_id).ok())
+                .collect();
+        } else {
+            self.extensions = Vec::new();
+        }
         
         self.profile = Some(profile);
         self.scroll_offset = 0;
@@ -67,13 +73,23 @@ impl Component for ProfileDetail {
 
     fn update(&mut self, action: Action) -> Result<Option<Action>> {
         match action {
-            Action::EditProfile(id) => {
-                // In a real app, we'd fetch the profile by ID
-                if let Some(profile) = Profile::mock_profiles()
-                    .into_iter()
-                    .find(|p| p.id == id)
-                {
-                    self.set_profile(profile);
+            Action::ViewProfileDetails(id) => {
+                // Load the profile from storage
+                if let Some(storage) = &self.storage {
+                    if let Ok(profile) = storage.load_profile(&id) {
+                        self.set_profile(profile);
+                    }
+                }
+            }
+            Action::RefreshProfiles => {
+                // Reload the current profile if we have one
+                if let Some(current_profile) = &self.profile {
+                    let profile_id = current_profile.id.clone();
+                    if let Some(storage) = &self.storage {
+                        if let Ok(profile) = storage.load_profile(&profile_id) {
+                            self.set_profile(profile);
+                        }
+                    }
                 }
             }
             _ => {}

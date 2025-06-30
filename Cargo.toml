@@ -41,16 +41,19 @@ strum = { version = "0.26.3", features = ["derive"] }
 tokio = { version = "1.40.0", features = ["full"] }
 tokio-util = "0.7.12"
 tracing = "0.1.40"
+tui-input = "0.10.1"
 tracing-error = "0.2.0"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter", "serde"] }
+uuid = { version = "1.17.0", features = ["v4"] }
+tui-textarea = "0.7.0"
 
 [build-dependencies]
 anyhow = "1.0.90"
 vergen-gix = { version = "1.0.2", features = ["build", "cargo"] }
 
 [lints.rust]
-warnings = "warn"
-unused = "warn"
+warnings = "deny"
+unused = "deny"
 
 # Uncomment to treat warnings as errors in CI
 # [profile.dev]

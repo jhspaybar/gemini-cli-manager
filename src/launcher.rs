@@ -8,24 +8,44 @@ use std::process::{Command, Stdio};
 use color_eyre::{eyre::eyre, Result};
 use serde_json::json;
 
-use crate::models::{Extension, Profile};
+use crate::{models::{Extension, Profile}, storage::Storage};
 
 pub struct Launcher {
     workspace_dir: PathBuf,
+    storage: Storage,
 }
 
 impl Launcher {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         // Default workspace directory
         let workspace_dir = dirs::home_dir()
             .unwrap_or_else(|| PathBuf::from("."))
             .join(".gemini-workspace");
         
-        Self { workspace_dir }
+        Self { 
+            workspace_dir,
+            storage: Storage::default(),
+        }
     }
     
+    #[allow(dead_code)]
     pub fn with_workspace_dir(workspace_dir: PathBuf) -> Self {
-        Self { workspace_dir }
+        Self { 
+            workspace_dir,
+            storage: Storage::default(),
+        }
+    }
+    
+    pub fn with_storage(storage: Storage) -> Self {
+        let workspace_dir = dirs::home_dir()
+            .unwrap_or_else(|| PathBuf::from("."))
+            .join(".gemini-workspace");
+            
+        Self {
+            workspace_dir,
+            storage,
+        }
     }
     
     /// Launch Gemini CLI with the specified profile
@@ -124,14 +144,15 @@ impl Launcher {
     fn install_extensions_for_profile(&self, profile: &Profile, workspace_dir: &Path) -> Result<()> {
         let extensions_dir = workspace_dir.join(".gemini").join("extensions");
         
-        // Get mock extensions (in real app, would load from storage)
-        let all_extensions = Extension::mock_extensions();
-        
+        // Load extensions from storage
         for ext_id in &profile.extension_ids {
-            if let Some(extension) = all_extensions.iter().find(|e| &e.id == ext_id) {
-                self.install_extension(extension, &extensions_dir)?;
-            } else {
-                eprintln!("Warning: Extension '{}' not found", ext_id);
+            match self.storage.load_extension(ext_id) {
+                Ok(extension) => {
+                    self.install_extension(&extension, &extensions_dir)?;
+                }
+                Err(e) => {
+                    eprintln!("Warning: Failed to load extension '{}': {}", ext_id, e);
+                }
             }
         }
         
@@ -155,7 +176,13 @@ impl Launcher {
         file.write_all(serde_json::to_string_pretty(&config)?.as_bytes())?;
         
         // Write context file if present
-        if let (Some(filename), Some(content)) = (&extension.context_file_name, &extension.context_content) {
+        if let Some(content) = &extension.context_content {
+            // Use provided filename or default to GEMINI.md
+            let default_name = "GEMINI.md".to_string();
+            let filename = extension.context_file_name.as_ref()
+                .filter(|s| !s.trim().is_empty())
+                .unwrap_or(&default_name);
+            
             let context_path = ext_dir.join(filename);
             let mut file = fs::File::create(&context_path)?;
             file.write_all(content.as_bytes())?;
@@ -193,6 +220,7 @@ impl Launcher {
 }
 
 /// Launch a profile in a new terminal window (platform-specific)
+#[allow(dead_code)]
 pub fn launch_in_terminal(profile: &Profile) -> Result<()> {
     let launcher = Launcher::new();
     
@@ -204,6 +232,7 @@ pub fn launch_in_terminal(profile: &Profile) -> Result<()> {
 }
 
 /// Create a launch script for a profile
+#[allow(dead_code)]
 pub fn create_launch_script(profile: &Profile, output_path: &Path) -> Result<()> {
     let script_content = format!(
         r#"#!/bin/bash

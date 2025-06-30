@@ -12,6 +12,10 @@ pub struct Cli {
     /// Frame rate, i.e. number of frames per second
     #[arg(short, long, value_name = "FLOAT", default_value_t = 60.0)]
     pub frame_rate: f64,
+    
+    /// List stored profiles and extensions
+    #[arg(long)]
+    pub list_storage: bool,
 }
 
 const VERSION_MESSAGE: &str = concat!(

@@ -8,10 +8,13 @@ use tokio::sync::mpsc::UnboundedSender;
 
 use crate::{action::Action, config::Config, tui::Event};
 
+pub mod confirm_dialog;
 pub mod extension_detail;
+pub mod extension_form;
 pub mod extension_list;
 pub mod fps;
 pub mod profile_detail;
+pub mod profile_form;
 pub mod profile_list;
 pub mod tab_bar;
 

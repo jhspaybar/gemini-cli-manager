@@ -69,7 +69,7 @@ pub struct ExtensionMetadata {
 }
 
 impl Extension {
-    /// Create mock extensions for testing
+    /// Create mock extensions for initial storage population
     pub fn mock_extensions() -> Vec<Extension> {
         vec![
             Extension {

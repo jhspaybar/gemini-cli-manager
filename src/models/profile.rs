@@ -46,7 +46,7 @@ pub struct ProfileMetadata {
 }
 
 impl Profile {
-    /// Create mock profiles for testing
+    /// Create mock profiles for initial storage population
     pub fn mock_profiles() -> Vec<Profile> {
         vec![
             Profile {

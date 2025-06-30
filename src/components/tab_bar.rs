@@ -41,7 +41,11 @@ impl Component for TabBar {
                 self.current_view = ViewType::ExtensionDetail;
             }
             Action::EditProfile(_) => {
-                self.current_view = ViewType::ProfileDetail;
+                // This could be either detail or edit view
+                // ViewManager will set the correct view via set_current_view
+            }
+            Action::CreateProfile => {
+                self.current_view = ViewType::ProfileCreate;
             }
             _ => {}
         }
@@ -61,10 +65,10 @@ impl Component for TabBar {
             .iter()
             .map(|(title, view_type)| {
                 let is_active = match (self.current_view, view_type) {
-                    // Extensions tab is active for both list and detail views
+                    // Extensions tab is active for extension-related views
                     (ViewType::ExtensionList | ViewType::ExtensionDetail, ViewType::ExtensionList) => true,
-                    // Profiles tab is active for both list and detail views
-                    (ViewType::ProfileList | ViewType::ProfileDetail, ViewType::ProfileList) => true,
+                    // Profiles tab is active for all profile-related views
+                    (ViewType::ProfileList | ViewType::ProfileDetail | ViewType::ProfileCreate | ViewType::ProfileEdit, ViewType::ProfileList) => true,
                     _ => false,
                 };
 
@@ -107,18 +111,20 @@ impl Component for TabBar {
         // Select the active tab
         let selected = match self.current_view {
             ViewType::ExtensionList | ViewType::ExtensionDetail => 0,
-            ViewType::ProfileList | ViewType::ProfileDetail => 1,
+            ViewType::ProfileList | ViewType::ProfileDetail | ViewType::ProfileCreate | ViewType::ProfileEdit => 1,
             _ => 0,
         };
 
         // Render with selection
         frame.render_widget(tabs.select(selected), area);
 
-        // Add breadcrumb for detail views
-        if matches!(self.current_view, ViewType::ExtensionDetail | ViewType::ProfileDetail) {
+        // Add breadcrumb for detail/form views
+        if matches!(self.current_view, ViewType::ExtensionDetail | ViewType::ProfileDetail | ViewType::ProfileCreate | ViewType::ProfileEdit) {
             let breadcrumb = match self.current_view {
                 ViewType::ExtensionDetail => " > Extension Details",
                 ViewType::ProfileDetail => " > Profile Details",
+                ViewType::ProfileCreate => " > Create Profile",
+                ViewType::ProfileEdit => " > Edit Profile",
                 _ => "",
             };
 

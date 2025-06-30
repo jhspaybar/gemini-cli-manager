@@ -1,1303 +1,863 @@
-# CLAUDE.md - Go Development Guide for Gemini CLI
+# CLAUDE.md - Rust/Ratatui Development Guide for Gemini CLI Manager
 
-This comprehensive guide provides best practices, patterns, and conventions for developing our Gemini CLI tool using Go and Bubble Tea.
+This comprehensive guide provides patterns, best practices, and conventions for developing the Gemini CLI Manager using Rust and Ratatui.
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
-2. [Go Development Standards](#go-development-standards)
-3. [Bubble Tea TUI Framework](#bubble-tea-tui-framework)
-4. [Project Structure](#project-structure)
-5. [Development Workflow](#development-workflow)
-6. [Testing Strategy](#testing-strategy)
-7. [Security Considerations](#security-considerations)
-8. [Performance Guidelines](#performance-guidelines)
+2. [Architecture Guidelines](#architecture-guidelines)
+3. [Ratatui Patterns](#ratatui-patterns)
+4. [Component Development](#component-development)
+5. [State Management](#state-management)
+6. [Event Handling](#event-handling)
+7. [Layout Best Practices](#layout-best-practices)
+8. [Styling and Theming](#styling-and-theming)
+9. [Testing Strategy](#testing-strategy)
+10. [Performance Guidelines](#performance-guidelines)
+11. [Common Pitfalls](#common-pitfalls)
 
 ## Project Overview
 
-We're building a CLI tool to manage extensions, prompts, and tools for Gemini in a first-party context. The application will use:
-- **Language**: Go
-- **TUI Framework**: Bubble Tea (charmbracelet/bubbletea)
-- **Architecture**: Model-Update-View (MUV) pattern
+The Gemini CLI Manager is a Terminal User Interface (TUI) application for managing Gemini extensions, profiles, and tools. It uses:
+- **Language**: Rust
+- **TUI Framework**: Ratatui (0.29.0)
+- **Backend**: Crossterm
+- **Async Runtime**: Tokio
+- **Architecture**: Component-based with message passing
 
-## Go Development Standards
+### Gemini Extension Format
 
-### Code Formatting and Style
+#### MCP Servers Configuration
 
-**Always run before committing:**
-```bash
-go fmt ./...
-go vet ./...
-```
+Extensions can configure connections to Model-Context Protocol (MCP) servers for discovering and using custom tools. The `mcpServers` field in an extension configures these connections.
 
-**Naming Conventions:**
-- Package names: lowercase, single-word (e.g., `config`, `prompt`)
-- Exported identifiers: PascalCase (e.g., `ExtensionManager`)
-- Private identifiers: camelCase (e.g., `loadConfig`)
-- Interfaces: verb + "er" suffix (e.g., `Reader`, `Validator`)
+**Key Points:**
+- Gemini CLI attempts to connect to each configured MCP server to discover available tools
+- If multiple MCP servers expose a tool with the same name, tool names are prefixed with the server alias (e.g., `serverAlias__actualToolName`)
+- The system might strip certain schema properties from MCP tool definitions for compatibility
+- Note: In our storage model, we use `McpServerConfig` which differs slightly from the JSON format (e.g., no URL field since MCP servers are command-based)
+
+**MCP Server Properties:**
+- `command` (string, required): The command to execute to start the MCP server
+- `args` (array of strings, optional): Arguments to pass to the command
+- `env` (object, optional): Environment variables to set for the server process (values can use `$VAR_NAME` syntax)
+- `cwd` (string, optional): The working directory in which to start the server
+- `timeout` (number, optional): Timeout in milliseconds for requests to this MCP server
+- `trust` (boolean, optional): Trust this server and bypass all tool call confirmations
 
 **Example:**
-```go
-// Package gemini provides CLI functionality for managing Gemini extensions.
-package gemini
-
-// ExtensionManager handles extension lifecycle operations.
-type ExtensionManager struct {
-    registry map[string]Extension
-    config   *Config
-}
-
-// LoadExtension loads an extension from the specified path.
-func (em *ExtensionManager) LoadExtension(path string) error {
-    // Implementation
-}
-```
-
-### Error Handling
-
-**Always wrap errors with context:**
-```go
-func LoadPrompt(path string) (*Prompt, error) {
-    data, err := os.ReadFile(path)
-    if err != nil {
-        return nil, fmt.Errorf("reading prompt file %s: %w", path, err)
+```json
+"mcpServers": {
+  "myPythonServer": {
+    "command": "python",
+    "args": ["mcp_server.py", "--port", "8080"],
+    "cwd": "./mcp_tools/python",
+    "timeout": 5000
+  },
+  "myNodeServer": {
+    "command": "node",
+    "args": ["mcp_server.js"],
+    "cwd": "./mcp_tools/node"
+  },
+  "myDockerServer": {
+    "command": "docker",
+    "args": ["run", "-i", "--rm", "-e", "API_KEY", "ghcr.io/foo/bar"],
+    "env": {
+      "API_KEY": "$MY_API_TOKEN"
     }
-    
-    var prompt Prompt
-    if err := json.Unmarshal(data, &prompt); err != nil {
-        return nil, fmt.Errorf("parsing prompt JSON: %w", err)
-    }
-    
-    return &prompt, nil
+  }
 }
 ```
 
-**Define sentinel errors for known conditions:**
-```go
-var (
-    ErrExtensionNotFound = errors.New("extension not found")
-    ErrInvalidPrompt     = errors.New("invalid prompt format")
-    ErrToolNotSupported  = errors.New("tool not supported")
-)
+### Context Files (Hierarchical Instructional Context)
+
+Extensions can include context files (typically named after the extension, e.g., `GITHUB.md` for github-tools) that provide instructions, guidelines, or context for the Gemini model. This powerful feature allows extensions to give specific instructions, coding style guides, or relevant background information to the AI.
+
+**Key Points:**
+- Context files are Markdown files containing instructions for the Gemini model
+- The system manages instructional context hierarchically
+- Multiple context files are concatenated with separators indicating their origin
+- The CLI displays the count of loaded context files in the footer
+
+**Context File Properties in Extensions:**
+- `context_file_name` (string, optional): The name of the context file (e.g., "GITHUB.md")
+- `context_content` (string, optional): The actual content of the context file
+
+**Example Context File Content:**
+```markdown
+# GitHub Tools Extension
+
+## General Instructions:
+- When interacting with GitHub APIs, always check rate limits
+- Prefer GraphQL API over REST API when possible for efficiency
+- Include error handling for common GitHub API errors
+
+## Authentication:
+- This extension uses the GITHUB_TOKEN environment variable
+- Ensure the token has appropriate permissions for requested operations
+
+## Available Tools:
+- `github_create_issue`: Creates a new issue in a repository
+- `github_list_prs`: Lists pull requests with various filters
+- `github_review_pr`: Reviews and comments on pull requests
+
+## Best Practices:
+- Always validate repository ownership before destructive operations
+- Cache responses when appropriate to reduce API calls
+- Use pagination for large result sets
 ```
 
-### Go Module Management
+### Current Architecture
+
+```
+src/
+├── main.rs         # Entry point, initializes Tokio runtime
+├── app.rs          # Main application orchestrator
+├── tui.rs          # Terminal I/O and event loop management
+├── components.rs   # Component trait and registry
+├── action.rs       # Action types for message passing
+├── config.rs       # Configuration management
+├── cli.rs          # Command-line interface
+├── errors.rs       # Error handling setup
+└── components/     # Individual UI components
+    ├── home.rs     # Home screen component
+    └── fps.rs      # FPS counter component
+```
+
+### Dependency Management
+
+**Always use `cargo add` to add new dependencies:**
 
 ```bash
-# Initialize the project
-go mod init github.com/your-org/gemini-cli
+# Add a new dependency
+cargo add ratatui
 
-# Add dependencies
-go get github.com/charmbracelet/bubbletea
-go get github.com/charmbracelet/bubbles
-go get github.com/charmbracelet/lipgloss
+# Add with specific features
+cargo add tokio --features full
 
-# Keep dependencies clean
-go mod tidy
+# Add a specific version
+cargo add tui-input@0.10.1  # Compatible with ratatui 0.29.0
+
+# Add as a dev dependency
+cargo add --dev pretty_assertions
 ```
 
-## Bubble Tea TUI Framework
+**Why use `cargo add`:**
+- Automatically selects the latest compatible version
+- Properly formats the Cargo.toml entry
+- Handles feature flags correctly
+- Updates the lock file automatically
 
-### 🎯 Core Principles
+**Common dependencies for this project:**
+```bash
+# TUI and rendering
+cargo add ratatui
+cargo add crossterm
+cargo add tui-input  # For text input widgets
 
-Bubble Tea follows **The Elm Architecture** with three core components:
-1. **Model** - Your application state
-2. **Update** - Handle messages and update state
-3. **View** - Render the UI based on the model
+# Async runtime
+cargo add tokio --features full
 
-**Critical Rules:**
-- ⚠️ **NEVER use goroutines** within a Bubble Tea program
-- ⚠️ **Use commands for ALL I/O operations**
-- ⚠️ **Keep Update() and View() methods fast** - offload expensive work to commands
-- ⚠️ **State is immutable** - always return a new model from Update()
-- ⚠️ **ALWAYS use theme colors** - never hardcode color values like `lipgloss.Color("87")`
-- ⚠️ **ALWAYS search for and use existing components** - Before implementing custom UI elements, check `internal/ui/components/` for existing components. Use the Card, TabBar, and other components instead of creating custom bordered boxes or UI elements
+# Error handling
+cargo add color-eyre
+cargo add thiserror
 
-### 🏗️ Architecture Patterns
+# Serialization
+cargo add serde --features derive
+cargo add serde_json
 
-#### 1. Multi-View Applications
+# File system
+cargo add dirs
+cargo add tempfile --dev
+```
 
-For complex applications with multiple screens, use one of these patterns:
+## Architecture Guidelines
 
-##### Pattern A: Root Navigator Pattern (Recommended)
-```go
-// Root model manages view switching
-type RootModel struct {
-    currentView ViewType
-    views       map[ViewType]tea.Model
-    shared      *SharedState // Shared between views
+### Component-Based Design
+
+Every UI element should be a component implementing the `Component` trait:
+
+```rust
+pub trait Component {
+    fn register_action_handler(&mut self, tx: UnboundedSender<Action>) -> Result<()>;
+    fn register_config_handler(&mut self, config: Config) -> Result<()>;
+    fn update(&mut self, action: Action) -> Result<Option<Action>>;
+    fn draw(&mut self, frame: &mut Frame, area: Rect) -> Result<()>;
+    fn handle_events(&mut self, event: Option<Event>) -> Result<Option<Action>>;
+}
+```
+
+### Message Passing Pattern
+
+Components communicate through `Action` messages via Tokio channels:
+
+```rust
+// Define actions in action.rs
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Action {
+    Tick,
+    Render,
+    Resize(u16, u16),
+    Navigate(Route),
+    ExtensionSelected(String),
+    ProfileSwitch(String),
+    // Add new actions as needed
+}
+```
+
+### Async Event Loop
+
+The application uses separate loops for:
+- **Ticks**: Logic updates at configurable rate (default: 4 Hz)
+- **Renders**: UI updates at configurable FPS (default: 60 FPS)
+- **Events**: Terminal events (keyboard, mouse, resize)
+
+## Ratatui Patterns
+
+### 1. Immediate Mode Rendering
+
+Ratatui uses immediate mode rendering - the entire UI is redrawn each frame:
+
+```rust
+fn draw(&mut self, frame: &mut Frame, area: Rect) -> Result<()> {
+    // Clear and redraw everything
+    let chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Length(3),    // Header
+            Constraint::Min(0),       // Content
+            Constraint::Length(3),    // Footer
+        ])
+        .split(area);
+
+    // Render each section
+    self.draw_header(frame, chunks[0])?;
+    self.draw_content(frame, chunks[1])?;
+    self.draw_footer(frame, chunks[2])?;
+    
+    Ok(())
+}
+```
+
+### 2. Widget Composition
+
+Build complex UIs by composing simple widgets:
+
+```rust
+// Use Block for borders and titles
+let block = Block::default()
+    .borders(Borders::ALL)
+    .title("Extensions")
+    .title_style(Style::default().fg(Color::Cyan));
+
+// Wrap content in blocks
+let paragraph = Paragraph::new(content)
+    .block(block)
+    .wrap(Wrap { trim: true });
+
+frame.render_widget(paragraph, area);
+```
+
+### 3. Stateful Widgets
+
+For widgets with state (like lists), maintain state in the component:
+
+```rust
+pub struct ExtensionList {
+    items: Vec<Extension>,
+    state: ListState,
+    selected: Option<usize>,
 }
 
-func (m RootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    // Handle global messages first
-    switch msg := msg.(type) {
-    case tea.WindowSizeMsg:
-        m.shared.Width = msg.Width
-        m.shared.Height = msg.Height
-        // Broadcast to all views
-        var cmds []tea.Cmd
-        for _, view := range m.views {
-            _, cmd := view.Update(msg)
-            cmds = append(cmds, cmd)
+impl ExtensionList {
+    fn next(&mut self) {
+        let i = match self.state.selected() {
+            Some(i) => (i + 1) % self.items.len(),
+            None => 0,
+        };
+        self.state.select(Some(i));
+    }
+}
+```
+
+### 4. Third-Party Widgets
+
+Leverage existing widgets for common UI patterns:
+
+#### Text Input with tui-input
+
+For text input fields, use `tui-input` instead of implementing from scratch:
+
+```rust
+use tui_input::Input;
+use tui_input::backend::crossterm::EventHandler;
+
+pub struct SearchableList {
+    search_input: Input,
+    search_mode: bool,
+    items: Vec<String>,
+}
+
+impl SearchableList {
+    fn handle_search_input(&mut self, key: KeyEvent) -> bool {
+        // Let tui-input handle the event
+        if self.search_input.handle_event(&Event::Key(key)).is_some() {
+            self.update_filter();
+            true
+        } else {
+            false
         }
-        return m, tea.Batch(cmds...)
-    
-    case SwitchViewMsg:
-        m.currentView = msg.View
-        return m, m.views[m.currentView].Init()
     }
     
-    // Route to current view
-    newView, cmd := m.views[m.currentView].Update(msg)
-    m.views[m.currentView] = newView
-    return m, cmd
-}
-
-func (m RootModel) View() string {
-    return m.views[m.currentView].View()
-}
-```
-
-##### Pattern B: State Machine Pattern
-```go
-type AppState int
-
-const (
-    StateMenu AppState = iota
-    StateExtensionList
-    StateExtensionDetail
-    StateProfileList
-)
-
-type Model struct {
-    state    AppState
-    previous AppState
-    
-    // Sub-models for each state
-    menu      MenuModel
-    extList   ExtensionListModel
-    extDetail ExtensionDetailModel
-    profiles  ProfileListModel
-}
-
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    switch m.state {
-    case StateMenu:
-        menu, cmd := m.menu.Update(msg)
-        m.menu = menu
-        // Handle state transitions
-        if menu.Selected != "" {
-            m.previous = m.state
-            m.state = // ... next state based on selection
-        }
-        return m, cmd
-    // ... other states
-    }
-}
-```
-
-#### 2. Component Composition
-
-Each component should be self-contained:
-
-```go
-// Component interface
-type Component interface {
-    Init() tea.Cmd
-    Update(tea.Msg) (Component, tea.Cmd)
-    View() string
-}
-
-// Example: Reusable list component
-type ListComponent struct {
-    items    []string
-    cursor   int
-    selected map[int]bool
-    focused  bool
-}
-
-func (l ListComponent) Update(msg tea.Msg) (Component, tea.Cmd) {
-    if !l.focused {
-        return l, nil
-    }
-    
-    switch msg := msg.(type) {
-    case tea.KeyMsg:
-        switch msg.String() {
-        case "up", "k":
-            if l.cursor > 0 {
-                l.cursor--
-            }
-        case "down", "j":
-            if l.cursor < len(l.items)-1 {
-                l.cursor++
-            }
-        case "enter", " ":
-            l.selected[l.cursor] = !l.selected[l.cursor]
-            return l, SelectedMsg{Index: l.cursor}
-        }
-    }
-    return l, nil
-}
-```
-
-#### 3. Message Passing
-
-Define clear message types for communication:
-
-```go
-// Navigation messages
-type (
-    // Navigation
-    BackMsg struct{}
-    SwitchViewMsg struct{ View ViewType }
-    
-    // Data events
-    ItemSelectedMsg struct{ ID string }
-    ItemDeletedMsg struct{ ID string }
-    DataLoadedMsg struct{ 
-        Data interface{}
-        Err  error
-    }
-    
-    // UI events
-    FocusChangedMsg struct{ Component string }
-)
-
-// Message routing in parent
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    // First, try to handle in parent
-    switch msg := msg.(type) {
-    case BackMsg:
-        return m.navigateBack()
-    }
-    
-    // Then route to child
-    child, cmd := m.currentView.Update(msg)
-    m.currentView = child
-    
-    // Check if child emitted a message we need to handle
-    if cmd != nil {
-        // You can inspect the command's message here if needed
-    }
-    
-    return m, cmd
-}
-```
-
-### 📋 Command Best Practices
-
-#### DO: Use Commands for All I/O
-```go
-// ✅ GOOD: Async file operation
-func loadConfigCmd() tea.Cmd {
-    return func() tea.Msg {
-        data, err := os.ReadFile("config.json")
-        if err != nil {
-            return ErrorMsg{err}
-        }
+    fn draw_search(&self, frame: &mut Frame, area: Rect) {
+        let input_widget = Paragraph::new(self.search_input.value())
+            .style(Style::default())
+            .block(Block::default()
+                .borders(Borders::ALL)
+                .title("Search"));
         
-        var config Config
-        if err := json.Unmarshal(data, &config); err != nil {
-            return ErrorMsg{err}
-        }
+        frame.render_widget(input_widget, area);
         
-        return ConfigLoadedMsg{config}
+        // Set cursor position
+        if self.search_mode {
+            let cursor_pos = self.search_input.visual_cursor();
+            frame.set_cursor_position((
+                area.x + cursor_pos as u16 + 1, // +1 for border
+                area.y + 1
+            ));
+        }
     }
 }
+```
 
-// ❌ BAD: Blocking I/O in Update
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    data, err := os.ReadFile("config.json") // BLOCKS THE UI!
+**Benefits of using tui-input:**
+- Proper cursor management
+- Text selection support
+- Clipboard operations (copy/paste)
+- Unicode support
+- Input validation capabilities
+
+## Component Development
+
+### Creating a New Component
+
+1. Create a new file in `src/components/`:
+
+```rust
+// src/components/extension_list.rs
+use crate::{action::Action, components::Component};
+use color_eyre::Result;
+use ratatui::prelude::*;
+use tokio::sync::mpsc::UnboundedSender;
+
+#[derive(Default)]
+pub struct ExtensionList {
+    action_tx: Option<UnboundedSender<Action>>,
+    items: Vec<String>,
+    selected: usize,
+}
+
+impl Component for ExtensionList {
+    fn register_action_handler(&mut self, tx: UnboundedSender<Action>) -> Result<()> {
+        self.action_tx = Some(tx);
+        Ok(())
+    }
+
+    fn update(&mut self, action: Action) -> Result<Option<Action>> {
+        match action {
+            Action::NavigateDown => {
+                self.selected = (self.selected + 1) % self.items.len();
+                Ok(Some(Action::Render))
+            }
+            _ => Ok(None),
+        }
+    }
+
+    fn draw(&mut self, frame: &mut Frame, area: Rect) -> Result<()> {
+        // Implement rendering logic
+        Ok(())
+    }
+}
+```
+
+2. Register the component in `app.rs`:
+
+```rust
+self.components.insert(
+    "extension_list".to_string(),
+    Box::new(ExtensionList::default()),
+);
+```
+
+### Component Guidelines
+
+1. **Single Responsibility**: Each component should handle one UI concern
+2. **Self-Contained State**: Components manage their own state
+3. **Action-Based Updates**: State changes only through actions
+4. **Error Propagation**: Always propagate errors with `?`
+
+## State Management
+
+### Application State
+
+Global application state belongs in `App`:
+
+```rust
+pub struct App {
+    pub running: bool,
+    pub current_screen: Screen,
+    pub selected_profile: Option<Profile>,
+    pub extensions: Vec<Extension>,
     // ...
 }
 ```
 
-#### DON'T: Use Commands Just for Messages
-```go
-// ❌ ANTI-PATTERN: Command that just returns a message
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    return m, func() tea.Msg {
-        return SomeMsg{} // Just use the message directly!
+### Component State
+
+Component-specific state stays within the component:
+
+```rust
+pub struct ProfileManager {
+    profiles: Vec<Profile>,
+    selected_index: usize,
+    edit_mode: bool,
+    form_state: FormState,
+}
+```
+
+### State Updates
+
+State changes follow this flow:
+1. User input → Event
+2. Event → Action
+3. Action → State update
+4. State update → Render
+
+## Event Handling
+
+### Keyboard Events
+
+Handle keyboard input in components:
+
+```rust
+fn handle_events(&mut self, event: Option<Event>) -> Result<Option<Action>> {
+    match event {
+        Some(Event::Key(key)) => match key.code {
+            KeyCode::Char('q') => Ok(Some(Action::Quit)),
+            KeyCode::Up => Ok(Some(Action::NavigateUp)),
+            KeyCode::Down => Ok(Some(Action::NavigateDown)),
+            KeyCode::Enter => Ok(Some(Action::Select)),
+            _ => Ok(None),
+        },
+        Some(Event::Mouse(mouse)) => {
+            // Handle mouse events if needed
+            Ok(None)
+        },
+        _ => Ok(None),
     }
 }
-
-// ✅ BETTER: Return message directly or update state
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    m.someField = newValue
-    return m, nil
-}
 ```
 
-#### Batch Operations
-```go
-// Run multiple commands in parallel
-func (m Model) Init() tea.Cmd {
-    return tea.Batch(
-        loadConfigCmd(),
-        loadExtensionsCmd(),
-        checkForUpdatesCmd(),
-    )
-}
+### Custom Keybindings
 
-// Sequential commands
-func (m Model) performInstall() tea.Cmd {
-    return tea.Sequence(
-        downloadCmd(),
-        extractCmd(),
-        validateCmd(),
-        installCmd(),
-    )
-}
-```
+Use the configuration system for customizable keybindings:
 
-### 🎨 View Best Practices
-
-#### 1. Keep Views Pure
-```go
-// ✅ GOOD: Pure view function
-func (m Model) View() string {
-    if m.width < 40 {
-        return m.compactView()
-    }
-    return m.fullView()
-}
-
-// ❌ BAD: Side effects in view
-func (m Model) View() string {
-    m.updateSomething() // NO! Views should not modify state
-    go fetchData()      // NO! No goroutines!
-    return m.render()
-}
-```
-
-#### 2. ALWAYS Use Flexbox for Layouts
-
-**IMPORTANT**: We use the [stickers](https://github.com/76creates/stickers) flexbox library for ALL layout needs. This ensures responsive, maintainable layouts.
-
-```go
-import "github.com/76creates/stickers/flexbox"
-
-// ✅ GOOD: Using flexbox for layout
-func (m Model) View() string {
-    fb := flexbox.New(m.windowWidth, m.windowHeight)
-    
-    // Header
-    headerRow := fb.NewRow()
-    headerCell := flexbox.NewCell(1, 1)
-    headerCell.SetContent(m.renderHeader())
-    headerRow.AddCells(headerCell)
-    headerRow.LockHeight(3)
-    
-    // Body with two columns
-    bodyRow := fb.NewRow()
-    sidebarCell := flexbox.NewCell(1, 1) // 1/3 width
-    contentCell := flexbox.NewCell(2, 1) // 2/3 width
-    sidebarCell.SetContent(m.renderSidebar())
-    contentCell.SetContent(m.renderContent())
-    bodyRow.AddCells(sidebarCell, contentCell)
-    
-    fb.AddRows([]*flexbox.Row{headerRow, bodyRow})
-    return fb.Render()
-}
-
-// ❌ BAD: Manual layout calculations
-func (m Model) View() string {
-    sidebarWidth := 30
-    contentWidth := m.windowWidth - sidebarWidth - 3
-    // Don't do manual width calculations!
-    return lipgloss.JoinHorizontal(...)
-}
-```
-
-**See [docs/flexbox-guide.md](../docs/flexbox-guide.md) for comprehensive flexbox usage patterns.**
-
-#### 3. Use Lipgloss with Theme Colors
-
-**MANDATORY**: Always use theme variables for colors. Never hardcode color values.
-
-```go
-// ❌ NEVER DO THIS - Hardcoded colors
-var titleStyle = lipgloss.NewStyle().
-    Bold(true).
-    Foreground(lipgloss.Color("87"))  // BAD!
-
-// ✅ ALWAYS DO THIS - Theme colors
-import "github.com/jhspaybar/gemini-cli-manager/internal/theme"
-
-var titleStyle = lipgloss.NewStyle().
-    Bold(true).
-    Foreground(theme.Primary())  // GOOD!
-
-var selectedStyle = lipgloss.NewStyle().
-    Background(theme.Selection()).
-    Foreground(theme.TextPrimary())
-
-func (m Model) renderItem(item string, selected bool) string {
-    if selected {
-        return selectedStyle.Render("> " + item)
-    }
-    return "  " + item
-}
-```
-
-**See [docs/theming-guide.md](../docs/theming-guide.md) for comprehensive theming patterns.**
-
-### 🎯 Terminal Layout Best Practices
-
-**CRITICAL**: Always account for proper spacing to avoid cut-off borders and cramped content.
-
-#### 1. Window Padding
-```go
-// ❌ BAD: Using full terminal dimensions
-contentWidth := m.windowWidth
-contentHeight := m.windowHeight
-
-// ✅ GOOD: Leave space for terminal edges
-horizontalPadding := 3  // Minimum 3 chars on each side
-verticalPadding := 2    // Minimum 2 lines top and bottom
-contentWidth := m.windowWidth - (horizontalPadding * 2)
-contentHeight := m.windowHeight - (verticalPadding * 2)
-```
-
-#### 2. Content Padding Inside Borders
-```go
-// ❌ BAD: No padding inside bordered elements
-cardStyle := lipgloss.NewStyle().
-    Border(lipgloss.RoundedBorder()).
-    Padding(0, 1)  // Too tight!
-
-// ✅ GOOD: Generous padding for readability
-cardStyle := lipgloss.NewStyle().
-    Border(lipgloss.RoundedBorder()).
-    Padding(1, 2)  // Vertical: 1, Horizontal: 2
-```
-
-#### 3. Height Calculations
-```go
-// ❌ BAD: Not accounting for all UI elements
-contentHeight := windowHeight - 2
-
-// ✅ GOOD: Account for every UI element
-tabBarHeight := 2
-statusBarHeight := 3  // Including borders
-padding := 2
-contentHeight := windowHeight - tabBarHeight - statusBarHeight - (padding * 2)
-```
-
-#### 4. Width and Height Management
-
-**IMPORTANT**: Use lipgloss's built-in layout features instead of manual calculations:
-
-```go
-// ❌ BAD: Manual width calculations
-modalWidth := windowWidth - 8  // Trying to account for margins
-contentWidth := modalWidth - 2  // Account for borders
-textWidth := contentWidth - 4   // Account for padding
-
-// ✅ GOOD: Let lipgloss handle it with margins and max constraints
-modalStyle := lipgloss.NewStyle().
-    Border(lipgloss.RoundedBorder()).
-    Padding(1, 2).
-    Margin(1, 3).        // Proper spacing from edges
-    MaxWidth(80).        // Maximum width constraint
-    MaxHeight(40)        // Maximum height constraint
-
-// ✅ GOOD: For text truncation, use MaxWidth directly
-textStyle := lipgloss.NewStyle().
-    MaxWidth(50).        // Lipgloss handles overflow
-    Render(longText)
-```
-
-**Key principles:**
-- Use `Margin()` for spacing from container edges
-- Use `Padding()` for internal content spacing
-- Use `MaxWidth()` and `MaxHeight()` for size constraints
-- Let lipgloss calculate the actual dimensions
-- Avoid manual subtraction for borders/padding
-
-#### 5. Component Spacing Rules
-- **Between cards/items**: 1 empty line minimum
-- **Section headers**: 2 lines before, 1 line after
-- **Inside cards**: 1-2 char padding on all sides
-- **Terminal edges**: 3 chars horizontal, 2 lines vertical
-
-#### Common Pitfalls to Avoid:
-1. **Status bar cut-off**: Always ensure status bar has enough bottom padding
-2. **Tab overflow**: Calculate tab widths to fit within available space
-3. **Border overlap**: Never place bordered elements directly adjacent
-4. **Text truncation**: Always calculate and respect MaxWidth constraints
-
-#### Testing Different Terminal Sizes
-Always test your layouts with various terminal dimensions:
-```bash
-# Test minimum viable size
-printf '\e[8;24;80t'  # 80x24 (classic terminal)
-
-# Test small window
-printf '\e[8;20;60t'  # 60x20
-
-# Test large window
-printf '\e[8;50;120t' # 120x50
-```
-
-Your UI should gracefully handle all sizes without:
-- Cut-off borders
-- Overlapping elements
-- Text overflow
-- Panic on small dimensions
-
-### 🐛 Debugging Techniques
-
-#### 1. Message Logging
-```go
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    // Log all messages to a file
-    if f, err := os.OpenFile("debug.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644); err == nil {
-        defer f.Close()
-        fmt.Fprintf(f, "[%s] %T: %+v\n", time.Now().Format("15:04:05"), msg, msg)
-    }
-    
-    // Regular update logic...
-}
-```
-
-#### 2. State Inspection
-```go
-// Add debug view toggle
-func (m Model) View() string {
-    if m.debugMode {
-        return m.debugView()
-    }
-    return m.normalView()
-}
-
-func (m Model) debugView() string {
-    return fmt.Sprintf(`
-DEBUG MODE
-==========
-State: %v
-Cursor: %d
-Selected: %v
-Error: %v
-
-Press 'd' to toggle debug mode
-`, m.state, m.cursor, m.selected, m.err)
-}
-```
-
-### ⚡ Performance Guidelines
-
-#### 1. Efficient Updates
-```go
-// ✅ GOOD: Only update what changed
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    switch msg := msg.(type) {
-    case CursorMovedMsg:
-        m.cursor = msg.Position
-        // Only update cursor, not entire state
-        return m, nil
-    }
-}
-
-// ❌ BAD: Recreating everything
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    // Don't reload everything on every update!
-    m.items = loadAllItems()
-    m.profiles = loadAllProfiles()
-    return m, nil
-}
-```
-
-#### 2. View Caching
-```go
-type Model struct {
-    // Cache rendered components
-    cachedHeader string
-    headerDirty  bool
-    
-    items       []Item
-    itemsDirty  bool
-    cachedItems string
-}
-
-func (m Model) View() string {
-    if m.headerDirty || m.cachedHeader == "" {
-        m.cachedHeader = m.renderHeader()
-        m.headerDirty = false
-    }
-    
-    if m.itemsDirty || m.cachedItems == "" {
-        m.cachedItems = m.renderItems()
-        m.itemsDirty = false
-    }
-    
-    return m.cachedHeader + "\n" + m.cachedItems
-}
-```
-
-### 🚨 Common Pitfalls
-
-1. **Modifying receivers**: Use pointer receivers when needed
-```go
-// ❌ Value receiver can't modify model
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    m.count++ // This change is lost!
-    return m, nil
-}
-
-// ✅ Return modified copy
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-    m.count++ // This works because we return m
-    return m, nil
-}
-```
-
-2. **Message ordering**: Messages may not arrive in order
-```go
-// ❌ Assuming order
-case Step1CompleteMsg:
-    m.step = 2 // Step2CompleteMsg might arrive first!
-
-// ✅ Check state
-case StepCompleteMsg:
-    if msg.Step == m.expectedStep {
-        m.expectedStep++
-    }
-```
-
-3. **Terminal state**: Always restore terminal on exit
-```go
-func main() {
-    p := tea.NewProgram(Model{})
-    
-    // Restore terminal on panic
-    defer func() {
-        if r := recover(); r != nil {
-            p.ReleaseTerminal()
-            panic(r)
+```rust
+// In config.json5
+{
+    "keybindings": {
+        "Home": {
+            "<q>": "Quit",
+            "<Ctrl-c>": "Quit",
+            "<Up>": "NavigateUp",
+            "<Down>": "NavigateDown",
+            "<Enter>": "Select"
         }
-    }()
-    
-    if _, err := p.Run(); err != nil {
-        log.Fatal(err)
     }
 }
 ```
 
-### 📚 Testing Strategies
+## Layout Best Practices
 
-```go
-// Use teatest for component testing
-func TestListNavigation(t *testing.T) {
-    tm := teatest.NewTestModel(t, 
-        NewListModel([]string{"a", "b", "c"}),
-    )
-    
-    // Send key events
-    tm.Send(tea.KeyMsg{Type: tea.KeyDown})
-    tm.Send(tea.KeyMsg{Type: tea.KeyDown})
-    tm.Send(tea.KeyMsg{Type: tea.KeyEnter})
-    
-    // Wait for result
-    teatest.WaitFor(t, tm, func(b []byte) bool {
-        return bytes.Contains(b, []byte("selected: c"))
-    })
+### Responsive Layouts
+
+Use constraints that adapt to terminal size:
+
+```rust
+let chunks = Layout::default()
+    .direction(Direction::Horizontal)
+    .constraints([
+        Constraint::Percentage(30),  // Sidebar
+        Constraint::Min(50),         // Main content
+    ])
+    .split(area);
+```
+
+### Nested Layouts
+
+Build complex layouts by nesting:
+
+```rust
+// Main vertical split
+let main_chunks = Layout::vertical([
+    Constraint::Length(3),   // Header
+    Constraint::Min(0),      // Body
+    Constraint::Length(3),   // Footer
+]).split(area);
+
+// Split body horizontally
+let body_chunks = Layout::horizontal([
+    Constraint::Percentage(25),  // Sidebar
+    Constraint::Min(0),          // Content
+]).split(main_chunks[1]);
+```
+
+### Layout Guidelines
+
+1. **Use `Min(0)` for flexible areas** that should take remaining space
+2. **Use `Length(n)` for fixed-size** elements like headers/footers
+3. **Use `Percentage(n)` for proportional** layouts
+4. **Avoid hardcoded dimensions** - always consider different terminal sizes
+
+## Styling and Theming
+
+### Consistent Styling
+
+Define styles in a central location:
+
+```rust
+// src/theme.rs
+pub struct Theme {
+    pub primary: Color,
+    pub secondary: Color,
+    pub accent: Color,
+    pub error: Color,
+    pub success: Color,
+    pub warning: Color,
+    pub text: Color,
+    pub text_dim: Color,
+    pub background: Color,
 }
-```
 
-### 🎯 When to Use What Pattern
-
-| Scenario | Pattern | Why |
-|----------|---------|-----|
-| Simple list selection | Single Model | Low complexity |
-| Multiple screens/views | Root Navigator | Clean separation |
-| Complex workflows | State Machine | Clear transitions |
-| Reusable UI elements | Component Pattern | Modularity |
-| Modal dialogs | Overlay Pattern | Temporary state |
-
-### 📁 Recommended Project Structure
-
-```
-internal/
-├── tui/
-│   ├── app.go           # Root application model
-│   ├── views/           # View-specific models
-│   │   ├── menu.go
-│   │   ├── extensions.go
-│   │   └── profiles.go
-│   ├── components/      # Reusable components
-│   │   ├── list.go
-│   │   ├── form.go
-│   │   └── modal.go
-│   ├── layouts/         # Flexbox layout definitions
-│   │   ├── main.go      # Main app layout
-│   │   ├── modal.go     # Modal layouts
-│   │   └── forms.go     # Form layouts
-│   ├── styles/          # Lipgloss styles
-│   │   └── theme.go
-│   ├── theme/           # Theme management (bubbletint)
-│   │   ├── theme.go     # Theme registry and functions
-│   │   └── custom.go    # Custom theme definitions
-│   └── messages/        # Message definitions
-│       └── types.go
-```
-
-### 🧩 UI Components Best Practices
-
-**IMPORTANT**: Build reusable UI components to improve testability and maintainability.
-
-**CRITICAL**: Before implementing ANY UI element:
-1. **ALWAYS search `internal/ui/components/` for existing components**
-2. **Use existing components (Card, TabBar, Modal, etc.) instead of custom implementations**
-3. **Never create custom bordered boxes, modals, or cards when a component exists**
-4. **If a component is missing functionality, extend it rather than creating a custom version**
-
-#### Why Build Components?
-
-1. **Testability**: Components can be tested in isolation without running the full TUI
-2. **Reusability**: Write once, use throughout the application
-3. **Consistency**: Ensure uniform behavior and styling
-4. **Maintainability**: Fix bugs or add features in one place
-
-#### Component Guidelines
-
-1. **Create components in `internal/ui/components/`**
-   ```go
-   // Good: Reusable tab component
-   type TabBar struct {
-       tabs        []Tab
-       activeIndex int
-       width       int
-       styles      TabStyles
-   }
-   ```
-
-2. **Make components self-contained**
-   ```go
-   // Component should handle its own rendering
-   func (tb *TabBar) Render() string {
-       // Complete rendering logic
-   }
-   ```
-
-3. **Provide flexible configuration**
-   ```go
-   tabBar := components.NewTabBar(tabs, width)
-   tabBar.SetStyles(activeStyle, inactiveStyle, borderColor)
-   tabBar.SetActiveIndex(0)
-   ```
-
-4. **Create visual tests in `test/adhoc/`**
-   ```go
-   // test/adhoc/test_tabs.go
-   func main() {
-       // Initialize theme
-       theme.SetTheme("github-dark")
-       
-       // Create and test component
-       tabBar := components.NewTabBar(tabs, 80)
-       fmt.Println(tabBar.Render())
-   }
-   ```
-
-5. **Document component usage**
-   - Add examples in component files
-   - Update `internal/ui/components/README.md`
-   - Include in `internal/ui/components/CLAUDE.md`
-
-#### Example: TabBar Component
-
-The TabBar component demonstrates best practices:
-- Self-contained rendering logic
-- Theme integration
-- Flexible configuration
-- Multiple test files demonstrating usage
-- Handles edge cases (0 tabs, many tabs, overflow)
-
-See `internal/ui/components/tabs.go` for implementation and `test/adhoc/test_tabs*.go` for examples.
-
-## Project Structure
-
-```
-gemini-cli/
-├── go.mod
-├── go.sum
-├── main.go
-├── internal/
-│   ├── cli/
-│   │   ├── model.go       # Main TUI model
-│   │   ├── update.go      # Update logic
-│   │   ├── view.go        # View rendering
-│   │   ├── commands.go    # Async commands
-│   │   └── keys.go        # Key bindings
-│   ├── ui/
-│   │   └── components/    # Reusable UI components
-│   │       ├── tabs.go    # Tab bar component
-│   │       ├── list.go    # List component (future)
-│   │       ├── form.go    # Form component (future)
-│   │       └── README.md  # Component documentation
-│   ├── extension/
-│   │   ├── extension.go   # Extension types
-│   │   ├── loader.go      # Extension loading
-│   │   ├── manager.go     # Extension management
-│   │   └── validator.go   # Extension validation
-│   ├── prompt/
-│   │   ├── prompt.go      # Prompt types
-│   │   ├── parser.go      # Prompt parsing
-│   │   └── store.go       # Prompt storage
-│   ├── tool/
-│   │   ├── tool.go        # Tool types
-│   │   ├── registry.go    # Tool registry
-│   │   └── executor.go    # Tool execution
-│   ├── theme/
-│   │   └── theme.go       # Theme management with bubbletint
-│   └── config/
-│       ├── config.go      # Configuration types
-│       └── loader.go      # Config loading
-├── test/
-│   └── adhoc/             # Visual tests for UI components
-│       ├── test_tabs.go   # Tab component tests
-│       └── ...            # Other component tests
-├── pkg/                   # Public packages (if needed)
-├── cmd/                   # Additional commands (if needed)
-└── scripts/
-    ├── build.sh
-    └── test.sh
-```
-
-## Development Workflow
-
-### Critical Build Verification
-
-**IMPORTANT: After writing significant code changes, ALWAYS run a build to ensure the project remains in a compilable state:**
-
-```bash
-# Quick build check (fastest)
-go build ./...
-
-# Full build with binary
-go build -o gemini-cli-manager
-
-# Build and run tests
-go test ./...
-
-# Complete verification (run before committing)
-make verify  # or use the script below
-```
-
-Create a `Makefile` or `scripts/verify.sh`:
-```bash
-#!/bin/bash
-# scripts/verify.sh - Complete build verification
-
-set -e
-
-echo "🔨 Running build verification..."
-
-# Format check
-echo "📝 Checking formatting..."
-if ! go fmt ./... | grep -q .; then
-    echo "✅ Format check passed"
-else
-    echo "❌ Format issues found. Run: go fmt ./..."
-    exit 1
-fi
-
-# Vet check
-echo "🔍 Running go vet..."
-go vet ./...
-echo "✅ Vet check passed"
-
-# Build all packages
-echo "🏗️  Building all packages..."
-go build ./...
-echo "✅ Build successful"
-
-# Run tests
-echo "🧪 Running tests..."
-go test ./... -short
-echo "✅ Tests passed"
-
-# Build binary
-echo "📦 Building binary..."
-go build -o gemini-cli-manager
-echo "✅ Binary built successfully"
-
-echo "✨ All verification checks passed!"
-```
-
-### Building and Running
-
-```bash
-# Development build
-go build -o gemini-cli-manager
-
-# Production build with optimizations
-go build -ldflags="-s -w" -o gemini-cli-manager
-
-# Run with debug logging
-./gemini-cli-manager --debug
-
-# Live reload during development
-# Install: go install github.com/cosmtrek/air@latest
-air
-```
-
-### When to Run Build Verification
-
-Run build verification:
-- **After implementing new features** - Before moving to the next task
-- **After refactoring** - Ensure nothing broke
-- **Before committing** - Keep the main branch green
-- **After resolving merge conflicts** - Verify integration
-- **When switching between branches** - Ensure clean state
-
-### Debugging Bubble Tea Apps
-
-```go
-// Enable debug logging
-func main() {
-    if len(os.Args) > 1 && os.Args[1] == "--debug" {
-        f, err := tea.LogToFile("debug.log", "debug")
-        if err != nil {
-            fmt.Println("fatal:", err)
-            os.Exit(1)
+impl Default for Theme {
+    fn default() -> Self {
+        Self {
+            primary: Color::Cyan,
+            secondary: Color::Magenta,
+            accent: Color::Yellow,
+            error: Color::Red,
+            success: Color::Green,
+            warning: Color::Yellow,
+            text: Color::White,
+            text_dim: Color::Gray,
+            background: Color::Black,
         }
-        defer f.Close()
-    }
-    
-    p := tea.NewProgram(initialModel())
-    if _, err := p.Run(); err != nil {
-        fmt.Printf("Error: %v", err)
-        os.Exit(1)
     }
 }
 ```
+
+### Style Application
+
+Apply styles consistently:
+
+```rust
+let title_style = Style::default()
+    .fg(theme.primary)
+    .add_modifier(Modifier::BOLD);
+
+let selected_style = Style::default()
+    .bg(theme.primary)
+    .fg(theme.background)
+    .add_modifier(Modifier::BOLD);
+```
+
+### Styling Rules
+
+1. **Use semantic colors** (primary, error) not raw colors
+2. **Support light/dark themes** through configuration
+3. **Ensure readable contrast** between fg/bg colors
+4. **Use modifiers sparingly** (BOLD, ITALIC, UNDERLINED)
 
 ## Testing Strategy
 
-### Unit Tests with Table-Driven Approach
+### Unit Tests
 
-```go
-func TestExtensionValidation(t *testing.T) {
-    tests := []struct {
-        name      string
-        extension Extension
-        wantErr   bool
-        errMsg    string
-    }{
-        {
-            name: "valid extension",
-            extension: Extension{
-                Name:    "test-ext",
-                Version: "1.0.0",
-                Type:    "prompt",
-            },
-            wantErr: false,
-        },
-        {
-            name: "missing name",
-            extension: Extension{
-                Version: "1.0.0",
-                Type:    "prompt",
-            },
-            wantErr: true,
-            errMsg:  "extension name is required",
-        },
-    }
-    
-    for _, tt := range tests {
-        t.Run(tt.name, func(t *testing.T) {
-            err := ValidateExtension(tt.extension)
-            if tt.wantErr {
-                if err == nil {
-                    t.Errorf("expected error, got nil")
-                } else if !strings.Contains(err.Error(), tt.errMsg) {
-                    t.Errorf("expected error containing %q, got %q", 
-                        tt.errMsg, err.Error())
-                }
-            } else if err != nil {
-                t.Errorf("unexpected error: %v", err)
-            }
-        })
+Test component logic separately from rendering:
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_navigation() {
+        let mut list = ExtensionList::new(vec!["a", "b", "c"]);
+        assert_eq!(list.selected, 0);
+        
+        list.next();
+        assert_eq!(list.selected, 1);
+        
+        list.next();
+        list.next();
+        assert_eq!(list.selected, 0); // Wraps around
     }
 }
 ```
 
-### Testing Bubble Tea Components
+### Integration Tests
 
-```go
-import "github.com/charmbracelet/x/exp/teatest"
+Test component interactions:
 
-func TestMainMenu(t *testing.T) {
-    tm := teatest.NewTestModel(
-        t, 
-        initialModel(),
-        teatest.WithInitialTermSize(80, 24),
-    )
+```rust
+#[tokio::test]
+async fn test_extension_selection() {
+    let (tx, mut rx) = mpsc::unbounded_channel();
+    let mut app = App::new();
     
-    // Navigate to extensions
-    tm.Send(tea.KeyMsg{Type: tea.KeyDown})
-    tm.Send(tea.KeyMsg{Type: tea.KeyEnter})
+    app.handle_action(Action::ExtensionSelected("test".into()));
     
-    // Wait for view change
-    teatest.WaitFor(
-        t, tm,
-        func(b []byte) bool {
-            return bytes.Contains(b, []byte("Extensions"))
-        },
-        teatest.WithDuration(3 * time.Second),
-    )
-    
-    // Verify final state
-    finalModel := tm.FinalModel(t).(model)
-    if finalModel.currentView != viewExtensions {
-        t.Errorf("expected viewExtensions, got %v", finalModel.currentView)
-    }
+    let action = rx.recv().await.unwrap();
+    assert_eq!(action, Action::Navigate(Route::ExtensionDetail));
 }
 ```
 
-## Security Considerations
+### TUI Testing
 
-### Input Validation
+For testing the actual TUI output, use the `TestBackend`:
 
-```go
-func validateExtensionPath(path string) error {
-    // Prevent directory traversal
-    cleanPath := filepath.Clean(path)
-    if strings.Contains(cleanPath, "..") {
-        return errors.New("invalid path: directory traversal detected")
-    }
-    
-    // Ensure path is within allowed directory
-    absPath, err := filepath.Abs(cleanPath)
-    if err != nil {
-        return fmt.Errorf("resolving path: %w", err)
-    }
-    
-    if !strings.HasPrefix(absPath, allowedBaseDir) {
-        return errors.New("path outside allowed directory")
-    }
-    
-    return nil
-}
-```
+```rust
+use ratatui::backend::TestBackend;
+use ratatui::Terminal;
 
-### Safe File Operations
-
-```go
-func loadExtensionSafely(path string) (*Extension, error) {
-    if err := validateExtensionPath(path); err != nil {
-        return nil, err
-    }
+#[test]
+fn test_render_output() {
+    let backend = TestBackend::new(80, 24);
+    let mut terminal = Terminal::new(backend).unwrap();
     
-    // Limit file size to prevent DoS
-    info, err := os.Stat(path)
-    if err != nil {
-        return nil, fmt.Errorf("stat file: %w", err)
-    }
+    terminal.draw(|frame| {
+        app.draw(frame, frame.area()).unwrap();
+    }).unwrap();
     
-    if info.Size() > maxExtensionSize {
-        return nil, errors.New("extension file too large")
-    }
-    
-    // Read with timeout
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-    
-    return loadExtensionWithContext(ctx, path)
+    let buffer = terminal.backend().buffer();
+    assert!(buffer.content().contains("Extensions"));
 }
 ```
 
 ## Performance Guidelines
 
-### Efficient TUI Rendering
+### Efficient Rendering
 
-```go
-// Cache complex computations
-type model struct {
-    items         []Item
-    filteredItems []Item // Cache filtered results
-    filterQuery   string
-    needsRefilter bool
+1. **Minimize allocations** in the draw loop:
+```rust
+// Bad: Allocates every frame
+fn draw(&mut self, frame: &mut Frame, area: Rect) {
+    let items: Vec<ListItem> = self.items.iter()
+        .map(|i| ListItem::new(i.clone()))
+        .collect();
 }
 
-func (m *model) updateFilter(query string) {
-    if m.filterQuery != query {
-        m.filterQuery = query
-        m.needsRefilter = true
+// Good: Reuse allocations
+fn draw(&mut self, frame: &mut Frame, area: Rect) {
+    // Cache items in component state
+    if self.items_changed {
+        self.cached_items = self.items.iter()
+            .map(|i| ListItem::new(i.as_str()))
+            .collect();
+        self.items_changed = false;
     }
 }
+```
 
-func (m *model) getFilteredItems() []Item {
-    if m.needsRefilter {
-        m.filteredItems = filterItems(m.items, m.filterQuery)
-        m.needsRefilter = false
+2. **Avoid complex calculations** in draw:
+```rust
+// Calculate once in update(), not in draw()
+fn update(&mut self, action: Action) -> Result<Option<Action>> {
+    if self.data_changed {
+        self.processed_data = self.calculate_expensive_thing();
+        self.data_changed = false;
     }
-    return m.filteredItems
+    Ok(None)
 }
 ```
 
 ### Memory Management
 
-```go
-// Use sync.Pool for temporary objects
-var bufferPool = sync.Pool{
-    New: func() interface{} {
-        return new(bytes.Buffer)
-    },
-}
+1. **Use `&str` over `String`** where possible
+2. **Prefer `Vec` capacity hints** for known sizes
+3. **Clear rather than reallocate** collections
 
-func renderExtension(ext Extension) string {
-    buf := bufferPool.Get().(*bytes.Buffer)
-    defer func() {
-        buf.Reset()
-        bufferPool.Put(buf)
-    }()
-    
-    // Use buffer for rendering
-    buf.WriteString(ext.Name)
-    buf.WriteString(" v")
-    buf.WriteString(ext.Version)
-    
-    return buf.String()
+## Common Pitfalls
+
+### 1. Blocking the Event Loop
+
+**Wrong:**
+```rust
+fn update(&mut self, action: Action) -> Result<Option<Action>> {
+    // This blocks the UI!
+    let data = std::fs::read_to_string("large_file.txt")?;
+    Ok(None)
 }
 ```
 
-## Key Commands and Shortcuts
-
-Define consistent keyboard shortcuts across the application:
-
-```go
-var defaultKeyMap = keyMap{
-    Quit: key.NewBinding(
-        key.WithKeys("q", "ctrl+c"),
-        key.WithHelp("q", "quit"),
-    ),
-    Help: key.NewBinding(
-        key.WithKeys("?"),
-        key.WithHelp("?", "help"),
-    ),
-    Up: key.NewBinding(
-        key.WithKeys("up", "k"),
-        key.WithHelp("↑/k", "up"),
-    ),
-    Down: key.NewBinding(
-        key.WithKeys("down", "j"),
-        key.WithHelp("↓/j", "down"),
-    ),
-    Select: key.NewBinding(
-        key.WithKeys("enter", "space"),
-        key.WithHelp("enter", "select"),
-    ),
-    Back: key.NewBinding(
-        key.WithKeys("esc", "backspace"),
-        key.WithHelp("esc", "back"),
-    ),
+**Right:**
+```rust
+fn update(&mut self, action: Action) -> Result<Option<Action>> {
+    // Spawn async task
+    if let Some(tx) = &self.action_tx {
+        let tx = tx.clone();
+        tokio::spawn(async move {
+            let data = tokio::fs::read_to_string("large_file.txt").await?;
+            tx.send(Action::DataLoaded(data))?;
+        });
+    }
+    Ok(None)
 }
 ```
 
-## Build Commands
+### 2. State Mutation Outside Update
 
-### Quick Reference
-```bash
-# Most common during development
-go build ./...              # Quick syntax check
-go test ./... -short        # Fast test run
-./scripts/verify.sh         # Full verification
-
-# Before pushing code
-go fmt ./...                # Format code
-go mod tidy                 # Clean dependencies
-./scripts/verify.sh         # Full verification
+**Wrong:**
+```rust
+fn draw(&mut self, frame: &mut Frame, area: Rect) {
+    // Don't mutate state in draw!
+    self.counter += 1;
+}
 ```
 
-### Makefile for Convenience
-Create a `Makefile` in the project root:
-```makefile
-.PHONY: build test verify fmt clean run
-
-# Default target
-all: verify
-
-# Quick build check
-build:
-	@echo "🏗️  Building..."
-	@go build ./...
-
-# Run tests
-test:
-	@echo "🧪 Running tests..."
-	@go test ./... -v
-
-# Run short tests (faster)
-test-short:
-	@echo "🧪 Running short tests..."
-	@go test ./... -short
-
-# Format code
-fmt:
-	@echo "📝 Formatting code..."
-	@go fmt ./...
-
-# Full verification
-verify: fmt
-	@echo "🔨 Running full verification..."
-	@./scripts/verify.sh
-
-# Build and run
-run: build
-	@./gemini-cli-manager
-
-# Clean build artifacts
-clean:
-	@echo "🧹 Cleaning..."
-	@rm -f gemini-cli-manager
-	@go clean ./...
-
-# Install dependencies
-deps:
-	@echo "📦 Installing dependencies..."
-	@go mod download
-	@go mod tidy
+**Right:**
+```rust
+fn update(&mut self, action: Action) -> Result<Option<Action>> {
+    match action {
+        Action::Tick => {
+            self.counter += 1;
+            Ok(Some(Action::Render))
+        }
+        _ => Ok(None),
+    }
+}
 ```
 
-## Additional Considerations
+### 3. Forgetting Error Context
 
-### 1. Configuration Management
-- Use environment variables for configuration
-- Support config files in standard locations
-- Validate all configuration on startup
-
-### 2. Logging and Monitoring
-- Use structured logging (e.g., zerolog)
-- Log important operations for debugging
-- Consider telemetry for usage patterns
-
-### 3. Distribution
-- Build for multiple platforms
-- Consider using goreleaser for releases
-- Provide installation scripts
-
-### 4. Documentation
-- Keep code comments up to date
-- Document public APIs thoroughly
-- Maintain user-facing documentation
-
-### 5. Continuous Integration
-```yaml
-# .github/workflows/ci.yml example
-name: CI
-on: [push, pull_request]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
-    - run: make verify
+**Wrong:**
+```rust
+let file = std::fs::read_to_string(path)?;
 ```
 
-This guide should be updated as the project evolves and new patterns emerge.
+**Right:**
+```rust
+let file = std::fs::read_to_string(&path)
+    .wrap_err_with(|| format!("Failed to read file: {}", path))?;
+```
+
+### 4. Hardcoded Dimensions
+
+**Wrong:**
+```rust
+let chunks = Layout::default()
+    .constraints([Constraint::Length(80)]) // Assumes 80-char terminal!
+    .split(area);
+```
+
+**Right:**
+```rust
+let chunks = Layout::default()
+    .constraints([Constraint::Percentage(100)])
+    .split(area);
+```
+
+## Development Workflow
+
+### Adding New Features
+
+1. **Define Actions** in `action.rs`
+2. **Create Component** in `src/components/`
+3. **Register Component** in `app.rs`
+4. **Add Routes** if needed
+5. **Update Config** for new keybindings
+6. **Write Tests**
+7. **Update Documentation**
+
+### Code Organization
+
+```
+src/
+├── components/       # UI components
+│   ├── mod.rs       # Component exports
+│   ├── extension/   # Extension-related components
+│   ├── profile/     # Profile-related components
+│   └── common/      # Shared components
+├── models/          # Data structures
+├── services/        # Business logic
+├── utils/           # Helper functions
+└── widgets/         # Custom Ratatui widgets
+```
+
+### Git Workflow
+
+1. Create feature branch from `main`
+2. Implement feature with tests
+3. Run `cargo fmt` and `cargo clippy`
+4. Update CHANGELOG.md
+5. Create PR with description
+
+## Quick Reference
+
+### Essential Imports
+
+```rust
+use color_eyre::Result;
+use ratatui::{
+    prelude::*,
+    widgets::{Block, Borders, List, ListItem, Paragraph},
+};
+use tokio::sync::mpsc::UnboundedSender;
+```
+
+### Common Patterns
+
+```rust
+// Create a bordered block
+let block = Block::default()
+    .borders(Borders::ALL)
+    .title("Title");
+
+// Create a list with selection
+let items: Vec<ListItem> = items.iter().map(|i| ListItem::new(i.as_str())).collect();
+let list = List::new(items)
+    .block(block)
+    .highlight_style(Style::default().add_modifier(Modifier::REVERSED));
+
+// Center content
+let area = centered_rect(50, 50, area); // 50% width, 50% height
+
+// Split area
+let [header, content, footer] = Layout::vertical([
+    Constraint::Length(3),
+    Constraint::Min(0),
+    Constraint::Length(3),
+]).areas(area);
+```
+
+### Debugging Tips
+
+1. Use `tracing` for logging:
+```rust
+tracing::debug!("Action received: {:?}", action);
+```
+
+2. Enable file logging in debug mode:
+```rust
+RUST_LOG=debug cargo run
+```
+
+3. Use `dbg!()` macro for quick debugging:
+```rust
+dbg!(&self.state);
+```
+
+4. Test with small terminal sizes:
+```rust
+TERM=xterm-256color cargo run -- --tick-rate 1000
+```
+
+Remember: Ratatui is immediate mode - think in terms of "what to draw now" rather than "how to update the widget". Keep components focused, use the message-passing system for communication, and always handle errors gracefully.
