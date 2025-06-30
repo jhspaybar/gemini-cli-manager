@@ -311,8 +311,8 @@ impl Component for ExtensionForm {
             .direction(ratatui::layout::Direction::Vertical)
             .margin(1)
             .constraints([
-                Constraint::Length(4),  // Name/Version row (increased from 2 to 4 for borders)
-                Constraint::Length(4),  // Description/Tags row (increased from 2 to 4 for borders)
+                Constraint::Length(3),  // Name/Version row (optimal height for borders + content)
+                Constraint::Length(3),  // Description/Tags row (optimal height for borders + content)
                 Constraint::Min(10),    // Editors area
                 Constraint::Length(2),  // Help
             ])
@@ -355,7 +355,7 @@ impl Component for ExtensionForm {
         let name_border_style = if matches!(self.current_field, FormField::Name) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default().fg(theme::border())
+            Style::default().fg(theme::text_secondary())
         };
         let name_block = Block::default()
             .title("Name")
@@ -378,7 +378,7 @@ impl Component for ExtensionForm {
         let version_border_style = if matches!(self.current_field, FormField::Version) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default().fg(theme::border())
+            Style::default().fg(theme::text_secondary())
         };
         let version_block = Block::default()
             .title("Version")
@@ -401,7 +401,7 @@ impl Component for ExtensionForm {
         let desc_border_style = if matches!(self.current_field, FormField::Description) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default().fg(theme::border())
+            Style::default().fg(theme::text_secondary())
         };
         let desc_block = Block::default()
             .title("Description")
@@ -424,7 +424,7 @@ impl Component for ExtensionForm {
         let tags_border_style = if matches!(self.current_field, FormField::Tags) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default().fg(theme::border())
+            Style::default().fg(theme::text_secondary())
         };
         let tags_block = Block::default()
             .title("Tags")
@@ -489,7 +489,7 @@ impl Component for ExtensionForm {
         let context_name_style = if matches!(self.current_field, FormField::ContextFileName) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default().fg(theme::border())
+            Style::default().fg(theme::text_secondary())
         };
         let context_name_block = Block::default()
             .title("Context File")
@@ -511,7 +511,7 @@ impl Component for ExtensionForm {
         let context_content_style = if matches!(self.current_field, FormField::ContextContent) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default().fg(theme::border())
+            Style::default().fg(theme::text_secondary())
         };
         let context_content_block = Block::default()
             .title("Context Content (Markdown)")
@@ -555,7 +555,7 @@ impl Component for ExtensionForm {
         let mcp_style = if matches!(self.current_field, FormField::McpServers) {
             Style::default().fg(theme::highlight())
         } else {
-            Style::default().fg(theme::border())
+            Style::default().fg(theme::text_secondary())
         };
         
         if let Some(_) = &self.editing_server {
