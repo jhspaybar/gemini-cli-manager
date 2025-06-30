@@ -116,7 +116,7 @@ impl Component for ExtensionDetail {
         if let Some(desc) = &extension.description {
             content.push(Line::from(vec![
                 Span::styled("Description: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-                Span::raw(desc),
+                Span::styled(desc, Style::default().fg(theme::text_primary())),
             ]));
             content.push(Line::from(""));
         }
@@ -124,7 +124,7 @@ impl Component for ExtensionDetail {
         // ID
         content.push(Line::from(vec![
             Span::styled("ID: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-            Span::raw(&extension.id),
+            Span::styled(&extension.id, Style::default().fg(theme::text_primary())),
         ]));
         content.push(Line::from(""));
 
@@ -143,14 +143,14 @@ impl Component for ExtensionDetail {
         // Import date
         content.push(Line::from(vec![
             Span::styled("Imported: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-            Span::raw(extension.metadata.imported_at.format("%Y-%m-%d %H:%M:%S").to_string()),
+            Span::styled(extension.metadata.imported_at.format("%Y-%m-%d %H:%M:%S").to_string(), Style::default().fg(theme::text_primary())),
         ]));
         
         // Source path
         if let Some(path) = &extension.metadata.source_path {
             content.push(Line::from(vec![
                 Span::styled("Source: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-                Span::raw(path),
+                Span::styled(path, Style::default().fg(theme::text_primary())),
             ]));
         }
         content.push(Line::from(""));
@@ -172,23 +172,23 @@ impl Component for ExtensionDetail {
                 // Server type
                 if let Some(url) = &config.url {
                     content.push(Line::from(vec![
-                        Span::raw("    Type: "),
+                        Span::styled("    Type: ", Style::default().fg(theme::text_secondary())),
                         Span::styled("URL", Style::default().fg(theme::primary())),
                         Span::raw(" - "),
-                        Span::raw(url),
+                        Span::styled(url, Style::default().fg(theme::text_primary())),
                     ]));
                 } else if let Some(cmd) = &config.command {
                     content.push(Line::from(vec![
-                        Span::raw("    Type: "),
+                        Span::styled("    Type: ", Style::default().fg(theme::text_secondary())),
                         Span::styled("Command", Style::default().fg(theme::primary())),
                         Span::raw(" - "),
-                        Span::raw(cmd),
+                        Span::styled(cmd, Style::default().fg(theme::text_primary())),
                     ]));
                     
                     if let Some(args) = &config.args {
                         content.push(Line::from(vec![
-                            Span::raw("    Args: "),
-                            Span::raw(args.join(" ")),
+                            Span::styled("    Args: ", Style::default().fg(theme::text_secondary())),
+                            Span::styled(args.join(" "), Style::default().fg(theme::text_primary())),
                         ]));
                     }
                 }
@@ -197,10 +197,10 @@ impl Component for ExtensionDetail {
                 if let Some(env) = &config.env {
                     for (key, value) in env {
                         content.push(Line::from(vec![
-                            Span::raw("    Env: "),
+                            Span::styled("    Env: ", Style::default().fg(theme::text_secondary())),
                             Span::styled(key, Style::default().fg(theme::highlight())),
                             Span::raw(" = "),
-                            Span::raw(value),
+                            Span::styled(value, Style::default().fg(theme::text_primary())),
                         ]));
                     }
                 }
@@ -208,7 +208,7 @@ impl Component for ExtensionDetail {
                 // Trust status
                 if let Some(trust) = config.trust {
                     content.push(Line::from(vec![
-                        Span::raw("    Trust: "),
+                        Span::styled("    Trust: ", Style::default().fg(theme::text_secondary())),
                         Span::styled(
                             if trust { "Yes" } else { "No" },
                             Style::default().fg(if trust { theme::success() } else { theme::error() }),
@@ -238,7 +238,7 @@ impl Component for ExtensionDetail {
             for line in content_text.lines() {
                 content.push(Line::from(vec![
                     Span::raw("  "),
-                    Span::raw(line),
+                    Span::styled(line, Style::default().fg(theme::text_primary())),
                 ]));
             }
             content.push(Line::from(""));

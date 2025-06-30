@@ -138,7 +138,7 @@ impl Component for ProfileDetail {
         if let Some(desc) = &profile.description {
             content.push(Line::from(vec![
                 Span::styled("Description: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-                Span::raw(desc),
+                Span::styled(desc, Style::default().fg(theme::text_primary())),
             ]));
             content.push(Line::from(""));
         }
@@ -146,7 +146,7 @@ impl Component for ProfileDetail {
         // ID
         content.push(Line::from(vec![
             Span::styled("ID: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-            Span::raw(&profile.id),
+            Span::styled(&profile.id, Style::default().fg(theme::text_primary())),
         ]));
 
         // Default status
@@ -172,14 +172,14 @@ impl Component for ProfileDetail {
         if let Some(dir) = &profile.working_directory {
             content.push(Line::from(vec![
                 Span::styled("Working Directory: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-                Span::raw(dir),
+                Span::styled(dir, Style::default().fg(theme::text_primary())),
             ]));
         }
 
         // Creation date
         content.push(Line::from(vec![
             Span::styled("Created: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-            Span::raw(profile.metadata.created_at.format("%Y-%m-%d %H:%M:%S").to_string()),
+            Span::styled(profile.metadata.created_at.format("%Y-%m-%d %H:%M:%S").to_string(), Style::default().fg(theme::text_primary())),
         ]));
         content.push(Line::from(""));
 
@@ -191,7 +191,7 @@ impl Component for ProfileDetail {
         content.push(Line::from(""));
 
         if self.extensions.is_empty() {
-            content.push(Line::from("  No extensions included"));
+            content.push(Line::from(Span::styled("  No extensions included", Style::default().fg(theme::text_muted()))));
         } else {
             for ext in &self.extensions {
                 content.push(Line::from(vec![
@@ -248,7 +248,7 @@ impl Component for ProfileDetail {
                     Span::raw("  "),
                     Span::styled(key, Style::default().fg(theme::highlight())),
                     Span::raw(" = "),
-                    Span::raw(display_value),
+                    Span::styled(display_value, Style::default().fg(theme::text_primary())),
                 ]));
             }
             content.push(Line::from(""));
@@ -260,13 +260,13 @@ impl Component for ProfileDetail {
             Style::default().fg(theme::info()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
         )));
         content.push(Line::from(""));
-        content.push(Line::from(format!("  • {} extensions", self.extensions.len())));
-        content.push(Line::from(format!("  • {} environment variables", profile.environment_variables.len())));
+        content.push(Line::from(Span::styled(format!("  • {} extensions", self.extensions.len()), Style::default().fg(theme::text_primary()))));
+        content.push(Line::from(Span::styled(format!("  • {} environment variables", profile.environment_variables.len()), Style::default().fg(theme::text_primary()))));
         
         let total_mcp_servers: usize = self.extensions.iter()
             .map(|ext| ext.mcp_servers.len())
             .sum();
-        content.push(Line::from(format!("  • {} total MCP servers", total_mcp_servers)));
+        content.push(Line::from(Span::styled(format!("  • {} MCP servers total", total_mcp_servers), Style::default().fg(theme::text_primary()))));
 
         // Create scrollable paragraph
         let paragraph = Paragraph::new(content)

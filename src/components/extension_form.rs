@@ -359,7 +359,7 @@ impl Component for ExtensionForm {
         
         let name_label = "Name: ";
         frame.render_widget(
-            Span::raw(name_label),
+            Span::styled(name_label, Style::default().fg(theme::text_secondary())),
             Rect::new(name_area.x, name_area.y, name_label.len() as u16, 1)
         );
         frame.render_widget(
@@ -376,7 +376,7 @@ impl Component for ExtensionForm {
         let version_area = first_row[1];
         let version_label = "Version: ";
         frame.render_widget(
-            Span::raw(version_label),
+            Span::styled(version_label, Style::default().fg(theme::text_secondary())),
             Rect::new(version_area.x + 1, version_area.y, version_label.len() as u16, 1)
         );
         frame.render_widget(
@@ -393,7 +393,7 @@ impl Component for ExtensionForm {
         let desc_area = second_row[0];
         let desc_label = "Description: ";
         frame.render_widget(
-            Span::raw(desc_label),
+            Span::styled(desc_label, Style::default().fg(theme::text_secondary())),
             Rect::new(desc_area.x, desc_area.y, desc_label.len() as u16, 1)
         );
         frame.render_widget(
@@ -410,7 +410,7 @@ impl Component for ExtensionForm {
         let tags_area = second_row[1];
         let tags_label = "Tags: ";
         frame.render_widget(
-            Span::raw(tags_label),
+            Span::styled(tags_label, Style::default().fg(theme::text_secondary())),
             Rect::new(tags_area.x + 1, tags_area.y, tags_label.len() as u16, 1)
         );
         frame.render_widget(
@@ -576,7 +576,7 @@ impl Component for ExtensionForm {
                 };
                 
                 let line = Line::from(vec![
-                    Span::raw(*label),
+                    Span::styled(*label, Style::default().fg(theme::text_secondary())),
                     Span::styled(*value, style),
                 ]);
                 frame.render_widget(line, server_chunks[i]);
@@ -635,7 +635,7 @@ impl Component for ExtensionForm {
                 .collect();
             
             let mcp_list = if server_items.is_empty() {
-                List::new(vec![ListItem::new("  No MCP servers configured")])
+                List::new(vec![ListItem::new("  No MCP servers configured").style(Style::default().fg(theme::text_muted()))])
                     .block(mcp_block)
             } else {
                 List::new(server_items)
