@@ -1,31 +1,31 @@
-use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 /// Represents a Gemini CLI extension based on gemini-extension.json
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Extension {
     /// Our internal ID
     pub id: String,
-    
+
     /// Extension name from gemini-extension.json
     pub name: String,
-    
+
     /// Extension version
     pub version: String,
-    
+
     /// Optional description (from our metadata)
     pub description: Option<String>,
-    
+
     /// MCP servers defined in the extension
     pub mcp_servers: HashMap<String, McpServerConfig>,
-    
+
     /// Context file name (e.g., "GITHUB.md", "DATABASE.md")
     pub context_file_name: Option<String>,
-    
+
     /// Content of the context file
     pub context_content: Option<String>,
-    
+
     /// Our metadata
     pub metadata: ExtensionMetadata,
 }
@@ -35,22 +35,22 @@ pub struct Extension {
 pub struct McpServerConfig {
     /// URL-based server endpoint
     pub url: Option<String>,
-    
+
     /// Command to execute for command-based servers
     pub command: Option<String>,
-    
+
     /// Arguments for the command
     pub args: Option<Vec<String>>,
-    
+
     /// Working directory
     pub cwd: Option<String>,
-    
+
     /// Environment variables (with $VAR_NAME syntax)
     pub env: Option<HashMap<String, String>>,
-    
+
     /// Timeout in milliseconds
     pub timeout: Option<u64>,
-    
+
     /// Whether to trust this server
     pub trust: Option<bool>,
 }
@@ -60,25 +60,12 @@ pub struct McpServerConfig {
 pub struct ExtensionMetadata {
     /// When the extension was imported
     pub imported_at: DateTime<Utc>,
-    
+
     /// Original source path
     pub source_path: Option<String>,
-    
+
     /// User-defined tags
     pub tags: Vec<String>,
-}
-
-/// Simplified MCP server info for display
-#[derive(Debug, Clone)]
-pub struct McpServer {
-    pub name: String,
-    pub server_type: McpServerType,
-}
-
-#[derive(Debug, Clone)]
-pub enum McpServerType {
-    Url(String),
-    Command(String),
 }
 
 impl Extension {
@@ -97,7 +84,10 @@ impl Extension {
                         McpServerConfig {
                             url: None,
                             command: Some("npx".to_string()),
-                            args: Some(vec!["-y".to_string(), "@modelcontextprotocol/server-github".to_string()]),
+                            args: Some(vec![
+                                "-y".to_string(),
+                                "@modelcontextprotocol/server-github".to_string(),
+                            ]),
                             cwd: None,
                             env: Some({
                                 let mut env = HashMap::new();
@@ -150,7 +140,10 @@ impl Extension {
                             cwd: Some("./servers".to_string()),
                             env: Some({
                                 let mut env = HashMap::new();
-                                env.insert("SQLITE_PATH".to_string(), "$HOME/data/sqlite".to_string());
+                                env.insert(
+                                    "SQLITE_PATH".to_string(),
+                                    "$HOME/data/sqlite".to_string(),
+                                );
                                 env
                             }),
                             timeout: None,
@@ -160,7 +153,9 @@ impl Extension {
                     servers
                 },
                 context_file_name: Some("DATABASE.md".to_string()),
-                context_content: Some("# Database Tools\n\nDatabase management and query tools.".to_string()),
+                context_content: Some(
+                    "# Database Tools\n\nDatabase management and query tools.".to_string(),
+                ),
                 metadata: ExtensionMetadata {
                     imported_at: Utc::now(),
                     source_path: Some("examples/extensions/database-tools".to_string()),
@@ -197,26 +192,5 @@ impl Extension {
                 },
             },
         ]
-    }
-    
-    /// Get a list of MCP servers for display
-    pub fn get_mcp_servers(&self) -> Vec<McpServer> {
-        self.mcp_servers
-            .iter()
-            .map(|(name, config)| {
-                let server_type = if let Some(url) = &config.url {
-                    McpServerType::Url(url.clone())
-                } else if let Some(cmd) = &config.command {
-                    McpServerType::Command(cmd.clone())
-                } else {
-                    McpServerType::Command("unknown".to_string())
-                };
-                
-                McpServer {
-                    name: name.clone(),
-                    server_type,
-                }
-            })
-            .collect()
     }
 }

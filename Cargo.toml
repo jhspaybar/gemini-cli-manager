@@ -46,3 +46,14 @@ tracing-subscriber = { version = "0.3.18", features = ["env-filter", "serde"] }
 [build-dependencies]
 anyhow = "1.0.90"
 vergen-gix = { version = "1.0.2", features = ["build", "cargo"] }
+
+[lints.rust]
+warnings = "warn"
+unused = "warn"
+
+# Uncomment to treat warnings as errors in CI
+# [profile.dev]
+# debug = true
+# 
+# [profile.release]
+# debug = false

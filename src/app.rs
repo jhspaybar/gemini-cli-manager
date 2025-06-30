@@ -37,7 +37,10 @@ impl App {
         Ok(Self {
             tick_rate,
             frame_rate,
-            components: vec![Box::new(ExtensionList::new()), Box::new(FpsCounter::default())],
+            components: vec![
+                Box::new(ExtensionList::new()),
+                Box::new(FpsCounter::default()),
+            ],
             should_quit: false,
             should_suspend: false,
             config: Config::new()?,
@@ -168,7 +171,7 @@ impl App {
                 if let Err(err) = component.draw(frame, frame.area()) {
                     let _ = self
                         .action_tx
-                        .send(Action::Error(format!("Failed to draw: {:?}", err)));
+                        .send(Action::Error(format!("Failed to draw: {err:?}")));
                 }
             }
         })?;

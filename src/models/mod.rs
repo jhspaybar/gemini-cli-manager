@@ -1,3 +1,3 @@
 pub mod extension;
 
-pub use extension::{Extension, McpServer, McpServerConfig};
+pub use extension::Extension;
