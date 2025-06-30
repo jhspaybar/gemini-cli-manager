@@ -7,9 +7,10 @@ use tracing::{debug, info};
 
 use crate::{
     action::Action,
-    components::{Component, extension_list::ExtensionList, fps::FpsCounter},
+    components::{Component, fps::FpsCounter},
     config::Config,
     tui::{Event, Tui},
+    view::ViewManager,
 };
 
 pub struct App {
@@ -38,7 +39,7 @@ impl App {
             tick_rate,
             frame_rate,
             components: vec![
-                Box::new(ExtensionList::new()),
+                Box::new(ViewManager::new()),
                 Box::new(FpsCounter::default()),
             ],
             should_quit: false,
