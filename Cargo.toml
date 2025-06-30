@@ -48,6 +48,20 @@ uuid = { version = "1.17.0", features = ["v4"] }
 tui-textarea = "0.7.0"
 catppuccin = { version = "2.4.0", features = ["ratatui"] }
 
+[dev-dependencies]
+# Snapshot testing
+insta = { version = "1.39", features = ["yaml"] }
+# Async testing
+tokio-test = "0.4"
+# Parameterized testing
+rstest = "0.18"
+# Test data generation
+fake = "2.9"
+# Better test assertions
+assert_matches = "1.5"
+# Temporary directories for testing
+tempfile = "3.10"
+
 [build-dependencies]
 anyhow = "1.0.90"
 vergen-gix = { version = "1.0.2", features = ["build", "cargo"] }
