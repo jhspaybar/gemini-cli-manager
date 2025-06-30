@@ -233,7 +233,8 @@ impl Component for ProfileForm {
         frame.render_widget(name_block.clone(), chunks[0]);
         
         let name_inner = name_block.inner(chunks[0]);
-        let name_text = Paragraph::new(self.name_input.value());
+        let name_text = Paragraph::new(self.name_input.value())
+            .style(Style::default().fg(theme::text_primary()));
         frame.render_widget(name_text, name_inner);
         
         // Set cursor for name field if it's active
@@ -258,7 +259,8 @@ impl Component for ProfileForm {
         frame.render_widget(desc_block.clone(), chunks[1]);
         
         let desc_inner = desc_block.inner(chunks[1]);
-        let desc_text = Paragraph::new(self.description_input.value());
+        let desc_text = Paragraph::new(self.description_input.value())
+            .style(Style::default().fg(theme::text_primary()));
         frame.render_widget(desc_text, desc_inner);
         
         // Set cursor for description field if it's active
@@ -283,7 +285,8 @@ impl Component for ProfileForm {
         frame.render_widget(dir_block.clone(), chunks[2]);
         
         let dir_inner = dir_block.inner(chunks[2]);
-        let dir_text = Paragraph::new(self.working_directory_input.value());
+        let dir_text = Paragraph::new(self.working_directory_input.value())
+            .style(Style::default().fg(theme::text_primary()));
         frame.render_widget(dir_text, dir_inner);
         
         // Set cursor for working directory field if it's active
@@ -342,7 +345,8 @@ impl Component for ProfileForm {
         frame.render_widget(tags_block.clone(), chunks[4]);
         
         let tags_inner = tags_block.inner(chunks[4]);
-        let tags_text = Paragraph::new(self.tags_input.value());
+        let tags_text = Paragraph::new(self.tags_input.value())
+            .style(Style::default().fg(theme::text_primary()));
         frame.render_widget(tags_text, tags_inner);
         
         // Set cursor for tags field if it's active

@@ -479,7 +479,7 @@ impl Component for ExtensionForm {
             .style(if display_text == "GEMINI.md" && !matches!(self.current_field, FormField::ContextFileName) {
                 Style::default().fg(theme::text_muted()).italic()
             } else {
-                Style::default()
+                Style::default().fg(theme::text_primary())
             });
         frame.render_widget(context_name_text, context_name_inner);
         
@@ -497,6 +497,7 @@ impl Component for ExtensionForm {
         
         let context_content_inner = context_content_block.inner(context_chunks[1]);
         let context_content_text = Paragraph::new(self.context_content_input.value())
+            .style(Style::default().fg(theme::text_primary()))
             .wrap(Wrap { trim: false })
             .scroll((self.context_scroll_offset, 0));
         frame.render_widget(context_content_text, context_content_inner);
