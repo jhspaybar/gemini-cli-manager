@@ -8,7 +8,7 @@ use crate::{
     action::Action,
     components::{
         extension_detail::ExtensionDetail, extension_list::ExtensionList,
-        profile_detail::ProfileDetail, profile_list::ProfileList, Component,
+        profile_detail::ProfileDetail, profile_list::ProfileList, tab_bar::TabBar, Component,
     },
     config::Config,
 };
@@ -27,6 +27,7 @@ pub struct ViewManager {
     previous_view: Option<ViewType>,
     views: HashMap<ViewType, Box<dyn Component>>,
     action_tx: Option<UnboundedSender<Action>>,
+    tab_bar: TabBar,
 }
 
 impl ViewManager {
@@ -44,6 +45,7 @@ impl ViewManager {
             previous_view: None,
             views,
             action_tx: None,
+            tab_bar: TabBar::new(),
         }
     }
 
@@ -102,6 +104,9 @@ impl ViewManager {
             _ => {}
         }
         
+        // Update tab bar
+        self.tab_bar.update(action.clone())?;
+        
         // Forward action to all views (they'll handle what's relevant to them)
         let mut result = None;
         for (_, view) in self.views.iter_mut() {
@@ -114,9 +119,23 @@ impl ViewManager {
     }
 
     pub fn draw(&mut self, frame: &mut Frame, area: Rect) -> Result<()> {
-        // Draw only the current view
+        use ratatui::layout::{Constraint, Direction, Layout};
+        
+        // Split area into tab bar and content
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([
+                Constraint::Length(3), // Tab bar
+                Constraint::Min(0),    // Content
+            ])
+            .split(area);
+        
+        // Draw tab bar
+        self.tab_bar.draw(frame, chunks[0])?;
+        
+        // Draw current view in remaining space
         if let Some(view) = self.views.get_mut(&self.current_view) {
-            view.draw(frame, area)?;
+            view.draw(frame, chunks[1])?;
         }
         
         Ok(())
@@ -138,6 +157,7 @@ impl ViewManager {
         if self.current_view != view_type {
             self.previous_view = Some(self.current_view);
             self.current_view = view_type;
+            self.tab_bar.set_current_view(view_type);
         }
     }
 }

@@ -13,6 +13,7 @@ pub mod extension_list;
 pub mod fps;
 pub mod profile_detail;
 pub mod profile_list;
+pub mod tab_bar;
 
 /// `Component` is a trait that represents a visual and interactive element of the user interface.
 ///
