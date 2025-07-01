@@ -38,9 +38,6 @@ pub struct LaunchConfig {
     
     /// Remove extensions directory after Gemini exits
     pub cleanup_on_exit: bool,
-    
-    /// Preserve specific extension IDs even during clean launch
-    pub preserve_extensions: Vec<String>,
 }
 
 impl Default for LaunchConfig {
@@ -48,7 +45,6 @@ impl Default for LaunchConfig {
         Self {
             clean_launch: false,
             cleanup_on_exit: true,  // Default to cleaning up after ourselves
-            preserve_extensions: Vec::new(),
         }
     }
 }

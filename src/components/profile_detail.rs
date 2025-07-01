@@ -255,16 +255,6 @@ impl Component for ProfileDetail {
             ),
         ]));
         
-        if !profile.launch_config.preserve_extensions.is_empty() {
-            content.push(Line::from(vec![
-                Span::styled("  Preserve Extensions: ", Style::default().fg(theme::text_primary())),
-                Span::styled(
-                    profile.launch_config.preserve_extensions.join(", "),
-                    Style::default().fg(theme::text_secondary())
-                ),
-            ]));
-        }
-        
         content.push(Line::from(""));
         
         // Environment Variables section

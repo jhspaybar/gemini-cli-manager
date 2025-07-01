@@ -34,8 +34,7 @@ pub struct ProfileForm {
     // Launch configuration
     clean_launch: bool,
     cleanup_on_exit: bool,
-    preserve_extensions_input: Input,
-    launch_config_cursor: usize, // 0 = clean_launch, 1 = cleanup_on_exit, 2 = preserve_extensions
+    launch_config_cursor: usize, // 0 = clean_launch, 1 = cleanup_on_exit
     
     // Available extensions
     available_extensions: Vec<Extension>,
@@ -64,7 +63,6 @@ impl ProfileForm {
             selected_extensions: Vec::new(),
             clean_launch: false,
             cleanup_on_exit: true, // Default to cleaning up
-            preserve_extensions_input: Input::default(),
             launch_config_cursor: 0,
             available_extensions,
             extension_cursor: 0,
@@ -81,7 +79,6 @@ impl ProfileForm {
         let description_input = Input::from(profile.description.clone().unwrap_or_default());
         let working_directory_input = Input::from(profile.working_directory.clone().unwrap_or_default());
         let tags_input = Input::from(profile.metadata.tags.join(", "));
-        let preserve_extensions_input = Input::from(profile.launch_config.preserve_extensions.join(", "));
         
         Self {
             command_tx: None,
@@ -94,7 +91,6 @@ impl ProfileForm {
             selected_extensions: profile.extension_ids.clone(),
             clean_launch: profile.launch_config.clean_launch,
             cleanup_on_exit: profile.launch_config.cleanup_on_exit,
-            preserve_extensions_input,
             launch_config_cursor: 0,
             available_extensions,
             extension_cursor: 0,
@@ -137,12 +133,6 @@ impl ProfileForm {
             .filter(|s| !s.is_empty())
             .collect();
         
-        let preserve_extensions: Vec<String> = self.preserve_extensions_input.value()
-            .split(',')
-            .map(|s| s.trim().to_string())
-            .filter(|s| !s.is_empty())
-            .collect();
-        
         let profile = Profile {
             id: profile_id,
             name: self.name_input.value().to_string(),
@@ -161,7 +151,6 @@ impl ProfileForm {
             launch_config: LaunchConfig {
                 clean_launch: self.clean_launch,
                 cleanup_on_exit: self.cleanup_on_exit,
-                preserve_extensions,
             },
             metadata: ProfileMetadata {
                 created_at: if self.edit_mode {
@@ -452,32 +441,8 @@ impl Component for ProfileForm {
             Span::styled(" - Remove extensions after Gemini exits", Style::default().fg(theme::text_muted())),
         ]));
         
-        // Preserve extensions input
-        let preserve_style = if matches!(self.current_field, FormField::LaunchConfig) && self.launch_config_cursor == 2 {
-            Style::default().bg(theme::selection()).fg(theme::text_primary())
-        } else {
-            Style::default().fg(theme::text_primary())
-        };
-        launch_config_lines.push(Line::from(vec![
-            Span::styled("    Preserve Extensions: ", preserve_style),
-            Span::styled(self.preserve_extensions_input.value(), preserve_style),
-        ]));
-        launch_config_lines.push(Line::from(vec![
-            Span::styled("    ", Style::default()),
-            Span::styled("(comma-separated extension IDs to keep during clean launch)", Style::default().fg(theme::text_muted())),
-        ]));
-        
         let launch_config_paragraph = Paragraph::new(launch_config_lines);
         frame.render_widget(launch_config_paragraph, launch_config_inner);
-        
-        // Set cursor for preserve extensions field if it's active
-        if matches!(self.current_field, FormField::LaunchConfig) && self.launch_config_cursor == 2 {
-            let cursor_pos = self.preserve_extensions_input.visual_cursor();
-            frame.set_cursor_position((
-                launch_config_inner.x + 24 + cursor_pos as u16, // 24 = length of "    Preserve Extensions: "
-                launch_config_inner.y + 2 // Third line
-            ));
-        }
         
         // Help text
         use crate::utils::build_help_text;
@@ -497,7 +462,6 @@ impl Component for ProfileForm {
                     ("tab", "Next field"),
                     ("up/down", "Navigate"),
                     ("Space", "Toggle"),
-                    ("Type", "Edit preserve list"),
                     ("Ctrl+S", "Save"),
                     ("back", "Cancel"),
                 ])
@@ -618,7 +582,7 @@ impl Component for ProfileForm {
                                         }
                                     }
                                     KeyCode::Down => {
-                                        if self.launch_config_cursor < 2 {
+                                        if self.launch_config_cursor < 1 {
                                             self.launch_config_cursor += 1;
                                             return Ok(Some(Action::Render));
                                         }
@@ -631,14 +595,7 @@ impl Component for ProfileForm {
                                         }
                                         return Ok(Some(Action::Render));
                                     }
-                                    _ => {
-                                        // Handle text input for preserve extensions
-                                        if self.launch_config_cursor == 2 {
-                                            if self.preserve_extensions_input.handle_event(&crossterm::event::Event::Key(key)).is_some() {
-                                                return Ok(Some(Action::Render));
-                                            }
-                                        }
-                                    }
+                                    _ => {}
                                 }
                             }
                         }

@@ -54,7 +54,7 @@ impl Launcher {
         // 2. Clean existing configuration if requested
         if profile.launch_config.clean_launch {
             println!("🧹 Cleaning existing configuration...");
-            self.clean_gemini_directory(&working_dir, &profile.launch_config.preserve_extensions)?;
+            self.clean_gemini_directory(&working_dir)?;
         }
         
         // 3. Set up workspace in the working directory
@@ -209,8 +209,8 @@ impl Launcher {
         env_vars
     }
     
-    /// Clean the .gemini directory, preserving specified extensions
-    fn clean_gemini_directory(&self, working_dir: &Path, preserve_extensions: &[String]) -> Result<()> {
+    /// Clean the .gemini directory
+    fn clean_gemini_directory(&self, working_dir: &Path) -> Result<()> {
         let gemini_dir = working_dir.join(".gemini");
         
         if !gemini_dir.exists() {
@@ -219,7 +219,7 @@ impl Launcher {
         
         let extensions_dir = gemini_dir.join("extensions");
         if extensions_dir.exists() {
-            // Remove all extensions except those in preserve list
+            // Remove all extensions
             for entry in fs::read_dir(&extensions_dir)? {
                 let entry = entry?;
                 let path = entry.path();
@@ -229,12 +229,8 @@ impl Launcher {
                         .and_then(|n| n.to_str())
                         .unwrap_or("");
                     
-                    if !preserve_extensions.contains(&dir_name.to_string()) {
-                        fs::remove_dir_all(&path)?;
-                        println!("  ✓ Removed extension: {}", dir_name);
-                    } else {
-                        println!("  ✓ Preserved extension: {}", dir_name);
-                    }
+                    fs::remove_dir_all(&path)?;
+                    println!("  ✓ Removed extension: {}", dir_name);
                 }
             }
         }
