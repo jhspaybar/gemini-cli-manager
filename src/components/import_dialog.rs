@@ -40,6 +40,7 @@ struct ImportExtension {
     name: String,
     version: String,
     description: Option<String>,
+    #[serde(rename = "mcpServers")]
     mcp_servers: Option<HashMap<String, McpServerConfig>>,
     context_file_name: Option<String>,
     context_content: Option<String>,
