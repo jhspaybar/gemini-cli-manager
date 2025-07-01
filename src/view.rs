@@ -170,6 +170,10 @@ impl ViewManager {
             Action::ImportExtension => {
                 // Navigate to the import dialog
                 self.navigate_to(ViewType::ExtensionImport);
+                // Send a reset action to the import dialog
+                if let Some(tx) = &self.action_tx {
+                    let _ = tx.send(Action::ResetImportDialog);
+                }
             }
             Action::EditExtension(id) => {
                 // Track where we came from

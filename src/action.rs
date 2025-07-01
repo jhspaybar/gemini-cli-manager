@@ -17,6 +17,7 @@ pub enum Action {
     // Extension management actions
     ViewExtensionDetails(String), // Extension ID
     ImportExtension,
+    ResetImportDialog,       // Reset import dialog state
     CreateNewExtension,
     EditExtension(String),   // Extension ID
     DeleteExtension(String), // Extension ID

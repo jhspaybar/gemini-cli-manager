@@ -81,6 +81,14 @@ impl ImportDialog {
         }
     }
     
+    /// Reset the dialog state for a fresh import session
+    pub fn reset(&mut self) {
+        self.state = ImportState::Selecting;
+        self.state_timestamp = None;
+        // The explorer maintains its own state (current directory)
+        // which is fine - users might want to stay in the same directory
+    }
+    
     fn import_extension(&mut self, path: PathBuf) -> Result<()> {
         // Check if it's a directory or a file
         if path.is_dir() {
@@ -306,9 +314,16 @@ impl Component for ImportDialog {
         Ok(())
     }
 
-    fn update(&mut self, _action: Action) -> Result<Option<Action>> {
-        // No special handling needed - success navigates back immediately
-        // Errors are handled by user key press in handle_events
+    fn update(&mut self, action: Action) -> Result<Option<Action>> {
+        match action {
+            Action::ResetImportDialog => {
+                self.reset();
+            }
+            _ => {
+                // No other special handling needed - success navigates back immediately
+                // Errors are handled by user key press in handle_events
+            }
+        }
         Ok(None)
     }
 
