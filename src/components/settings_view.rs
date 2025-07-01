@@ -150,10 +150,15 @@ pub struct ActionKeys {
     pub edit: Vec<String>,
     pub delete: Vec<String>,
     pub create: Vec<String>,
+    #[serde(default = "default_import_keys")]
     pub import: Vec<String>,
     pub launch: Vec<String>,
     pub select: Vec<String>,
     pub search: Vec<String>,
+}
+
+fn default_import_keys() -> Vec<String> {
+    vec!["i".to_string()]
 }
 
 impl Default for ActionKeys {
