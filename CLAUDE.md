@@ -28,7 +28,7 @@ The Gemini CLI Manager is a Terminal User Interface (TUI) application for managi
 
 #### MCP Servers Configuration
 
-Extensions can configure connections to Model-Context Protocol (MCP) servers for discovering and using custom tools. The `mcpServers` field in an extension configures these connections.
+Extensions can configure connections to Model-Context Protocol (MCP) servers for discovering and using custom tools. The `mcp_servers` field in an extension configures these connections.
 
 **Key Points:**
 - Gemini CLI attempts to connect to each configured MCP server to discover available tools
@@ -46,7 +46,7 @@ Extensions can configure connections to Model-Context Protocol (MCP) servers for
 
 **Example:**
 ```json
-"mcpServers": {
+"mcp_servers": {
   "myPythonServer": {
     "command": "python",
     "args": ["mcp_server.py", "--port", "8080"],
