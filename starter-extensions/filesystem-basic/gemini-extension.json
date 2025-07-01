@@ -1,0 +1,13 @@
+{
+  "name": "filesystem-basic",
+  "version": "1.0.0",
+  "mcpServers": {
+    "fs-operations": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "env": {
+        "FS_ALLOWED_PATHS": "$HOME/projects,$HOME/Documents"
+      }
+    }
+  }
+}

@@ -165,6 +165,13 @@ impl ViewManager {
                 self.views.insert(ViewType::ExtensionCreate, Box::new(create_form));
                 self.navigate_to(ViewType::ExtensionCreate);
             }
+            Action::ImportExtension => {
+                // Show instructions for importing extensions
+                self.success_message = Some((
+                    "To import extensions: Run './import-starter-extensions.sh' in the terminal, or manually copy extension.json files to the data directory.".to_string(),
+                    Instant::now()
+                ));
+            }
             Action::EditExtension(id) => {
                 // Track where we came from
                 self.came_from_detail_view = self.current_view == ViewType::ExtensionDetail;

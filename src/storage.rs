@@ -37,27 +37,14 @@ impl Storage {
         Ok(data_dir)
     }
 
-    /// Initialize storage with default data if empty
+    /// Initialize storage directories
     pub fn init(&self) -> Result<()> {
         // Create subdirectories
         fs::create_dir_all(self.data_dir.join("extensions"))?;
         fs::create_dir_all(self.data_dir.join("profiles"))?;
         
-        // If no extensions exist, create mock data
-        if self.list_extensions()?.is_empty() {
-            println!("Initializing with sample extensions...");
-            for extension in Extension::mock_extensions() {
-                self.save_extension(&extension)?;
-            }
-        }
-        
-        // If no profiles exist, create mock data
-        if self.list_profiles()?.is_empty() {
-            println!("Initializing with sample profiles...");
-            for profile in Profile::mock_profiles() {
-                self.save_profile(&profile)?;
-            }
-        }
+        // Extensions should be imported from actual extension packages
+        // Profiles should be created by users
         
         Ok(())
     }
@@ -196,6 +183,8 @@ impl Default for Storage {
 mod tests {
     use super::*;
     use tempfile::TempDir;
+    use std::collections::HashMap;
+    use chrono::Utc;
 
     fn test_storage() -> (Storage, TempDir) {
         let temp_dir = TempDir::new().unwrap();
@@ -207,10 +196,24 @@ mod tests {
     #[test]
     fn test_save_and_load_extension() {
         let (storage, _temp) = test_storage();
-        let extensions = Extension::mock_extensions();
-        let ext = &extensions[0];
         
-        storage.save_extension(ext).unwrap();
+        // Create a test extension
+        let ext = Extension {
+            id: "test-ext".to_string(),
+            name: "Test Extension".to_string(),
+            version: "1.0.0".to_string(),
+            description: Some("Test description".to_string()),
+            mcp_servers: HashMap::new(),
+            context_file_name: None,
+            context_content: None,
+            metadata: crate::models::extension::ExtensionMetadata {
+                imported_at: Utc::now(),
+                source_path: None,
+                tags: vec!["test".to_string()],
+            },
+        };
+        
+        storage.save_extension(&ext).unwrap();
         let loaded = storage.load_extension(&ext.id).unwrap();
         
         assert_eq!(loaded.id, ext.id);
@@ -220,17 +223,54 @@ mod tests {
     #[test]
     fn test_list_extensions() {
         let (storage, _temp) = test_storage();
+        
+        // Initially should be empty
         let extensions = storage.list_extensions().unwrap();
-        assert!(!extensions.is_empty());
+        assert!(extensions.is_empty());
+        
+        // Add an extension
+        let ext = Extension {
+            id: "test-list".to_string(),
+            name: "Test List".to_string(),
+            version: "1.0.0".to_string(),
+            description: None,
+            mcp_servers: HashMap::new(),
+            context_file_name: None,
+            context_content: None,
+            metadata: crate::models::extension::ExtensionMetadata {
+                imported_at: Utc::now(),
+                source_path: None,
+                tags: vec![],
+            },
+        };
+        storage.save_extension(&ext).unwrap();
+        
+        let extensions = storage.list_extensions().unwrap();
+        assert_eq!(extensions.len(), 1);
     }
 
     #[test]
     fn test_save_and_load_profile() {
         let (storage, _temp) = test_storage();
-        let profiles = Profile::mock_profiles();
-        let profile = &profiles[0];
         
-        storage.save_profile(profile).unwrap();
+        // Create a test profile
+        let profile = Profile {
+            id: "test-profile".to_string(),
+            name: "Test Profile".to_string(),
+            description: Some("Test description".to_string()),
+            extension_ids: vec![],
+            environment_variables: HashMap::new(),
+            working_directory: None,
+            metadata: crate::models::profile::ProfileMetadata {
+                created_at: Utc::now(),
+                updated_at: Utc::now(),
+                tags: vec!["test".to_string()],
+                is_default: false,
+                icon: None,
+            },
+        };
+        
+        storage.save_profile(&profile).unwrap();
         let loaded = storage.load_profile(&profile.id).unwrap();
         
         assert_eq!(loaded.id, profile.id);
@@ -241,13 +281,53 @@ mod tests {
     fn test_default_profile() {
         let (storage, _temp) = test_storage();
         
+        // Initially no default profile
+        let default = storage.get_default_profile().unwrap();
+        assert!(default.is_none());
+        
+        // Create profiles
+        let profile1 = Profile {
+            id: "profile1".to_string(),
+            name: "Profile 1".to_string(),
+            description: None,
+            extension_ids: vec![],
+            environment_variables: HashMap::new(),
+            working_directory: None,
+            metadata: crate::models::profile::ProfileMetadata {
+                created_at: Utc::now(),
+                updated_at: Utc::now(),
+                tags: vec![],
+                is_default: true,
+                icon: None,
+            },
+        };
+        
+        let profile2 = Profile {
+            id: "profile2".to_string(),
+            name: "Profile 2".to_string(),
+            description: None,
+            extension_ids: vec![],
+            environment_variables: HashMap::new(),
+            working_directory: None,
+            metadata: crate::models::profile::ProfileMetadata {
+                created_at: Utc::now(),
+                updated_at: Utc::now(),
+                tags: vec![],
+                is_default: false,
+                icon: None,
+            },
+        };
+        
+        storage.save_profile(&profile1).unwrap();
+        storage.save_profile(&profile2).unwrap();
+        
         let default = storage.get_default_profile().unwrap();
         assert!(default.is_some());
-        assert!(default.unwrap().metadata.is_default);
+        assert_eq!(default.unwrap().id, "profile1");
         
         // Set a different profile as default
-        storage.set_default_profile("minimal").unwrap();
+        storage.set_default_profile("profile2").unwrap();
         let new_default = storage.get_default_profile().unwrap().unwrap();
-        assert_eq!(new_default.id, "minimal");
+        assert_eq!(new_default.id, "profile2");
     }
 }

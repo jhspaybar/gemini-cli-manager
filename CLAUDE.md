@@ -838,6 +838,18 @@ let [header, content, footer] = Layout::vertical([
 ]).areas(area);
 ```
 
+### Test Coverage Commands
+
+**Always run coverage with the same output directory for consistency:**
+
+```bash
+# Generate HTML coverage report
+cargo tarpaulin --out Html --output-dir coverage-report
+
+# View the report
+open coverage-report/tarpaulin-report.html
+```
+
 ### Debugging Tips
 
 1. Use `tracing` for logging:

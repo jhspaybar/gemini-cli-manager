@@ -82,10 +82,87 @@ cargo fmt
 cargo clippy
 ```
 
+## Getting Started
+
+### First Run
+
+When you first run the application, it will start with an empty extension library. We provide high-quality starter extensions to help you get started quickly.
+
+### Starter Extensions
+
+The project includes several production-ready starter extensions in the `starter-extensions/` directory:
+
+#### 1. **rust-tools** - Rust Development Extension
+- Comprehensive Rust development support
+- Includes detailed GEMINI.md guide covering:
+  - Cargo best practices and dependency management
+  - Error handling patterns with Result and custom error types
+  - Memory management and ownership rules
+  - Async programming with Tokio
+  - Testing strategies (unit, integration, property-based)
+  - Performance optimization techniques
+  - Security best practices
+- MCP servers: rust-analyzer and cargo integration
+
+#### 2. **filesystem-basic** - Safe Filesystem Operations
+- Security-focused filesystem access patterns
+- Includes FILESYSTEM.md guide covering:
+  - Path validation and sanitization
+  - Safe file reading/writing with atomic operations
+  - Temporary file management
+  - Directory traversal with limits
+  - File permissions and security
+  - Resource cleanup patterns
+- MCP server: filesystem server with /tmp access
+
+#### 3. **github-tools** - GitHub Integration
+- Complete GitHub API integration toolkit
+- Includes GITHUB.md guide covering:
+  - Authentication (PAT and GitHub CLI)
+  - Rate limiting and pagination
+  - Repository, issue, and PR management
+  - GitHub Actions workflows
+  - Webhook handling
+  - GraphQL API usage
+  - Security best practices
+- MCP server: GitHub API server (requires GITHUB_TOKEN)
+
+### Importing Starter Extensions
+
+```bash
+# Method 1: Use the import script (recommended)
+./import-starter-extensions.sh
+
+# Method 2: Manual import via the UI
+# 1. Launch the application
+# 2. Go to Extensions tab
+# 3. Press 'i' to import
+# 4. Follow the on-screen instructions
+
+# Method 3: Manual copy (advanced)
+cp starter-extensions/*/extension.json ~/.local/share/gemini-cli-manager/extensions/
+```
+
+After importing, the extensions will appear in the Extensions tab of the application.
+
+### Creating Your First Profile
+
+1. **Import starter extensions** using one of the methods above
+2. **Navigate to Profiles** tab (press Tab)
+3. **Create a new profile** (press 'n')
+4. **Configure the profile**:
+   - Give it a meaningful name (e.g., "Rust Development")
+   - Add a description
+   - Select relevant extensions (use Space to toggle)
+   - Optionally set a working directory
+   - Add tags for organization
+5. **Save the profile** (Ctrl+S)
+6. **Launch Gemini** with your profile (press Enter on the profile)
+
 ## Usage
 
 ### Basic Workflow
-1. **Import Extensions**: Add existing Gemini extensions to your library
+1. **Import Extensions**: Use the import script or add existing Gemini extensions to your library
 2. **Create Profile**: Define a workspace configuration with selected extensions
 3. **Activate Profile**: Set up workspace and launch Gemini CLI
 

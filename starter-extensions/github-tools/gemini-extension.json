@@ -1,0 +1,13 @@
+{
+  "name": "github-tools",
+  "version": "1.0.0",
+  "mcpServers": {
+    "github-api": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "$GITHUB_TOKEN"
+      }
+    }
+  }
+}

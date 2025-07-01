@@ -300,7 +300,8 @@ impl Component for ExtensionList {
                 vec![
                     "No extensions found",
                     "",
-                    "Press 'n' to create your first extension"
+                    "Press 'n' to create a new extension",
+                    "Press 'i' to import an extension"
                 ]
             };
             
@@ -342,6 +343,7 @@ impl Component for ExtensionList {
                         ("select", "View"),
                         ("edit", "Edit"),
                         ("create", "New"),
+                        ("import", "Import"),
                         ("delete", "Delete"),
                         ("search", "Search"),
                         ("quit", "Quit"),
@@ -363,6 +365,7 @@ impl Component for ExtensionList {
                         ("select", "View"),
                         ("edit", "Edit"),
                         ("create", "New"),
+                        ("import", "Import"),
                         ("delete", "Delete"),
                         ("search", "Search"),
                         ("quit", "Quit"),
@@ -442,6 +445,8 @@ impl Component for ExtensionList {
                             }
                         } else if kb_manager.matches(&key, "create") {
                             return Ok(Some(Action::CreateNewExtension));
+                        } else if kb_manager.matches(&key, "import") {
+                            return Ok(Some(Action::ImportExtension));
                         } else if kb_manager.matches(&key, "edit") {
                             if let Some(ext) = self.get_selected_extension() {
                                 return Ok(Some(Action::EditExtension(ext.id.clone())));
@@ -506,6 +511,7 @@ impl Component for ExtensionList {
                                 }
                             }
                             KeyCode::Char('n') => Ok(Some(Action::CreateNewExtension)),
+                            KeyCode::Char('i') => Ok(Some(Action::ImportExtension)),
                             KeyCode::Char('e') => {
                                 if let Some(ext) = self.get_selected_extension() {
                                     Ok(Some(Action::EditExtension(ext.id.clone())))
