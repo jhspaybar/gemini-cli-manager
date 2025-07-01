@@ -16,6 +16,7 @@ mod models;
 mod storage;
 mod theme;
 mod tui;
+mod utils;
 mod view;
 
 #[tokio::main]
@@ -34,7 +35,7 @@ async fn main() -> Result<()> {
         return Ok(());
     }
     
-    let mut app = App::new(args.tick_rate, args.frame_rate)?;
+    let mut app = App::new()?;
     app.run().await?;
     Ok(())
 }

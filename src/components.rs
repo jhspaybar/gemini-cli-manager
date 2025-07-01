@@ -1,3 +1,5 @@
+use std::sync::{Arc, RwLock};
+
 use color_eyre::Result;
 use crossterm::event::{KeyEvent, MouseEvent};
 use ratatui::{
@@ -7,15 +9,16 @@ use ratatui::{
 use tokio::sync::mpsc::UnboundedSender;
 
 use crate::{action::Action, config::Config, tui::Event};
+use self::settings_view::UserSettings;
 
 pub mod confirm_dialog;
 pub mod extension_detail;
 pub mod extension_form;
 pub mod extension_list;
-pub mod fps;
 pub mod profile_detail;
 pub mod profile_form;
 pub mod profile_list;
+pub mod settings_view;
 pub mod tab_bar;
 
 /// `Component` is a trait that represents a visual and interactive element of the user interface.
@@ -47,6 +50,19 @@ pub trait Component {
     /// * `Result<()>` - An Ok result or an error.
     fn register_config_handler(&mut self, config: Config) -> Result<()> {
         let _ = config; // to appease clippy
+        Ok(())
+    }
+    /// Register a settings handler that provides shared user settings.
+    ///
+    /// # Arguments
+    ///
+    /// * `settings` - Shared user settings wrapped in Arc<RwLock>.
+    ///
+    /// # Returns
+    ///
+    /// * `Result<()>` - An Ok result or an error.
+    fn register_settings_handler(&mut self, settings: Arc<RwLock<UserSettings>>) -> Result<()> {
+        let _ = settings; // to appease clippy
         Ok(())
     }
     /// Initialize the component with a specified area if necessary.

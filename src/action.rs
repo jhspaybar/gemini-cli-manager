@@ -11,6 +11,7 @@ pub enum Action {
     Quit,
     ClearScreen,
     Error(String),
+    Success(String),
     Help,
 
     // Extension management actions
@@ -36,4 +37,10 @@ pub enum Action {
     CancelDelete,              // Cancel deletion
     LaunchWithProfile(String), // Profile ID
     RefreshProfiles,           // Reload profiles from storage
+
+    // Settings actions
+    ChangeTheme(String),       // Theme name
+    UpdateKeybinding(String, String), // Action name, key combination
+    ResetKeybindings,          // Reset to defaults
+    SaveSettings,              // Save settings to file
 }

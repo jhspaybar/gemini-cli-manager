@@ -3,7 +3,7 @@ name = "gemini-cli-manager"
 version = "0.1.0"
 edition = "2024"
 description = "Manager for the Gemini CLI"
-authors = ["William Thurston <william@bothhomes.com>"]
+authors = ["William Thurston <me@williamthurston.com>"]
 build = "build.rs"
 
 
@@ -47,6 +47,7 @@ tracing-subscriber = { version = "0.3.18", features = ["env-filter", "serde"] }
 uuid = { version = "1.17.0", features = ["v4"] }
 tui-textarea = "0.7.0"
 catppuccin = { version = "2.4.0", features = ["ratatui"] }
+crokey = { version = "1.0", features = ["serde"] }
 
 [dev-dependencies]
 # Snapshot testing

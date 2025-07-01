@@ -507,8 +507,8 @@ impl Component for ProfileForm {
     }
 }
 
-// Test helper methods
 impl ProfileForm {
+    // Test helper methods below
     /// Test helper method - returns current field
     #[doc(hidden)]
     #[allow(dead_code)]

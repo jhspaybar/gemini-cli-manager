@@ -1,13 +1,14 @@
+use std::sync::{Arc, RwLock};
+
 use color_eyre::Result;
 use crossterm::event::KeyEvent;
 use ratatui::prelude::Rect;
-use serde::{Deserialize, Serialize};
 use tokio::sync::mpsc;
 use tracing::{debug, info};
 
 use crate::{
     action::Action,
-    components::{Component, fps::FpsCounter},
+    components::{Component, settings_view::{UserSettings, SettingsManager}},
     config::Config,
     storage::Storage,
     tui::{Event, Tui},
@@ -16,58 +17,61 @@ use crate::{
 
 pub struct App {
     config: Config,
-    tick_rate: f64,
-    frame_rate: f64,
     components: Vec<Box<dyn Component>>,
     should_quit: bool,
     should_suspend: bool,
-    mode: Mode,
     last_tick_key_events: Vec<KeyEvent>,
     action_tx: mpsc::UnboundedSender<Action>,
     action_rx: mpsc::UnboundedReceiver<Action>,
     storage: Storage,
+    settings: Arc<RwLock<UserSettings>>,
+    in_form_view: bool,
 }
 
-#[derive(Default, Debug, Copy, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum Mode {
-    #[default]
-    Home,
-}
 
 impl App {
-    pub fn new(tick_rate: f64, frame_rate: f64) -> Result<Self> {
+    pub fn new() -> Result<Self> {
         let (action_tx, action_rx) = mpsc::unbounded_channel();
         
         // Initialize storage
         let storage = Storage::new()?;
         storage.init()?;
         
+        // Load settings from disk into shared memory
+        let settings_manager = SettingsManager::new()?;
+        let settings = Arc::new(RwLock::new(settings_manager.get_settings().clone()));
+        
+        // Apply saved theme from the loaded settings
+        if let Ok(settings_lock) = settings.read() {
+            if let Err(e) = crate::theme::set_theme_by_name(&settings_lock.theme) {
+                debug!("Warning: Could not apply saved theme '{}': {}", settings_lock.theme, e);
+            }
+        }
+        
         // Create view manager with storage
         let view_manager = ViewManager::with_storage(storage.clone());
         
         Ok(Self {
-            tick_rate,
-            frame_rate,
             components: vec![
                 Box::new(view_manager),
-                Box::new(FpsCounter::default()),
             ],
             should_quit: false,
             should_suspend: false,
             config: Config::new()?,
-            mode: Mode::Home,
             last_tick_key_events: Vec::new(),
             action_tx,
             action_rx,
             storage,
+            settings,
+            in_form_view: false,
         })
     }
 
     pub async fn run(&mut self) -> Result<()> {
         let mut tui = Tui::new()?
             // .mouse(true) // uncomment this line to enable mouse support
-            .tick_rate(self.tick_rate)
-            .frame_rate(self.frame_rate);
+            .tick_rate(4.0)
+            .frame_rate(60.0);
         tui.enter()?;
 
         for component in self.components.iter_mut() {
@@ -75,6 +79,9 @@ impl App {
         }
         for component in self.components.iter_mut() {
             component.register_config_handler(self.config.clone())?;
+        }
+        for component in self.components.iter_mut() {
+            component.register_settings_handler(self.settings.clone())?;
         }
         for component in self.components.iter_mut() {
             component.init(tui.size()?)?;
@@ -104,25 +111,35 @@ impl App {
             return Ok(());
         };
         let action_tx = self.action_tx.clone();
-        match event {
-            Event::Quit => action_tx.send(Action::Quit)?,
-            Event::Tick => action_tx.send(Action::Tick)?,
-            Event::Render => action_tx.send(Action::Render)?,
-            Event::Resize(x, y) => action_tx.send(Action::Resize(x, y))?,
-            Event::Key(key) => self.handle_key_event(key)?,
-            _ => {}
-        }
+        
+        // First, let components handle the event
         for component in self.components.iter_mut() {
             if let Some(action) = component.handle_events(Some(event.clone()))? {
                 action_tx.send(action)?;
             }
+        }
+        
+        // Process system events (Tick, Render, Resize) always
+        // But only process Key events if we're not in a form view
+        match event {
+            Event::Tick => action_tx.send(Action::Tick)?,
+            Event::Render => action_tx.send(Action::Render)?,
+            Event::Resize(x, y) => action_tx.send(Action::Resize(x, y))?,
+            Event::Key(key) => {
+                // Only process global keybindings if we're not in a form view
+                if !self.in_form_view {
+                    self.handle_key_event(key)?;
+                }
+            }
+            Event::Quit => action_tx.send(Action::Quit)?,
+            _ => {}
         }
         Ok(())
     }
 
     fn handle_key_event(&mut self, key: KeyEvent) -> Result<()> {
         let action_tx = self.action_tx.clone();
-        let Some(keymap) = self.config.keybindings.get(&self.mode) else {
+        let Some(keymap) = self.config.keybindings.get(&crate::config::Mode::Normal) else {
             return Ok(());
         };
         match keymap.get(&vec![key]) {
@@ -162,6 +179,15 @@ impl App {
                 Action::Render => self.render(tui)?,
                 Action::LaunchWithProfile(profile_id) => {
                     self.handle_launch_profile(profile_id, tui)?;
+                }
+                // Track when we're in form views
+                Action::CreateNewExtension | Action::EditExtension(_) | 
+                Action::CreateProfile | Action::EditProfile(_) => {
+                    self.in_form_view = true;
+                }
+                Action::NavigateBack | Action::NavigateToExtensions | 
+                Action::NavigateToProfiles | Action::NavigateToSettings => {
+                    self.in_form_view = false;
                 }
                 _ => {}
             }
@@ -254,3 +280,4 @@ impl App {
         Ok(())
     }
 }
+

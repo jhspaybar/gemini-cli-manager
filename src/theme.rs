@@ -169,6 +169,27 @@ pub fn set_flavour(flavour: ThemeFlavour) {
     set_theme(Theme::new(flavour));
 }
 
+/// Set the theme by name (string)
+pub fn set_theme_by_name(name: &str) -> Result<(), String> {
+    let flavour = match name.to_lowercase().as_str() {
+        "mocha" => ThemeFlavour::Mocha,
+        "macchiato" => ThemeFlavour::Macchiato,
+        "frappe" => ThemeFlavour::Frappe,
+        "latte" => ThemeFlavour::Latte,
+        _ => return Err(format!("Unknown theme: {}", name)),
+    };
+    set_flavour(flavour);
+    Ok(())
+}
+
+/// Get the current theme name
+pub fn get_current_theme_name() -> String {
+    with_theme(|theme| {
+        // Extract the theme name from the full name
+        theme.name.replace("Catppuccin ", "").to_lowercase()
+    })
+}
+
 /// Helper functions for common color needs
 pub fn background() -> Color { with_theme(|t| t.background()) }
 pub fn surface() -> Color { with_theme(|t| t.surface()) }

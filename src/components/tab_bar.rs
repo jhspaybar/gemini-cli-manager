@@ -16,6 +16,7 @@ impl TabBar {
             tabs: vec![
                 ("Extensions".to_string(), ViewType::ExtensionList),
                 ("Profiles".to_string(), ViewType::ProfileList),
+                ("Settings".to_string(), ViewType::Settings),
             ],
         }
     }
@@ -36,6 +37,9 @@ impl Component for TabBar {
             }
             Action::NavigateToProfiles => {
                 self.current_view = ViewType::ProfileList;
+            }
+            Action::NavigateToSettings => {
+                self.current_view = ViewType::Settings;
             }
             Action::ViewExtensionDetails(_) => {
                 self.current_view = ViewType::ExtensionDetail;
@@ -69,6 +73,8 @@ impl Component for TabBar {
                     (ViewType::ExtensionList | ViewType::ExtensionDetail, ViewType::ExtensionList) => true,
                     // Profiles tab is active for all profile-related views
                     (ViewType::ProfileList | ViewType::ProfileDetail | ViewType::ProfileCreate | ViewType::ProfileEdit, ViewType::ProfileList) => true,
+                    // Settings tab is active for settings view
+                    (ViewType::Settings, ViewType::Settings) => true,
                     _ => false,
                 };
 
@@ -112,6 +118,7 @@ impl Component for TabBar {
         let selected = match self.current_view {
             ViewType::ExtensionList | ViewType::ExtensionDetail => 0,
             ViewType::ProfileList | ViewType::ProfileDetail | ViewType::ProfileCreate | ViewType::ProfileEdit => 1,
+            ViewType::Settings => 2,
             _ => 0,
         };
 

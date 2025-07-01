@@ -11,54 +11,26 @@ use serde_json::json;
 use crate::{models::{Extension, Profile}, storage::Storage};
 
 pub struct Launcher {
-    workspace_dir: PathBuf,
     pub storage: Storage,
 }
 
 impl Launcher {
     #[allow(dead_code)]
     pub fn new() -> Self {
-        // Default workspace directory
-        let workspace_dir = dirs::home_dir()
-            .unwrap_or_else(|| PathBuf::from("."))
-            .join(".gemini-workspace");
-        
         Self { 
-            workspace_dir,
             storage: Storage::default(),
         }
     }
     
-    #[allow(dead_code)]
-    pub fn with_workspace_dir(mut self, workspace_dir: PathBuf) -> Self {
-        self.workspace_dir = workspace_dir;
-        self
-    }
-    
     pub fn with_storage(storage: Storage) -> Self {
-        let workspace_dir = dirs::home_dir()
-            .unwrap_or_else(|| PathBuf::from("."))
-            .join(".gemini-workspace");
-            
         Self {
-            workspace_dir,
             storage,
         }
     }
     
     /// Launch Gemini CLI with the specified profile
     pub fn launch_with_profile(&self, profile: &Profile) -> Result<()> {
-        // 1. Set up workspace directory
-        let profile_workspace = self.workspace_dir.join(&profile.id);
-        self.setup_workspace(&profile_workspace)?;
-        
-        // 2. Install extensions to workspace
-        self.install_extensions_for_profile(profile, &profile_workspace)?;
-        
-        // 3. Set up environment
-        let env_vars = self.prepare_environment(profile);
-        
-        // 4. Change to working directory if specified
+        // 1. Determine working directory
         let working_dir = if let Some(dir) = &profile.working_directory {
             // Expand ~ to home directory
             let expanded = if dir.starts_with("~") {
@@ -78,6 +50,15 @@ impl Launcher {
         } else {
             env::current_dir()?
         };
+        
+        // 2. Set up workspace in the working directory
+        self.setup_workspace(&working_dir)?;
+        
+        // 3. Install extensions to the working directory
+        self.install_extensions_for_profile(profile, &working_dir)?;
+        
+        // 4. Set up environment
+        let env_vars = self.prepare_environment(profile);
         
         // 5. Launch Gemini CLI
         println!("🚀 Launching Gemini CLI with profile: {}", profile.display_name());
@@ -123,13 +104,10 @@ impl Launcher {
         Ok(())
     }
     
-    /// Set up the workspace directory structure
-    pub fn setup_workspace(&self, workspace_dir: &Path) -> Result<()> {
-        // Create workspace directory
-        fs::create_dir_all(workspace_dir)?;
-        
+    /// Set up the .gemini directory structure in the working directory
+    pub fn setup_workspace(&self, working_dir: &Path) -> Result<()> {
         // Create .gemini directory structure
-        let gemini_dir = workspace_dir.join(".gemini");
+        let gemini_dir = working_dir.join(".gemini");
         fs::create_dir_all(&gemini_dir)?;
         
         let extensions_dir = gemini_dir.join("extensions");
@@ -138,9 +116,9 @@ impl Launcher {
         Ok(())
     }
     
-    /// Install extensions to the workspace
-    pub fn install_extensions_for_profile(&self, profile: &Profile, workspace_dir: &Path) -> Result<()> {
-        let extensions_dir = workspace_dir.join(".gemini").join("extensions");
+    /// Install extensions to the working directory
+    pub fn install_extensions_for_profile(&self, profile: &Profile, working_dir: &Path) -> Result<()> {
+        let extensions_dir = working_dir.join(".gemini").join("extensions");
         
         // Load extensions from storage
         for ext_id in &profile.extension_ids {

@@ -952,13 +952,16 @@ impl Component for ExtensionForm {
                                     KeyCode::Up => {
                                         if self.context_scroll_offset > 0 {
                                             self.context_scroll_offset = self.context_scroll_offset.saturating_sub(1);
-                                            return Ok(Some(Action::Render));
                                         }
+                                        return Ok(Some(Action::Render));
                                     }
                                     KeyCode::Down => {
                                         // Check if we need to scroll
                                         let lines_count = self.context_content_input.value().lines().count();
-                                        self.context_scroll_offset = self.context_scroll_offset.saturating_add(1).min(lines_count.saturating_sub(1) as u16);
+                                        let new_offset = self.context_scroll_offset.saturating_add(1).min(lines_count.saturating_sub(1) as u16);
+                                        if new_offset != self.context_scroll_offset {
+                                            self.context_scroll_offset = new_offset;
+                                        }
                                         return Ok(Some(Action::Render));
                                     }
                                     _ => {
