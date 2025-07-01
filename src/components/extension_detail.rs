@@ -178,8 +178,17 @@ impl Component for ExtensionDetail {
                     Span::styled(format!("• {}", name), Style::default().fg(theme::success())),
                 ]));
 
-                // Server type - MCP servers are command-based
-                if let Some(cmd) = &config.command {
+                // Server type - MCP servers can be URL-based or command-based
+                if let Some(url) = &config.url {
+                    content.push(Line::from(vec![
+                        Span::styled("    Type: ", Style::default().fg(theme::text_secondary())),
+                        Span::styled("URL (SSE)", Style::default().fg(theme::primary())),
+                    ]));
+                    content.push(Line::from(vec![
+                        Span::styled("    URL: ", Style::default().fg(theme::text_secondary())),
+                        Span::styled(url, Style::default().fg(theme::text_primary())),
+                    ]));
+                } else if let Some(cmd) = &config.command {
                     content.push(Line::from(vec![
                         Span::styled("    Type: ", Style::default().fg(theme::text_secondary())),
                         Span::styled("Command", Style::default().fg(theme::primary())),
