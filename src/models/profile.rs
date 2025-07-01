@@ -23,8 +23,34 @@ pub struct Profile {
     /// Working directory for Gemini when launched with this profile
     pub working_directory: Option<String>,
     
+    /// Launch configuration options
+    #[serde(default)]
+    pub launch_config: LaunchConfig,
+    
     /// Metadata
     pub metadata: ProfileMetadata,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LaunchConfig {
+    /// Clean existing configuration before launching
+    pub clean_launch: bool,
+    
+    /// Remove extensions directory after Gemini exits
+    pub cleanup_on_exit: bool,
+    
+    /// Preserve specific extension IDs even during clean launch
+    pub preserve_extensions: Vec<String>,
+}
+
+impl Default for LaunchConfig {
+    fn default() -> Self {
+        Self {
+            clean_launch: false,
+            cleanup_on_exit: true,  // Default to cleaning up after ourselves
+            preserve_extensions: Vec::new(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

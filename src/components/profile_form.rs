@@ -7,7 +7,7 @@ use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::{Extension, Profile, profile::ProfileMetadata}, storage::Storage, theme};
+use crate::{action::Action, config::Config, models::{Extension, Profile, profile::{ProfileMetadata, LaunchConfig}}, storage::Storage, theme};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum FormField {
@@ -16,6 +16,7 @@ pub enum FormField {
     WorkingDirectory,
     Extensions,
     Tags,
+    LaunchConfig,
 }
 
 pub struct ProfileForm {
@@ -29,6 +30,12 @@ pub struct ProfileForm {
     working_directory_input: Input,
     tags_input: Input,
     selected_extensions: Vec<String>,
+    
+    // Launch configuration
+    clean_launch: bool,
+    cleanup_on_exit: bool,
+    preserve_extensions_input: Input,
+    launch_config_cursor: usize, // 0 = clean_launch, 1 = cleanup_on_exit, 2 = preserve_extensions
     
     // Available extensions
     available_extensions: Vec<Extension>,
@@ -55,6 +62,10 @@ impl ProfileForm {
             working_directory_input: Input::default(),
             tags_input: Input::default(),
             selected_extensions: Vec::new(),
+            clean_launch: false,
+            cleanup_on_exit: true, // Default to cleaning up
+            preserve_extensions_input: Input::default(),
+            launch_config_cursor: 0,
             available_extensions,
             extension_cursor: 0,
             current_field: FormField::Name,
@@ -70,6 +81,7 @@ impl ProfileForm {
         let description_input = Input::from(profile.description.clone().unwrap_or_default());
         let working_directory_input = Input::from(profile.working_directory.clone().unwrap_or_default());
         let tags_input = Input::from(profile.metadata.tags.join(", "));
+        let preserve_extensions_input = Input::from(profile.launch_config.preserve_extensions.join(", "));
         
         Self {
             command_tx: None,
@@ -80,6 +92,10 @@ impl ProfileForm {
             working_directory_input,
             tags_input,
             selected_extensions: profile.extension_ids.clone(),
+            clean_launch: profile.launch_config.clean_launch,
+            cleanup_on_exit: profile.launch_config.cleanup_on_exit,
+            preserve_extensions_input,
+            launch_config_cursor: 0,
             available_extensions,
             extension_cursor: 0,
             current_field: FormField::Name,
@@ -121,6 +137,12 @@ impl ProfileForm {
             .filter(|s| !s.is_empty())
             .collect();
         
+        let preserve_extensions: Vec<String> = self.preserve_extensions_input.value()
+            .split(',')
+            .map(|s| s.trim().to_string())
+            .filter(|s| !s.is_empty())
+            .collect();
+        
         let profile = Profile {
             id: profile_id,
             name: self.name_input.value().to_string(),
@@ -135,6 +157,11 @@ impl ProfileForm {
                 None
             } else {
                 Some(self.working_directory_input.value().to_string())
+            },
+            launch_config: LaunchConfig {
+                clean_launch: self.clean_launch,
+                cleanup_on_exit: self.cleanup_on_exit,
+                preserve_extensions,
             },
             metadata: ProfileMetadata {
                 created_at: if self.edit_mode {
@@ -173,17 +200,19 @@ impl ProfileForm {
             FormField::Description => FormField::WorkingDirectory,
             FormField::WorkingDirectory => FormField::Extensions,
             FormField::Extensions => FormField::Tags,
-            FormField::Tags => FormField::Name,
+            FormField::Tags => FormField::LaunchConfig,
+            FormField::LaunchConfig => FormField::Name,
         };
     }
     
     fn previous_field(&mut self) {
         self.current_field = match self.current_field {
-            FormField::Name => FormField::Tags,
+            FormField::Name => FormField::LaunchConfig,
             FormField::Description => FormField::Name,
             FormField::WorkingDirectory => FormField::Description,
             FormField::Extensions => FormField::WorkingDirectory,
             FormField::Tags => FormField::Extensions,
+            FormField::LaunchConfig => FormField::Tags,
         };
     }
 }
@@ -235,6 +264,7 @@ impl Component for ProfileForm {
                 Constraint::Length(3), // Working Directory
                 Constraint::Min(5),    // Extensions
                 Constraint::Length(3), // Tags
+                Constraint::Min(6),    // Launch Config
                 Constraint::Length(3), // Help
             ])
             .split(inner);
@@ -377,6 +407,78 @@ impl Component for ProfileForm {
             ));
         }
         
+        // Launch Configuration
+        let launch_config_style = if matches!(self.current_field, FormField::LaunchConfig) {
+            Style::default().fg(theme::highlight())
+        } else {
+            Style::default().fg(theme::text_secondary())
+        };
+        let launch_config_block = Block::default()
+            .title("Launch Configuration (↑/↓ to navigate, Space to toggle)")
+            .borders(Borders::ALL)
+            .border_style(launch_config_style);
+        
+        let launch_config_inner = launch_config_block.inner(chunks[5]);
+        frame.render_widget(launch_config_block, chunks[5]);
+        
+        // Launch config options
+        let mut launch_config_lines = vec![];
+        
+        // Clean launch option
+        let clean_launch_style = if matches!(self.current_field, FormField::LaunchConfig) && self.launch_config_cursor == 0 {
+            Style::default().bg(theme::selection()).fg(theme::text_primary())
+        } else if self.clean_launch {
+            Style::default().fg(theme::success())
+        } else {
+            Style::default().fg(theme::text_primary())
+        };
+        launch_config_lines.push(Line::from(vec![
+            Span::styled(if self.clean_launch { "[✓] " } else { "[ ] " }, clean_launch_style),
+            Span::styled("Clean Launch", clean_launch_style),
+            Span::styled(" - Remove existing configuration before starting", Style::default().fg(theme::text_muted())),
+        ]));
+        
+        // Cleanup on exit option
+        let cleanup_style = if matches!(self.current_field, FormField::LaunchConfig) && self.launch_config_cursor == 1 {
+            Style::default().bg(theme::selection()).fg(theme::text_primary())
+        } else if self.cleanup_on_exit {
+            Style::default().fg(theme::success())
+        } else {
+            Style::default().fg(theme::text_primary())
+        };
+        launch_config_lines.push(Line::from(vec![
+            Span::styled(if self.cleanup_on_exit { "[✓] " } else { "[ ] " }, cleanup_style),
+            Span::styled("Cleanup on Exit", cleanup_style),
+            Span::styled(" - Remove extensions after Gemini exits", Style::default().fg(theme::text_muted())),
+        ]));
+        
+        // Preserve extensions input
+        let preserve_style = if matches!(self.current_field, FormField::LaunchConfig) && self.launch_config_cursor == 2 {
+            Style::default().bg(theme::selection()).fg(theme::text_primary())
+        } else {
+            Style::default().fg(theme::text_primary())
+        };
+        launch_config_lines.push(Line::from(vec![
+            Span::styled("    Preserve Extensions: ", preserve_style),
+            Span::styled(self.preserve_extensions_input.value(), preserve_style),
+        ]));
+        launch_config_lines.push(Line::from(vec![
+            Span::styled("    ", Style::default()),
+            Span::styled("(comma-separated extension IDs to keep during clean launch)", Style::default().fg(theme::text_muted())),
+        ]));
+        
+        let launch_config_paragraph = Paragraph::new(launch_config_lines);
+        frame.render_widget(launch_config_paragraph, launch_config_inner);
+        
+        // Set cursor for preserve extensions field if it's active
+        if matches!(self.current_field, FormField::LaunchConfig) && self.launch_config_cursor == 2 {
+            let cursor_pos = self.preserve_extensions_input.visual_cursor();
+            frame.set_cursor_position((
+                launch_config_inner.x + 24 + cursor_pos as u16, // 24 = length of "    Preserve Extensions: "
+                launch_config_inner.y + 2 // Third line
+            ));
+        }
+        
         // Help text
         use crate::utils::build_help_text;
         let help_text = match self.current_field {
@@ -386,6 +488,16 @@ impl Component for ProfileForm {
                     ("up", "Navigate"),
                     ("down", "Navigate"),
                     ("Space", "Toggle"),
+                    ("Ctrl+S", "Save"),
+                    ("back", "Cancel"),
+                ])
+            }
+            FormField::LaunchConfig => {
+                build_help_text(&[
+                    ("tab", "Next field"),
+                    ("up/down", "Navigate"),
+                    ("Space", "Toggle"),
+                    ("Type", "Edit preserve list"),
                     ("Ctrl+S", "Save"),
                     ("back", "Cancel"),
                 ])
@@ -404,7 +516,7 @@ impl Component for ProfileForm {
             Paragraph::new(help_text)
                 .style(help_style)
                 .alignment(Alignment::Center),
-            chunks[5],
+            chunks[6],
         );
         
         Ok(())
@@ -495,6 +607,38 @@ impl Component for ProfileForm {
                             FormField::Tags => {
                                 if self.tags_input.handle_event(&crossterm::event::Event::Key(key)).is_some() {
                                     return Ok(Some(Action::Render));
+                                }
+                            }
+                            FormField::LaunchConfig => {
+                                match key.code {
+                                    KeyCode::Up => {
+                                        if self.launch_config_cursor > 0 {
+                                            self.launch_config_cursor -= 1;
+                                            return Ok(Some(Action::Render));
+                                        }
+                                    }
+                                    KeyCode::Down => {
+                                        if self.launch_config_cursor < 2 {
+                                            self.launch_config_cursor += 1;
+                                            return Ok(Some(Action::Render));
+                                        }
+                                    }
+                                    KeyCode::Char(' ') => {
+                                        match self.launch_config_cursor {
+                                            0 => self.clean_launch = !self.clean_launch,
+                                            1 => self.cleanup_on_exit = !self.cleanup_on_exit,
+                                            _ => {}
+                                        }
+                                        return Ok(Some(Action::Render));
+                                    }
+                                    _ => {
+                                        // Handle text input for preserve extensions
+                                        if self.launch_config_cursor == 2 {
+                                            if self.preserve_extensions_input.handle_event(&crossterm::event::Event::Key(key)).is_some() {
+                                                return Ok(Some(Action::Render));
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

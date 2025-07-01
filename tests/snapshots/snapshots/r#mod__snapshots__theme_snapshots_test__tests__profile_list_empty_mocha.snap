@@ -1,0 +1,29 @@
+---
+source: tests/snapshots/theme_snapshots_test.rs
+assertion_line: 36
+expression: output
+---
+╭────────────────────────────────── Profiles ──────────────────────────────────╮
+│                               No profiles found                              │
+│                                                                              │
+│                    Press 'n' to create your first profile                    │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+╰ ↑/↓: Navigate | Enter: View | e: Edit | l: Launch | n: New | d: Delete | /: S╯

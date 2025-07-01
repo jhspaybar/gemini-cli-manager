@@ -1,0 +1,29 @@
+---
+source: tests/snapshots/theme_snapshots_test.rs
+assertion_line: 36
+expression: output
+---
+╭──────────────────────────────────────────────────────────────────────────────╮
+│  Extensions   │   Profiles                                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────── Extensions ─────────────────────────────────╮
+││ Echo Test Extension v1.0.0                                                  │
+│    Test extension with echo MCP server                                       │
+│    1 MCP servers | 2 tags                                                    │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+╰ ↑/↓: Navigate | Enter: View | e: Edit | n: New | d: Delete | /: Search | Tab:╯

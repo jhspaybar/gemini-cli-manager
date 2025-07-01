@@ -11,9 +11,9 @@ use crate::{
     components::{
         confirm_dialog::ConfirmDialog, extension_detail::ExtensionDetail, 
         extension_form::ExtensionForm, extension_list::ExtensionList, 
-        profile_detail::ProfileDetail, profile_form::ProfileForm, 
-        profile_list::ProfileList, settings_view::{Settings, UserSettings}, 
-        tab_bar::TabBar, Component,
+        import_dialog::ImportDialog, profile_detail::ProfileDetail, 
+        profile_form::ProfileForm, profile_list::ProfileList, 
+        settings_view::{Settings, UserSettings}, tab_bar::TabBar, Component,
     },
     config::Config,
     storage::Storage,
@@ -26,6 +26,7 @@ pub enum ViewType {
     ExtensionDetail,
     ExtensionCreate,
     ExtensionEdit,
+    ExtensionImport,
     ProfileList,
     ProfileDetail,
     ProfileCreate,
@@ -81,6 +82,7 @@ impl ViewManager {
         views.insert(ViewType::ExtensionList, Box::new(ExtensionList::with_storage(storage.clone())));
         views.insert(ViewType::ExtensionDetail, Box::new(ExtensionDetail::with_storage(storage.clone())));
         views.insert(ViewType::ExtensionCreate, Box::new(ExtensionForm::new(storage.clone())));
+        views.insert(ViewType::ExtensionImport, Box::new(ImportDialog::new(storage.clone())));
         views.insert(ViewType::ProfileList, Box::new(ProfileList::with_storage(storage.clone())));
         views.insert(ViewType::ProfileDetail, Box::new(ProfileDetail::with_storage(storage.clone())));
         views.insert(ViewType::ProfileCreate, Box::new(ProfileForm::new(storage.clone())));
@@ -166,11 +168,8 @@ impl ViewManager {
                 self.navigate_to(ViewType::ExtensionCreate);
             }
             Action::ImportExtension => {
-                // Show instructions for importing extensions
-                self.success_message = Some((
-                    "To import extensions: Run './import-starter-extensions.sh' in the terminal, or manually copy extension.json files to the data directory.".to_string(),
-                    Instant::now()
-                ));
+                // Navigate to the import dialog
+                self.navigate_to(ViewType::ExtensionImport);
             }
             Action::EditExtension(id) => {
                 // Track where we came from
@@ -312,6 +311,10 @@ impl ViewManager {
                     }
                     ViewType::ExtensionCreate => {
                         // From create, always go back to list
+                        self.navigate_to(ViewType::ExtensionList);
+                    }
+                    ViewType::ExtensionImport => {
+                        // From import, go back to extension list
                         self.navigate_to(ViewType::ExtensionList);
                     }
                     _ => {

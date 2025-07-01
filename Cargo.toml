@@ -48,6 +48,7 @@ uuid = { version = "1.17.0", features = ["v4"] }
 tui-textarea = "0.7.0"
 catppuccin = { version = "2.4.0", features = ["ratatui"] }
 crokey = { version = "1.0", features = ["serde"] }
+ratatui-explorer = "0.2.1"
 
 [dev-dependencies]
 # Snapshot testing

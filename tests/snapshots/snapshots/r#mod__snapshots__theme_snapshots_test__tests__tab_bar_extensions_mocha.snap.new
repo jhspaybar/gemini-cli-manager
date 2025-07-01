@@ -1,0 +1,8 @@
+---
+source: tests/snapshots/theme_snapshots_test.rs
+assertion_line: 36
+expression: output
+---
+╭──────────────────────────────────────────────────────────────────────────────╮
+│  Extensions   │   Profiles   │   Settings                                    │
+╰──────────────────────────────────────────────────────────────────────────────╯

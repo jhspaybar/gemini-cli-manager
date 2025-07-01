@@ -15,6 +15,7 @@ pub mod confirm_dialog;
 pub mod extension_detail;
 pub mod extension_form;
 pub mod extension_list;
+pub mod import_dialog;
 pub mod profile_detail;
 pub mod profile_form;
 pub mod profile_list;

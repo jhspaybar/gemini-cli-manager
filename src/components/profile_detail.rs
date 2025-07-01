@@ -232,6 +232,41 @@ impl Component for ProfileDetail {
             }
         }
 
+        // Launch Configuration section
+        content.push(Line::from(Span::styled(
+            "Launch Configuration",
+            Style::default().fg(theme::info()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+        )));
+        content.push(Line::from(""));
+        
+        content.push(Line::from(vec![
+            Span::styled("  Clean Launch: ", Style::default().fg(theme::text_primary())),
+            Span::styled(
+                if profile.launch_config.clean_launch { "Yes" } else { "No" },
+                Style::default().fg(if profile.launch_config.clean_launch { theme::success() } else { theme::text_secondary() })
+            ),
+        ]));
+        
+        content.push(Line::from(vec![
+            Span::styled("  Cleanup on Exit: ", Style::default().fg(theme::text_primary())),
+            Span::styled(
+                if profile.launch_config.cleanup_on_exit { "Yes" } else { "No" },
+                Style::default().fg(if profile.launch_config.cleanup_on_exit { theme::success() } else { theme::text_secondary() })
+            ),
+        ]));
+        
+        if !profile.launch_config.preserve_extensions.is_empty() {
+            content.push(Line::from(vec![
+                Span::styled("  Preserve Extensions: ", Style::default().fg(theme::text_primary())),
+                Span::styled(
+                    profile.launch_config.preserve_extensions.join(", "),
+                    Style::default().fg(theme::text_secondary())
+                ),
+            ]));
+        }
+        
+        content.push(Line::from(""));
+        
         // Environment Variables section
         if !profile.environment_variables.is_empty() {
             content.push(Line::from(Span::styled(

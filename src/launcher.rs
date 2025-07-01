@@ -51,19 +51,28 @@ impl Launcher {
             env::current_dir()?
         };
         
-        // 2. Set up workspace in the working directory
+        // 2. Clean existing configuration if requested
+        if profile.launch_config.clean_launch {
+            println!("🧹 Cleaning existing configuration...");
+            self.clean_gemini_directory(&working_dir, &profile.launch_config.preserve_extensions)?;
+        }
+        
+        // 3. Set up workspace in the working directory
         self.setup_workspace(&working_dir)?;
         
-        // 3. Install extensions to the working directory
+        // 4. Install extensions to the working directory
         self.install_extensions_for_profile(profile, &working_dir)?;
         
-        // 4. Set up environment
+        // 5. Set up environment
         let env_vars = self.prepare_environment(profile);
         
-        // 5. Launch Gemini CLI
+        // 6. Launch Gemini CLI
         println!("🚀 Launching Gemini CLI with profile: {}", profile.display_name());
         println!("📂 Working directory: {}", working_dir.display());
         println!("🔧 Extensions: {}", profile.extension_ids.join(", "));
+        if profile.launch_config.cleanup_on_exit {
+            println!("🧹 Will clean up extensions after exit");
+        }
         println!();
         
         // Check if gemini is available (cross-platform)
@@ -96,6 +105,12 @@ impl Launcher {
             .stderr(Stdio::inherit());
         
         let status = cmd.status()?;
+        
+        // 7. Clean up if requested
+        if profile.launch_config.cleanup_on_exit {
+            println!("\n🧹 Cleaning up extensions...");
+            self.cleanup_extensions(&working_dir)?;
+        }
         
         if !status.success() {
             return Err(eyre!("Gemini CLI exited with status: {}", status));
@@ -192,6 +207,70 @@ impl Launcher {
         );
         
         env_vars
+    }
+    
+    /// Clean the .gemini directory, preserving specified extensions
+    fn clean_gemini_directory(&self, working_dir: &Path, preserve_extensions: &[String]) -> Result<()> {
+        let gemini_dir = working_dir.join(".gemini");
+        
+        if !gemini_dir.exists() {
+            return Ok(());
+        }
+        
+        let extensions_dir = gemini_dir.join("extensions");
+        if extensions_dir.exists() {
+            // Remove all extensions except those in preserve list
+            for entry in fs::read_dir(&extensions_dir)? {
+                let entry = entry?;
+                let path = entry.path();
+                
+                if path.is_dir() {
+                    let dir_name = path.file_name()
+                        .and_then(|n| n.to_str())
+                        .unwrap_or("");
+                    
+                    if !preserve_extensions.contains(&dir_name.to_string()) {
+                        fs::remove_dir_all(&path)?;
+                        println!("  ✓ Removed extension: {}", dir_name);
+                    } else {
+                        println!("  ✓ Preserved extension: {}", dir_name);
+                    }
+                }
+            }
+        }
+        
+        // Clean other Gemini directories if needed
+        // (e.g., cache, logs, etc.)
+        
+        Ok(())
+    }
+    
+    /// Clean up extensions after Gemini exits
+    fn cleanup_extensions(&self, working_dir: &Path) -> Result<()> {
+        let extensions_dir = working_dir.join(".gemini").join("extensions");
+        
+        if extensions_dir.exists() {
+            // Only remove extensions we created (those with our naming pattern)
+            for entry in fs::read_dir(&extensions_dir)? {
+                let entry = entry?;
+                let path = entry.path();
+                
+                if path.is_dir() {
+                    // Check if this is one of our managed extensions
+                    // (You could check for a marker file or naming pattern)
+                    let manifest_path = path.join("gemini-extension.json");
+                    if manifest_path.exists() {
+                        // This is likely one of our extensions
+                        fs::remove_dir_all(&path)?;
+                        if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
+                            println!("  ✓ Removed extension: {}", name);
+                        }
+                    }
+                }
+            }
+        }
+        
+        Ok(())
     }
 }
 

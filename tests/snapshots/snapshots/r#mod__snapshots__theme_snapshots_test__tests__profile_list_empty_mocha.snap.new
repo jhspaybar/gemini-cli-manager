@@ -1,0 +1,29 @@
+---
+source: tests/snapshots/theme_snapshots_test.rs
+assertion_line: 36
+expression: output
+---
+╭────────────────────────────────── Profiles ──────────────────────────────────╮
+│                               No profiles found                              │
+│                                                                              │
+│                    Press 'n' to create your first profile                    │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+╰ Up, k: Navigate | Down, j: Navigate | Enter, Space: View | e: Edit | l: Launc╯

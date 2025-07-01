@@ -1,0 +1,20 @@
+---
+source: tests/snapshots/theme_snapshots_test.rs
+assertion_line: 36
+expression: output
+---
+┌ Error ───────────────────────────────────────────────────┐
+│Failed to delete extension:                               │
+│Extension is in use by profiles                           │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+└──────────────────────────────────────────────────────────┘

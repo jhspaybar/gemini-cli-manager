@@ -89,7 +89,12 @@ impl Storage {
     /// Load a profile by ID
     pub fn load_profile(&self, id: &str) -> Result<Profile> {
         let path = self.data_dir.join("profiles").join(format!("{}.json", id));
-        self.load_json(&path)
+        let profile: Profile = self.load_json(&path)?;
+        
+        // Ensure backward compatibility - if launch_config is missing, it will use default
+        // This is handled by serde's #[serde(default)] attribute on the field
+        
+        Ok(profile)
     }
 
     /// List all profiles
@@ -261,6 +266,7 @@ mod tests {
             extension_ids: vec![],
             environment_variables: HashMap::new(),
             working_directory: None,
+            launch_config: crate::models::profile::LaunchConfig::default(),
             metadata: crate::models::profile::ProfileMetadata {
                 created_at: Utc::now(),
                 updated_at: Utc::now(),
@@ -293,6 +299,7 @@ mod tests {
             extension_ids: vec![],
             environment_variables: HashMap::new(),
             working_directory: None,
+            launch_config: crate::models::profile::LaunchConfig::default(),
             metadata: crate::models::profile::ProfileMetadata {
                 created_at: Utc::now(),
                 updated_at: Utc::now(),
@@ -309,6 +316,7 @@ mod tests {
             extension_ids: vec![],
             environment_variables: HashMap::new(),
             working_directory: None,
+            launch_config: crate::models::profile::LaunchConfig::default(),
             metadata: crate::models::profile::ProfileMetadata {
                 created_at: Utc::now(),
                 updated_at: Utc::now(),

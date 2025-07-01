@@ -1,0 +1,28 @@
+---
+source: tests/snapshots/theme_snapshots_test.rs
+expression: output
+---
+╭────────────────────────────────── Profiles ──────────────────────────────────╮
+││ Testing                                                                     │
+│    QA and testing environment                                                │
+│    0 extensions, 0 env vars | 2 tags                                         │
+│                                                                              │
+│  Production (default)                                                        │
+│    Production environment with minimal extensions                            │
+│    1 extension, 0 env vars | 2 tags                                          │
+│                                                                              │
+│  Development                                                                 │
+│    Local development environment                                             │
+│    2 extensions, 0 env vars | 2 tags                                         │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+╰ ↑/↓: Navigate | Enter: View | e: Edit | l: Launch | n: New | d: Delete | /: S╯

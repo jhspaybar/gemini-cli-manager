@@ -1,0 +1,28 @@
+---
+source: tests/snapshots/theme_snapshots_test.rs
+expression: output
+---
+╭───────────────────────────────── Extensions ─────────────────────────────────╮
+│                              No extensions found                             │
+│                                                                              │
+│                   Press 'n' to create your first extension                   │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+│                                                                              │
+╰ ↑/↓: Navigate | Enter: View | e: Edit | n: New | d: Delete | /: Search | Tab:╯
