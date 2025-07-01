@@ -52,6 +52,7 @@ impl SettingsManager {
             "edit" => self.settings.keybindings.actions.edit = keys,
             "delete" => self.settings.keybindings.actions.delete = keys,
             "create" => self.settings.keybindings.actions.create = keys,
+            "import" => self.settings.keybindings.actions.import = keys,
             "launch" => self.settings.keybindings.actions.launch = keys,
             "select" => self.settings.keybindings.actions.select = keys,
             "search" => self.settings.keybindings.actions.search = keys,
@@ -149,6 +150,7 @@ pub struct ActionKeys {
     pub edit: Vec<String>,
     pub delete: Vec<String>,
     pub create: Vec<String>,
+    pub import: Vec<String>,
     pub launch: Vec<String>,
     pub select: Vec<String>,
     pub search: Vec<String>,
@@ -160,6 +162,7 @@ impl Default for ActionKeys {
             edit: vec!["e".to_string()],
             delete: vec!["d".to_string()],
             create: vec!["n".to_string()],
+            import: vec!["i".to_string()],
             launch: vec!["l".to_string()],
             select: vec!["Enter".to_string(), "Space".to_string()],
             search: vec!["/".to_string()],
@@ -180,6 +183,7 @@ impl KeybindingConfig {
             "edit" => self.actions.edit.clone(),
             "delete" => self.actions.delete.clone(),
             "create" => self.actions.create.clone(),
+            "import" => self.actions.import.clone(),
             "launch" => self.actions.launch.clone(),
             "select" => self.actions.select.clone(),
             "search" => self.actions.search.clone(),
@@ -210,6 +214,7 @@ impl KeybindingConfig {
         config.insert("Edit".to_string(), self.actions.edit.clone());
         config.insert("Delete".to_string(), self.actions.delete.clone());
         config.insert("Create".to_string(), self.actions.create.clone());
+        config.insert("Import".to_string(), self.actions.import.clone());
         config.insert("LaunchProfile".to_string(), self.actions.launch.clone());
         config.insert("Select".to_string(), self.actions.select.clone());
         config.insert("StartSearch".to_string(), self.actions.search.clone());
@@ -307,6 +312,7 @@ impl Default for Settings {
                 "edit".to_string(),
                 "delete".to_string(),
                 "create".to_string(),
+                "import".to_string(),
                 "launch".to_string(),
                 "select".to_string(),
                 "search".to_string(),
@@ -799,6 +805,7 @@ impl Component for Settings {
                                             "edit" => settings_guard.keybindings.actions.edit = keys.clone(),
                                             "delete" => settings_guard.keybindings.actions.delete = keys.clone(),
                                             "create" => settings_guard.keybindings.actions.create = keys.clone(),
+                                            "import" => settings_guard.keybindings.actions.import = keys.clone(),
                                             "launch" => settings_guard.keybindings.actions.launch = keys.clone(),
                                             "select" => settings_guard.keybindings.actions.select = keys.clone(),
                                             "search" => settings_guard.keybindings.actions.search = keys.clone(),
