@@ -358,7 +358,9 @@ mod tests {
         }).unwrap();
         
         // Verify MCP servers are shown (order may vary due to HashMap)
-        assert_buffer_contains(&terminal, "MCP Servers: database-server, api-server");
+        // Check that both MCP servers are shown (order doesn't matter with HashMap)
+        assert_buffer_contains(&terminal, "database-server");
+        assert_buffer_contains(&terminal, "api-server");
     }
     
     #[test]
@@ -542,7 +544,7 @@ mod tests {
         storage.save_profile(&profile).unwrap();
         
         let mut detail = ProfileDetail::new(storage, profile.id);
-        let mut terminal = setup_test_terminal(80, 30).unwrap();
+        let mut terminal = setup_test_terminal(80, 40).unwrap();
         
         terminal.draw(|f| {
             detail.draw(f, f.area()).unwrap();

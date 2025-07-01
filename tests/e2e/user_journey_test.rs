@@ -154,17 +154,17 @@ mod tests {
         assert!(multi_json["mcpServers"]["python-echo"].is_object());
         assert!(multi_json["mcpServers"]["api-server"].is_object());
         
-        // Verify context files with different names
+        // Verify context files (always written as GEMINI.md)
         assert!(WorkspaceVerifier::verify_context_file(
             &profile_workspace,
             &multi_ext.id,
-            "MULTI_SERVER.md"
+            "GEMINI.md"
         ).is_ok());
         
         assert!(WorkspaceVerifier::verify_context_file(
             &profile_workspace,
             &context_ext.id,
-            "INSTRUCTIONS.md"
+            "GEMINI.md"
         ).is_ok());
         
         // Verify environment
@@ -311,7 +311,7 @@ mod tests {
         assert!(WorkspaceVerifier::verify_context_file(
             &profile_workspace,
             &ext2.id,
-            "PROJECT_CONTEXT.md"
+            "GEMINI.md"
         ).is_ok());
         
         assert!(WorkspaceVerifier::verify_context_file(

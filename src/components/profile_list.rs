@@ -475,6 +475,13 @@ impl Component for ProfileList {
                     }
                     
                     match key.code {
+                        KeyCode::Esc => {
+                            // Exit search mode
+                            self.search_mode = false;
+                            self.search_input.reset();
+                            self.update_filter();
+                            Ok(Some(Action::Render))
+                        }
                         _ => {
                             // Let tui-input handle the key event
                             if self.search_input.handle_event(&crossterm::event::Event::Key(key)).is_some() {
@@ -541,6 +548,26 @@ impl Component for ProfileList {
                     
                     // Handle special keys that aren't customizable
                     match key.code {
+                        // Fallback for navigation keys when settings aren't available
+                        KeyCode::Down | KeyCode::Char('j') => {
+                            self.next();
+                            return Ok(Some(Action::Render));
+                        }
+                        KeyCode::Up | KeyCode::Char('k') => {
+                            self.previous();
+                            return Ok(Some(Action::Render));
+                        }
+                        KeyCode::Enter => {
+                            if let Some(profile) = self.get_selected_profile() {
+                                return Ok(Some(Action::ViewProfileDetails(profile.id.clone())));
+                            }
+                            return Ok(None);
+                        }
+                        KeyCode::Char('/') => {
+                            self.search_mode = true;
+                            self.search_input.reset();
+                            return Ok(Some(Action::Render));
+                        }
                         KeyCode::Char('x') => {
                             if let Some(profile) = self.get_selected_profile() {
                                 let profile_id = profile.id.clone();

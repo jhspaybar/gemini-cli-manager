@@ -1,6 +1,5 @@
 ---
 source: tests/snapshots/theme_snapshots_test.rs
-assertion_line: 36
 expression: output
 ---
 ╭──────────────────────────── Create New Extension ────────────────────────────╮
@@ -29,7 +28,7 @@ expression: output
 │ │                                    ││                                    │ │
 │ │                                    ││                                    │ │
 │ └────────────────────────────────────┘└────────────────────────────────────┘ │
-│          Tab: Next field | Type to edit | Ctrl+S: Save | Esc: Cancel         │
+│         Tab: Next field | Type: Edit | Ctrl+S: Save | Esc, b: Cancel         │
 │                                                                              │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯

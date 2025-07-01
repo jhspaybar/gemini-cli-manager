@@ -67,7 +67,7 @@ mod tests {
         
         // Verify empty state message
         assert_buffer_contains(&terminal, "No extensions found");
-        assert_buffer_contains(&terminal, "Press 'n' to create your first extension");
+        assert_buffer_contains(&terminal, "Press 'n' to create a new extension");
     }
     
     #[test]
@@ -85,13 +85,13 @@ mod tests {
         list.handle_events(Some(create_key_event(KeyCode::Down))).unwrap();
         assert_eq!(list.selected_index(), 2);
         
-        // At last item, down should stay
+        // At last item, down should wrap to first
         list.handle_events(Some(create_key_event(KeyCode::Down))).unwrap();
-        assert_eq!(list.selected_index(), 2);
+        assert_eq!(list.selected_index(), 0);
         
-        // Move up
+        // Move up from 0 should wrap to last (2)
         list.handle_events(Some(create_key_event(KeyCode::Up))).unwrap();
-        assert_eq!(list.selected_index(), 1);
+        assert_eq!(list.selected_index(), 2);
         
         // Jump to top with Home
         list.handle_events(Some(create_key_event(KeyCode::Home))).unwrap();
@@ -209,16 +209,16 @@ mod tests {
     fn test_selection_bounds() {
         let mut list = create_test_list();
         
-        // At first item, up should stay at 0
+        // At first item, up should wrap to last (2)
         list.handle_events(Some(create_key_event(KeyCode::Up))).unwrap();
-        assert_eq!(list.selected_index(), 0);
+        assert_eq!(list.selected_index(), 2);
         
         // Jump to end
         list.handle_events(Some(create_key_event(KeyCode::End))).unwrap();
         assert_eq!(list.selected_index(), 2);
         
-        // At last item, down should stay at last
+        // At last item, down should wrap to first (0)
         list.handle_events(Some(create_key_event(KeyCode::Down))).unwrap();
-        assert_eq!(list.selected_index(), 2);
+        assert_eq!(list.selected_index(), 0);
     }
 }

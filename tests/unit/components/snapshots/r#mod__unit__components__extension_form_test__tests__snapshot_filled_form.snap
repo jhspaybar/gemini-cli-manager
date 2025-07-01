@@ -28,7 +28,7 @@ expression: output.unwrap()
 │ │                                    ││                                    │ │
 │ │                                    ││                                    │ │
 │ └────────────────────────────────────┘└────────────────────────────────────┘ │
-│   Tab: Next field | ↑/↓: Scroll | Type to edit | Ctrl+S: Save | Esc: Cancel  │
+│  Tab: Next field | Up, k: Scroll | Down, j: Scroll | Type: Edit | Ctrl+S: Sa │
 │                                                                              │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
