@@ -31,6 +31,15 @@ impl ExtensionDetail {
         detail.storage = Some(storage);
         detail
     }
+    
+    #[allow(dead_code)]
+    pub fn new(storage: Storage, extension_id: String) -> Self {
+        let mut detail = Self::with_storage(storage.clone());
+        if let Ok(extension) = storage.load_extension(&extension_id) {
+            detail.set_extension(extension);
+        }
+        detail
+    }
 
     pub fn set_extension(&mut self, extension: Extension) {
         self.extension = Some(extension);
@@ -253,7 +262,15 @@ impl Component for ExtensionDetail {
         frame.render_widget(paragraph, inner_area);
 
         // Help bar
-        let help_text = " ↑/↓: Scroll | b: Back | e: Edit | d: Delete | q: Quit ";
+        use crate::utils::build_help_text;
+        let help_text = build_help_text(&[
+            ("up", "Scroll"),
+            ("down", "Scroll"),
+            ("back", "Back"),
+            ("edit", "Edit"),
+            ("delete", "Delete"),
+            ("quit", "Quit"),
+        ]);
         let help_bar = Paragraph::new(help_text)
             .style(Style::default().fg(theme::text_muted()))
             .alignment(Alignment::Center)
@@ -302,5 +319,16 @@ impl Component for ExtensionDetail {
             },
             _ => Ok(None),
         }
+    }
+}
+
+// Test helper methods
+impl ExtensionDetail {
+    /// Test helper method - returns current section
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn current_section(&self) -> usize {
+        // For now, we don't have sections, but this could track scroll position
+        0
     }
 }

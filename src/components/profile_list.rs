@@ -1,3 +1,5 @@
+use std::sync::{Arc, RwLock};
+
 use color_eyre::Result;
 use ratatui::{prelude::*, widgets::*};
 use tokio::sync::mpsc::UnboundedSender;
@@ -6,6 +8,7 @@ use tui_input::backend::crossterm::EventHandler;
 
 use super::Component;
 use crate::{action::Action, config::Config, models::Profile, storage::Storage, theme};
+use crate::components::settings_view::UserSettings;
 
 pub struct ProfileList {
     command_tx: Option<UnboundedSender<Action>>,
@@ -16,6 +19,7 @@ pub struct ProfileList {
     storage: Option<Storage>,
     search_mode: bool,
     search_input: Input,
+    settings: Option<Arc<RwLock<UserSettings>>>,
 }
 
 impl Default for ProfileList {
@@ -29,6 +33,7 @@ impl Default for ProfileList {
             storage: None,
             search_mode: false,
             search_input: Input::default(),
+            settings: None,
         }
     }
 }
@@ -95,6 +100,102 @@ impl ProfileList {
         self.filtered_profiles.get(self.selected)
             .and_then(|&idx| self.profiles.get(idx))
     }
+    
+    // Public methods for testing
+    #[allow(dead_code)]
+    pub fn selected_index(&self) -> usize {
+        self.selected
+    }
+    
+    #[allow(dead_code)]
+    pub fn is_search_mode(&self) -> bool {
+        self.search_mode
+    }
+    
+    #[allow(dead_code)]
+    pub fn search_query(&self) -> &str {
+        self.search_input.value()
+    }
+    
+    #[allow(dead_code)]
+    pub fn filtered_count(&self) -> usize {
+        self.filtered_profiles.len()
+    }
+    
+    #[allow(dead_code)]
+    pub fn total_count(&self) -> usize {
+        self.profiles.len()
+    }
+    
+    fn check_keybinding(&self, key: &crossterm::event::KeyEvent, action: &str) -> bool {
+        if let Some(settings) = &self.settings {
+            if let Ok(settings_lock) = settings.read() {
+                let configured_keys = settings_lock.keybindings.get_keys_for_action(action);
+                let key_str = format_key_event(key);
+                return configured_keys.contains(&key_str);
+            }
+        }
+        false
+    }
+}
+
+// Helper function to format key events
+fn format_key_event(key: &crossterm::event::KeyEvent) -> String {
+    use crossterm::event::{KeyCode, KeyModifiers};
+    
+    let mut parts = Vec::new();
+    
+    // Add modifiers
+    if key.modifiers.contains(KeyModifiers::CONTROL) {
+        parts.push("Ctrl");
+    }
+    if key.modifiers.contains(KeyModifiers::ALT) {
+        parts.push("Alt");
+    }
+    if key.modifiers.contains(KeyModifiers::SHIFT) {
+        parts.push("Shift");
+    }
+    
+    // Add the key itself
+    let key_str = match key.code {
+        KeyCode::Char(c) => {
+            match c {
+                ' ' => "Space".to_string(),
+                c => {
+                    if key.modifiers.contains(KeyModifiers::SHIFT) {
+                        c.to_uppercase().to_string()
+                    } else {
+                        c.to_string()
+                    }
+                }
+            }
+        }
+        KeyCode::F(n) => format!("F{}", n),
+        KeyCode::Up => "Up".to_string(),
+        KeyCode::Down => "Down".to_string(),
+        KeyCode::Left => "Left".to_string(),
+        KeyCode::Right => "Right".to_string(),
+        KeyCode::Enter => "Enter".to_string(),
+        KeyCode::Tab => "Tab".to_string(),
+        KeyCode::BackTab => "BackTab".to_string(),
+        KeyCode::Backspace => "Backspace".to_string(),
+        KeyCode::Delete => "Delete".to_string(),
+        KeyCode::Insert => "Insert".to_string(),
+        KeyCode::Home => "Home".to_string(),
+        KeyCode::End => "End".to_string(),
+        KeyCode::PageUp => "PageUp".to_string(),
+        KeyCode::PageDown => "PageDown".to_string(),
+        KeyCode::Esc => "Esc".to_string(),
+        _ => return "Unknown".to_string(),
+    };
+    
+    parts.push(&key_str);
+    
+    if parts.len() > 1 && !parts[0].starts_with('F') {
+        parts.join("+")
+    } else {
+        key_str
+    }
 }
 
 impl Component for ProfileList {
@@ -105,6 +206,11 @@ impl Component for ProfileList {
 
     fn register_config_handler(&mut self, config: Config) -> Result<()> {
         self.config = config;
+        Ok(())
+    }
+    
+    fn register_settings_handler(&mut self, settings: Arc<RwLock<UserSettings>>) -> Result<()> {
+        self.settings = Some(settings);
         Ok(())
     }
 
@@ -255,25 +361,69 @@ impl Component for ProfileList {
             })
             .collect();
 
-        // Create the list widget
-        let list = List::new(items)
-            .block(block)
-            .highlight_style(Style::default().bg(theme::selection()))
-            .highlight_symbol("│ ");
+        // Check if list is empty
+        if self.profiles.is_empty() || (self.search_mode && self.filtered_profiles.is_empty() && !self.search_input.value().is_empty()) {
+            // Show empty state message
+            let empty_msg = if self.search_mode && !self.search_input.value().is_empty() {
+                vec![
+                    "No profiles match your search",
+                    "",
+                    "Try a different search term"
+                ]
+            } else {
+                vec![
+                    "No profiles found",
+                    "",
+                    "Press 'n' to create your first profile"
+                ]
+            };
+            
+            let empty_widget = Paragraph::new(empty_msg.join("\n"))
+                .style(Style::default().fg(theme::text_secondary()))
+                .alignment(Alignment::Center)
+                .block(block);
+            
+            frame.render_widget(empty_widget, list_area);
+        } else {
+            // Create the list widget
+            let list = List::new(items)
+                .block(block)
+                .highlight_style(Style::default().bg(theme::selection()))
+                .highlight_symbol("│ ");
 
-        // Create a stateful list to track selection
-        let mut state = ListState::default();
-        state.select(Some(self.selected));
+            // Create a stateful list to track selection
+            let mut state = ListState::default();
+            state.select(Some(self.selected));
 
-        // Render the list
-        frame.render_stateful_widget(list, list_area, &mut state);
+            // Render the list
+            frame.render_stateful_widget(list, list_area, &mut state);
+        }
 
         // Add help text at the bottom
         if list_area.height > 4 {
             let help_text = if self.search_mode {
-                " Type to search | Esc: Close search | ↑/↓: Navigate results "
+                // Use dynamic help text for search mode too
+                use crate::utils::build_help_text;
+                build_help_text(&[
+                    ("Type", "Search"),
+                    ("back", "Close search"),
+                    ("up", "Navigate results"),
+                ])
             } else {
-                " ↑/↓: Navigate | Enter: View | e: Edit | l: Launch | n: New | d: Delete | /: Search | Tab: Extensions | q: Quit "
+                // Use dynamic help text based on current keybindings
+                use crate::utils::build_help_text;
+                build_help_text(&[
+                    ("up", "Navigate"),
+                    ("down", "Navigate"),
+                    ("select", "View"),
+                    ("edit", "Edit"),
+                    ("launch", "Launch"),
+                    ("create", "New"),
+                    ("delete", "Delete"),
+                    ("search", "Search"),
+                    ("tab", "Extensions"),
+                    ("quit", "Quit"),
+                ])
             };
             let help_style = Style::default().fg(theme::text_muted());
             let help_area = Rect {
@@ -300,28 +450,31 @@ impl Component for ProfileList {
             Some(crate::tui::Event::Key(key)) => {
                 if self.search_mode {
                     // Handle search mode input
+                    if self.check_keybinding(&key, "back") {
+                        self.search_mode = false;
+                        self.search_input.reset();
+                        self.update_filter();
+                        return Ok(Some(Action::Render));
+                    }
+                    
+                    if self.check_keybinding(&key, "up") {
+                        self.previous();
+                        return Ok(Some(Action::Render));
+                    }
+                    
+                    if self.check_keybinding(&key, "down") {
+                        self.next();
+                        return Ok(Some(Action::Render));
+                    }
+                    
+                    if self.check_keybinding(&key, "select") {
+                        if let Some(profile) = self.get_selected_profile() {
+                            return Ok(Some(Action::ViewProfileDetails(profile.id.clone())));
+                        }
+                        return Ok(None);
+                    }
+                    
                     match key.code {
-                        KeyCode::Esc => {
-                            self.search_mode = false;
-                            self.search_input.reset();
-                            self.update_filter();
-                            Ok(Some(Action::Render))
-                        }
-                        KeyCode::Up => {
-                            self.previous();
-                            Ok(Some(Action::Render))
-                        }
-                        KeyCode::Down => {
-                            self.next();
-                            Ok(Some(Action::Render))
-                        }
-                        KeyCode::Enter => {
-                            if let Some(profile) = self.get_selected_profile() {
-                                Ok(Some(Action::ViewProfileDetails(profile.id.clone())))
-                            } else {
-                                Ok(None)
-                            }
-                        }
                         _ => {
                             // Let tui-input handle the key event
                             if self.search_input.handle_event(&crossterm::event::Event::Key(key)).is_some() {
@@ -333,59 +486,82 @@ impl Component for ProfileList {
                         }
                     }
                 } else {
-                    // Normal mode
+                    // Normal mode - use configured keybindings
+                    if self.check_keybinding(&key, "up") {
+                        self.previous();
+                        return Ok(Some(Action::Render));
+                    }
+                    
+                    if self.check_keybinding(&key, "down") {
+                        self.next();
+                        return Ok(Some(Action::Render));
+                    }
+                    
+                    if self.check_keybinding(&key, "select") {
+                        if let Some(profile) = self.get_selected_profile() {
+                            return Ok(Some(Action::ViewProfileDetails(profile.id.clone())));
+                        }
+                        return Ok(None);
+                    }
+                    
+                    if self.check_keybinding(&key, "edit") {
+                        if let Some(profile) = self.get_selected_profile() {
+                            return Ok(Some(Action::EditProfile(profile.id.clone())));
+                        }
+                        return Ok(None);
+                    }
+                    
+                    if self.check_keybinding(&key, "launch") {
+                        if let Some(profile) = self.get_selected_profile() {
+                            return Ok(Some(Action::LaunchWithProfile(profile.id.clone())));
+                        }
+                        return Ok(None);
+                    }
+                    
+                    if self.check_keybinding(&key, "create") {
+                        return Ok(Some(Action::CreateProfile));
+                    }
+                    
+                    if self.check_keybinding(&key, "delete") {
+                        if let Some(profile) = self.get_selected_profile() {
+                            return Ok(Some(Action::DeleteProfile(profile.id.clone())));
+                        }
+                        return Ok(None);
+                    }
+                    if self.check_keybinding(&key, "search") {
+                        // Enter search mode
+                        self.search_mode = true;
+                        self.search_input.reset();
+                        return Ok(Some(Action::Render));
+                    }
+                    
+                    if self.check_keybinding(&key, "quit") {
+                        return Ok(Some(Action::Quit));
+                    }
+                    
+                    // Handle special keys that aren't customizable
                     match key.code {
-                KeyCode::Up | KeyCode::Char('k') => {
-                    self.previous();
-                    Ok(Some(Action::Render))
-                }
-                KeyCode::Down | KeyCode::Char('j') => {
-                    self.next();
-                    Ok(Some(Action::Render))
-                }
-                KeyCode::Enter => {
-                    if let Some(profile) = self.get_selected_profile() {
-                        Ok(Some(Action::ViewProfileDetails(profile.id.clone())))
-                    } else {
-                        Ok(None)
+                        KeyCode::Char('x') => {
+                            if let Some(profile) = self.get_selected_profile() {
+                                let profile_id = profile.id.clone();
+                                // Set this profile as default
+                                for p in &mut self.profiles {
+                                    p.metadata.is_default = p.id == profile_id;
+                                }
+                                // Save the updated profiles
+                                if let Some(storage) = &self.storage {
+                                    for p in &self.profiles {
+                                        let _ = storage.save_profile(p);
+                                    }
+                                }
+                                Ok(Some(Action::Render))
+                            } else {
+                                Ok(None)
+                            }
+                        }
+                        KeyCode::Tab => Ok(Some(Action::NavigateToSettings)),
+                        _ => Ok(None),
                     }
-                }
-                KeyCode::Char('e') => {
-                    if let Some(profile) = self.get_selected_profile() {
-                        Ok(Some(Action::EditProfile(profile.id.clone())))
-                    } else {
-                        Ok(None)
-                    }
-                }
-                KeyCode::Char('l') => {
-                    if let Some(profile) = self.get_selected_profile() {
-                        Ok(Some(Action::LaunchWithProfile(profile.id.clone())))
-                    } else {
-                        Ok(None)
-                    }
-                }
-                KeyCode::Char('n') => Ok(Some(Action::CreateProfile)),
-                KeyCode::Char('d') => {
-                    if let Some(profile) = self.get_selected_profile() {
-                        Ok(Some(Action::DeleteProfile(profile.id.clone())))
-                    } else {
-                        Ok(None)
-                    }
-                }
-                KeyCode::Char('x') => {
-                    // TODO: Implement set default
-                    Ok(None)
-                }
-                KeyCode::Char('/') => {
-                    // Enter search mode
-                    self.search_mode = true;
-                    self.search_input.reset();
-                    Ok(Some(Action::Render))
-                }
-                KeyCode::Char('q') => Ok(Some(Action::Quit)),
-                KeyCode::Tab => Ok(Some(Action::NavigateToExtensions)),
-                _ => Ok(None),
-            }
                 }
             }
             _ => Ok(None),

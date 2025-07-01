@@ -15,11 +15,11 @@ pub struct ConfirmDialog {
 }
 
 impl ConfirmDialog {
-    pub fn new(title: String, message: String) -> Self {
+    pub fn new(title: &str, message: &str) -> Self {
         Self {
             command_tx: None,
-            title,
-            message,
+            title: title.to_string(),
+            message: message.to_string(),
             confirm_action: None,
             cancel_action: None,
             selected_button: false, // Default to Cancel for safety
@@ -71,10 +71,12 @@ impl Component for ConfirmDialog {
         // Create the dialog block
         let block = Block::default()
             .title(format!(" {} ", self.title))
+            .title_style(Style::default().fg(theme::warning()).add_modifier(Modifier::BOLD))
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Double)
-            .border_style(Style::default().fg(theme::error()));
+            .border_style(Style::default().fg(theme::warning()))
+            .style(Style::default().bg(theme::overlay()));
         
         let inner = block.inner(dialog_area);
         frame.render_widget(block, dialog_area);
@@ -89,10 +91,14 @@ impl Component for ConfirmDialog {
             ])
             .split(inner);
         
-        // Render message
-        let message = Paragraph::new(self.message.as_str())
+        // Render message with warning icon
+        let message_text = format!("⚠ {}", self.message);
+        let message = Paragraph::new(message_text)
             .wrap(Wrap { trim: true })
-            .alignment(Alignment::Center);
+            .alignment(Alignment::Center)
+            .style(Style::default()
+                .fg(theme::text_primary())
+                .bg(theme::overlay()));
         frame.render_widget(message, chunks[0]);
         
         // Render buttons
@@ -108,10 +114,12 @@ impl Component for ConfirmDialog {
         let cancel_style = if !self.selected_button {
             Style::default()
                 .fg(theme::background())
-                .bg(theme::text_primary())
+                .bg(theme::success())
                 .add_modifier(Modifier::BOLD)
         } else {
-            Style::default().fg(theme::text_muted())
+            Style::default()
+                .fg(theme::success())
+                .bg(theme::overlay())
         };
         
         let cancel_button = Paragraph::new(" Cancel (Esc) ")
@@ -120,7 +128,10 @@ impl Component for ConfirmDialog {
             .block(
                 Block::default()
                     .borders(Borders::ALL)
-                    .border_type(BorderType::Rounded),
+                    .border_type(BorderType::Rounded)
+                    .border_style(Style::default().fg(
+                        if !self.selected_button { theme::success() } else { theme::border() }
+                    )),
             );
         frame.render_widget(cancel_button, button_area[0]);
         
@@ -131,7 +142,9 @@ impl Component for ConfirmDialog {
                 .bg(theme::error())
                 .add_modifier(Modifier::BOLD)
         } else {
-            Style::default().fg(theme::error())
+            Style::default()
+                .fg(theme::error())
+                .bg(theme::overlay())
         };
         
         let confirm_button = Paragraph::new(" Delete (Enter) ")
@@ -140,7 +153,10 @@ impl Component for ConfirmDialog {
             .block(
                 Block::default()
                     .borders(Borders::ALL)
-                    .border_type(BorderType::Rounded),
+                    .border_type(BorderType::Rounded)
+                    .border_style(Style::default().fg(
+                        if self.selected_button { theme::error() } else { theme::border() }
+                    )),
             );
         frame.render_widget(confirm_button, button_area[1]);
         
@@ -181,5 +197,43 @@ impl Component for ConfirmDialog {
             },
             _ => Ok(None),
         }
+    }
+}
+
+// Test helper methods
+impl ConfirmDialog {
+    /// Test helper method - returns title
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+    
+    /// Test helper method - returns message
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn message(&self) -> &str {
+        &self.message
+    }
+    
+    /// Test helper method - returns selected button state
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn selected_button(&self) -> bool {
+        self.selected_button
+    }
+    
+    /// Test helper method - returns if confirmed
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn is_confirmed(&self) -> bool {
+        self.selected_button
+    }
+    
+    /// Test helper method - returns selected option index
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn selected_option(&self) -> usize {
+        if self.selected_button { 0 } else { 1 }
     }
 }

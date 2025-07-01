@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::sync::{Arc, RwLock};
 use std::time::{Duration, Instant};
 
 use color_eyre::Result;
@@ -11,7 +12,8 @@ use crate::{
         confirm_dialog::ConfirmDialog, extension_detail::ExtensionDetail, 
         extension_form::ExtensionForm, extension_list::ExtensionList, 
         profile_detail::ProfileDetail, profile_form::ProfileForm, 
-        profile_list::ProfileList, tab_bar::TabBar, Component,
+        profile_list::ProfileList, settings_view::{Settings, UserSettings}, 
+        tab_bar::TabBar, Component,
     },
     config::Config,
     storage::Storage,
@@ -45,6 +47,8 @@ pub struct ViewManager {
     deleting_extension_id: Option<String>,
     came_from_detail_view: bool,  // Track if we came from detail view when editing
     error_message: Option<(String, Instant)>,
+    success_message: Option<(String, Instant)>,
+    message_display_duration: Duration,
     error_display_duration: Duration,
 }
 
@@ -54,6 +58,20 @@ impl ViewManager {
         // Create a default storage instance
         let storage = Storage::default();
         Self::with_storage(storage)
+    }
+    
+    /// Test helper method - returns current view
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn current_view(&self) -> ViewType {
+        self.current_view
+    }
+    
+    /// Test helper method - checks if error is displayed
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn has_error(&self) -> bool {
+        self.error_message.is_some()
     }
     
     pub fn with_storage(storage: Storage) -> Self {
@@ -66,6 +84,7 @@ impl ViewManager {
         views.insert(ViewType::ProfileList, Box::new(ProfileList::with_storage(storage.clone())));
         views.insert(ViewType::ProfileDetail, Box::new(ProfileDetail::with_storage(storage.clone())));
         views.insert(ViewType::ProfileCreate, Box::new(ProfileForm::new(storage.clone())));
+        views.insert(ViewType::Settings, Box::new(Settings::new()));
         
         Self {
             current_view: ViewType::ExtensionList,
@@ -80,7 +99,9 @@ impl ViewManager {
             deleting_extension_id: None,
             came_from_detail_view: false,
             error_message: None,
-            error_display_duration: Duration::from_secs(5),
+            success_message: None,
+            message_display_duration: Duration::from_secs(3),
+            error_display_duration: Duration::from_secs(10),
         }
     }
 
@@ -99,6 +120,15 @@ impl ViewManager {
         // Register config for all views
         for (_, view) in self.views.iter_mut() {
             view.register_config_handler(config.clone())?;
+        }
+        
+        Ok(())
+    }
+
+    pub fn register_settings_handler(&mut self, settings: Arc<RwLock<UserSettings>>) -> Result<()> {
+        // Register settings for all views
+        for (_, view) in self.views.iter_mut() {
+            view.register_settings_handler(settings.clone())?;
         }
         
         Ok(())
@@ -186,8 +216,8 @@ impl ViewManager {
                     
                     // Create confirmation dialog
                     let dialog = ConfirmDialog::new(
-                        "Delete Extension".to_string(),
-                        message,
+                        "Delete Extension",
+                        &message,
                     ).with_actions(Action::ConfirmDelete, Action::CancelDelete);
                     
                     self.views.insert(ViewType::ConfirmDelete, Box::new(dialog));
@@ -309,8 +339,8 @@ impl ViewManager {
                 
                 // Create confirmation dialog
                 let dialog = ConfirmDialog::new(
-                    "Delete Profile".to_string(),
-                    message,
+                    "Delete Profile",
+                    &message,
                 ).with_actions(Action::ConfirmDelete, Action::CancelDelete);
                 
                 self.views.insert(ViewType::ConfirmDelete, Box::new(dialog));
@@ -326,14 +356,22 @@ impl ViewManager {
                             let _ = tx.send(Action::Error(format!("Failed to delete profile: {}", e)));
                         }
                     } else {
-                        // Send refresh action
+                        // Send success notification and refresh action
                         if let Some(tx) = &self.action_tx {
+                            let _ = tx.send(Action::Success("Profile deleted successfully".to_string()));
                             let _ = tx.send(Action::RefreshProfiles);
                             let _ = tx.send(Action::Render);
                         }
                     }
                     // Clear deletion state
                     self.deleting_profile_id = None;
+                    
+                    // If we were in profile detail view, go to list instead
+                    if self.previous_view == Some(ViewType::ProfileDetail) {
+                        self.navigate_to(ViewType::ProfileList);
+                    } else if let Some(prev) = self.previous_view {
+                        self.navigate_to(prev);
+                    }
                 } else if let Some(id) = &self.deleting_extension_id {
                     // Delete extension
                     if let Err(e) = self.storage.delete_extension(id) {
@@ -342,19 +380,22 @@ impl ViewManager {
                             let _ = tx.send(Action::Error(format!("Failed to delete extension: {}", e)));
                         }
                     } else {
-                        // Send refresh action
+                        // Send success notification and refresh action
                         if let Some(tx) = &self.action_tx {
+                            let _ = tx.send(Action::Success("Extension deleted successfully".to_string()));
                             let _ = tx.send(Action::RefreshExtensions);
                             let _ = tx.send(Action::Render);
                         }
                     }
                     // Clear deletion state
                     self.deleting_extension_id = None;
-                }
-                
-                // Go back to previous view
-                if let Some(prev) = self.previous_view {
-                    self.navigate_to(prev);
+                    
+                    // If we were in extension detail view, go to list instead
+                    if self.previous_view == Some(ViewType::ExtensionDetail) {
+                        self.navigate_to(ViewType::ExtensionList);
+                    } else if let Some(prev) = self.previous_view {
+                        self.navigate_to(prev);
+                    }
                 }
             }
             Action::CancelDelete => {
@@ -368,11 +409,21 @@ impl ViewManager {
             Action::Error(msg) => {
                 self.error_message = Some((msg.clone(), Instant::now()));
             }
+            Action::Success(msg) => {
+                self.success_message = Some((msg.clone(), Instant::now()));
+            }
             Action::Tick => {
-                // Clear old error messages
+                // Clear old error messages (using longer duration)
                 if let Some((_, timestamp)) = &self.error_message {
                     if timestamp.elapsed() > self.error_display_duration {
                         self.error_message = None;
+                    }
+                }
+                
+                // Clear old success messages
+                if let Some((_, timestamp)) = &self.success_message {
+                    if timestamp.elapsed() > self.message_display_duration {
+                        self.success_message = None;
                     }
                 }
             }
@@ -398,6 +449,7 @@ impl ViewManager {
 
     pub fn draw(&mut self, frame: &mut Frame, area: Rect) -> Result<()> {
         use ratatui::layout::{Constraint, Direction, Layout};
+        use ratatui::style::Modifier;
         use ratatui::widgets::{Block, BorderType, Borders, Clear, Paragraph, Wrap};
         
         // Split area into tab bar and content
@@ -427,20 +479,59 @@ impl ViewManager {
             // Create error block with background
             let error_block = Block::default()
                 .title(" Error ")
+                .title_style(Style::default().fg(theme::error()).add_modifier(Modifier::BOLD))
                 .title_alignment(Alignment::Center)
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .border_style(Style::default().fg(theme::error()))
                 .style(Style::default().bg(theme::overlay()));
             
-            let error_content = format!("{}\n\n(Press Esc to dismiss)", message);
+            let error_content = format!("✗ {}\n\n(Press Esc to dismiss)", message);
             let error_text = Paragraph::new(error_content)
                 .block(error_block)
-                .style(Style::default().fg(theme::text_primary()).bg(theme::overlay()))
+                .style(Style::default()
+                    .fg(theme::error())
+                    .bg(theme::overlay())
+                    .add_modifier(Modifier::BOLD))
                 .alignment(Alignment::Center)
                 .wrap(Wrap { trim: true });
             
             frame.render_widget(error_text, popup_area);
+        }
+        
+        // Draw success message if present
+        if let Some((message, _)) = &self.success_message {
+            // Position in top-right corner
+            let notification_width = 40.min(area.width - 4);
+            let notification_height = 3;
+            let notification_area = Rect {
+                x: area.width.saturating_sub(notification_width + 2),
+                y: 1,
+                width: notification_width,
+                height: notification_height,
+            };
+            
+            // Clear the area first
+            frame.render_widget(Clear, notification_area);
+            
+            // Create success block with background
+            let success_block = Block::default()
+                .title(" Success ")
+                .title_style(Style::default().fg(theme::success()).add_modifier(Modifier::BOLD))
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .border_style(Style::default().fg(theme::success()))
+                .style(Style::default().bg(theme::surface()));
+            
+            let success_text = Paragraph::new(format!("✓ {}", message))
+                .style(Style::default()
+                    .fg(theme::success())
+                    .bg(theme::surface())
+                    .add_modifier(Modifier::BOLD))
+                .block(success_block)
+                .wrap(Wrap { trim: true });
+            
+            frame.render_widget(success_text, notification_area);
         }
         
         Ok(())
@@ -497,6 +588,10 @@ impl Component for ViewManager {
 
     fn register_config_handler(&mut self, config: Config) -> Result<()> {
         self.register_config_handler(config)
+    }
+
+    fn register_settings_handler(&mut self, settings: Arc<RwLock<UserSettings>>) -> Result<()> {
+        self.register_settings_handler(settings)
     }
 
     fn init(&mut self, area: Size) -> Result<()> {

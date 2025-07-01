@@ -9,8 +9,8 @@ use tui_input::backend::crossterm::EventHandler;
 use super::Component;
 use crate::{action::Action, config::Config, models::{Extension, Profile, profile::ProfileMetadata}, storage::Storage, theme};
 
-#[derive(Debug, Clone)]
-enum FormField {
+#[derive(Debug, Clone, PartialEq)]
+pub enum FormField {
     Name,
     Description,
     WorkingDirectory,
@@ -93,7 +93,26 @@ impl ProfileForm {
             id.clone()
         } else {
             // Generate a simple ID from the name
-            self.name_input.value().to_lowercase().replace(' ', "-")
+            // Replace spaces with hyphens and remove special characters
+            self.name_input.value()
+                .to_lowercase()
+                .chars()
+                .map(|c| {
+                    if c.is_alphanumeric() {
+                        c
+                    } else if c == ' ' || c == '-' || c == '_' || c == '.' {
+                        '-'
+                    } else {
+                        // Remove other special characters
+                        '\0'
+                    }
+                })
+                .filter(|c| *c != '\0')
+                .collect::<String>()
+                .split('-')
+                .filter(|s| !s.is_empty())
+                .collect::<Vec<_>>()
+                .join("-")
         };
         
         let tags: Vec<String> = self.tags_input.value()
@@ -359,9 +378,26 @@ impl Component for ProfileForm {
         }
         
         // Help text
+        use crate::utils::build_help_text;
         let help_text = match self.current_field {
-            FormField::Extensions => " Tab: Next field | ↑/↓: Navigate | Space: Toggle | Ctrl+S: Save | Esc: Cancel ",
-            _ => " Tab: Next field | Type to edit | Ctrl+S: Save | Esc: Cancel ",
+            FormField::Extensions => {
+                build_help_text(&[
+                    ("tab", "Next field"),
+                    ("up", "Navigate"),
+                    ("down", "Navigate"),
+                    ("Space", "Toggle"),
+                    ("Ctrl+S", "Save"),
+                    ("back", "Cancel"),
+                ])
+            }
+            _ => {
+                build_help_text(&[
+                    ("tab", "Next field"),
+                    ("Type", "Edit"),
+                    ("Ctrl+S", "Save"),
+                    ("back", "Cancel"),
+                ])
+            }
         };
         let help_style = Style::default().fg(theme::text_muted());
         frame.render_widget(
@@ -388,8 +424,10 @@ impl Component for ProfileForm {
                         if !self.name_input.value().is_empty() {
                             match self.save_profile() {
                                 Ok(_) => {
-                                    // Send refresh action before navigating back
+                                    // Send success notification and refresh action
                                     if let Some(tx) = &self.command_tx {
+                                        let action_verb = if self.edit_profile_id.is_some() { "updated" } else { "created" };
+                                        let _ = tx.send(Action::Success(format!("Profile {} successfully", action_verb)));
                                         let _ = tx.send(Action::RefreshProfiles);
                                         let _ = tx.send(Action::Render);
                                     }
@@ -432,14 +470,18 @@ impl Component for ProfileForm {
                             FormField::Extensions => {
                                 match key.code {
                                     KeyCode::Up => {
-                                        if self.extension_cursor > 0 {
-                                            self.extension_cursor -= 1;
+                                        if !self.available_extensions.is_empty() {
+                                            if self.extension_cursor == 0 {
+                                                self.extension_cursor = self.available_extensions.len() - 1;
+                                            } else {
+                                                self.extension_cursor -= 1;
+                                            }
                                             return Ok(Some(Action::Render));
                                         }
                                     }
                                     KeyCode::Down => {
-                                        if self.extension_cursor < self.available_extensions.len() - 1 {
-                                            self.extension_cursor += 1;
+                                        if !self.available_extensions.is_empty() {
+                                            self.extension_cursor = (self.extension_cursor + 1) % self.available_extensions.len();
                                             return Ok(Some(Action::Render));
                                         }
                                     }
@@ -462,5 +504,80 @@ impl Component for ProfileForm {
             _ => {}
         }
         Ok(None)
+    }
+}
+
+// Test helper methods
+impl ProfileForm {
+    /// Test helper method - returns current field
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn current_field(&self) -> &FormField {
+        &self.current_field
+    }
+    
+    /// Test helper method - returns if in edit mode
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn is_edit_mode(&self) -> bool {
+        self.edit_mode
+    }
+    
+    /// Test helper method - returns name input
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn name_input(&self) -> &Input {
+        &self.name_input
+    }
+    
+    /// Test helper method - returns description input
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn description_input(&self) -> &Input {
+        &self.description_input
+    }
+    
+    /// Test helper method - returns working directory input
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn working_directory_input(&self) -> &Input {
+        &self.working_directory_input
+    }
+    
+    /// Test helper method - returns tags input
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn tags_input(&self) -> &Input {
+        &self.tags_input
+    }
+    
+    /// Test helper method - returns selected extensions
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn selected_extensions(&self) -> &[String] {
+        &self.selected_extensions
+    }
+    
+    /// Test helper method - returns extension cursor
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn extension_cursor(&self) -> usize {
+        self.extension_cursor
+    }
+    
+    /// Test helper method - returns if saved
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn is_saved(&self) -> bool {
+        // This is a simplified check - in reality we'd track save state
+        false
+    }
+    
+    /// Test helper method - returns if default
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn is_default(&self) -> bool {
+        // For testing - would need to track this state
+        false
     }
 }

@@ -9,8 +9,8 @@ use tui_input::backend::crossterm::EventHandler;
 use super::Component;
 use crate::{action::Action, config::Config, models::{Extension, extension::{ExtensionMetadata, McpServerConfig}}, storage::Storage, theme};
 
-#[derive(Debug, Clone)]
-enum FormField {
+#[derive(Debug, Clone, PartialEq)]
+pub enum FormField {
     Name,
     Version,
     Description,
@@ -130,7 +130,26 @@ impl ExtensionForm {
             id.clone()
         } else {
             // Generate a simple ID from the name
-            self.name_input.value().to_lowercase().replace(' ', "-")
+            // Replace spaces with hyphens and remove special characters
+            self.name_input.value()
+                .to_lowercase()
+                .chars()
+                .map(|c| {
+                    if c.is_alphanumeric() {
+                        c
+                    } else if c == ' ' || c == '-' || c == '_' || c == '.' {
+                        '-'
+                    } else {
+                        // Remove other special characters
+                        '\0'
+                    }
+                })
+                .filter(|c| *c != '\0')
+                .collect::<String>()
+                .split('-')
+                .filter(|s| !s.is_empty())
+                .collect::<Vec<_>>()
+                .join("-")
         };
         
         let tags: Vec<String> = self.tags_input.value()
@@ -266,6 +285,47 @@ impl ExtensionForm {
                 self.mcp_server_cursor -= 1;
             }
         }
+    }
+    
+    // Public methods for testing
+    #[allow(dead_code)]
+    pub fn is_edit_mode(&self) -> bool {
+        self.edit_mode
+    }
+    
+    #[allow(dead_code)]
+    pub fn current_field(&self) -> &FormField {
+        &self.current_field
+    }
+    
+    #[allow(dead_code)]
+    pub fn name_input(&self) -> &Input {
+        &self.name_input
+    }
+    
+    #[allow(dead_code)]
+    pub fn version_input(&self) -> &Input {
+        &self.version_input
+    }
+    
+    #[allow(dead_code)]
+    pub fn description_input(&self) -> &Input {
+        &self.description_input
+    }
+    
+    #[allow(dead_code)]
+    pub fn tags_input(&self) -> &Input {
+        &self.tags_input
+    }
+    
+    #[allow(dead_code)]
+    pub fn context_file_name_input(&self) -> &Input {
+        &self.context_file_name_input
+    }
+    
+    #[allow(dead_code)]
+    pub fn context_content_input(&self) -> &Input {
+        &self.context_content_input
     }
 }
 
@@ -673,14 +733,44 @@ impl Component for ExtensionForm {
         
         
         // Help text
+        use crate::utils::build_help_text;
         let help_text = match self.current_field {
-            FormField::McpServers if self.editing_server.is_some() => 
-                " Enter: Save server | Esc: Cancel | Tab: Next field ",
-            FormField::McpServers => 
-                " Tab: Next field | ↑/↓: Navigate | n: New server | d: Delete | Ctrl+S: Save | Esc: Cancel ",
-            FormField::ContextContent => 
-                " Tab: Next field | ↑/↓: Scroll | Type to edit | Ctrl+S: Save | Esc: Cancel ",
-            _ => " Tab: Next field | Type to edit | Ctrl+S: Save | Esc: Cancel ",
+            FormField::McpServers if self.editing_server.is_some() => {
+                build_help_text(&[
+                    ("select", "Save server"),
+                    ("back", "Cancel"),
+                    ("tab", "Next field"),
+                ])
+            }
+            FormField::McpServers => {
+                build_help_text(&[
+                    ("tab", "Next field"),
+                    ("up", "Navigate"),
+                    ("down", "Navigate"),
+                    ("create", "New server"),
+                    ("delete", "Delete"),
+                    ("Ctrl+S", "Save"),
+                    ("back", "Cancel"),
+                ])
+            }
+            FormField::ContextContent => {
+                build_help_text(&[
+                    ("tab", "Next field"),
+                    ("up", "Scroll"),
+                    ("down", "Scroll"),
+                    ("Type", "Edit"),
+                    ("Ctrl+S", "Save"),
+                    ("back", "Cancel"),
+                ])
+            }
+            _ => {
+                build_help_text(&[
+                    ("tab", "Next field"),
+                    ("Type", "Edit"),
+                    ("Ctrl+S", "Save"),
+                    ("back", "Cancel"),
+                ])
+            }
         };
         let help_style = Style::default().fg(theme::text_muted());
         frame.render_widget(
@@ -778,8 +868,10 @@ impl Component for ExtensionForm {
                         if !self.name_input.value().is_empty() && !self.version_input.value().is_empty() {
                             match self.save_extension() {
                                 Ok(_) => {
-                                    // Send refresh action before navigating back
+                                    // Send success notification and refresh action
                                     if let Some(tx) = &self.command_tx {
+                                        let action_verb = if self.edit_extension_id.is_some() { "updated" } else { "created" };
+                                        let _ = tx.send(Action::Success(format!("Extension {} successfully", action_verb)));
                                         let _ = tx.send(Action::RefreshExtensions);
                                         let _ = tx.send(Action::Render);
                                     }
@@ -822,14 +914,18 @@ impl Component for ExtensionForm {
                             FormField::McpServers => {
                                 match key.code {
                                     KeyCode::Up => {
-                                        if self.mcp_server_cursor > 0 {
-                                            self.mcp_server_cursor -= 1;
+                                        if !self.mcp_servers.is_empty() {
+                                            if self.mcp_server_cursor == 0 {
+                                                self.mcp_server_cursor = self.mcp_servers.len() - 1;
+                                            } else {
+                                                self.mcp_server_cursor -= 1;
+                                            }
                                             return Ok(Some(Action::Render));
                                         }
                                     }
                                     KeyCode::Down => {
-                                        if self.mcp_server_cursor < self.mcp_servers.len().saturating_sub(1) {
-                                            self.mcp_server_cursor += 1;
+                                        if !self.mcp_servers.is_empty() {
+                                            self.mcp_server_cursor = (self.mcp_server_cursor + 1) % self.mcp_servers.len();
                                             return Ok(Some(Action::Render));
                                         }
                                     }

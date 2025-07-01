@@ -1,11 +1,20 @@
+use std::sync::{Arc, RwLock};
+
 use color_eyre::Result;
 use ratatui::{prelude::*, widgets::*};
 use tokio::sync::mpsc::UnboundedSender;
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
-use super::Component;
-use crate::{action::Action, config::Config, models::Extension, storage::Storage, theme};
+use super::{Component, settings_view::UserSettings};
+use crate::{
+    action::Action, 
+    config::Config, 
+    models::Extension, 
+    storage::Storage, 
+    theme,
+    utils::keybinding_manager::KeybindingManager,
+};
 
 pub struct ExtensionList {
     command_tx: Option<UnboundedSender<Action>>,
@@ -16,6 +25,8 @@ pub struct ExtensionList {
     storage: Option<Storage>,
     search_mode: bool,
     search_input: Input,
+    settings: Option<Arc<RwLock<UserSettings>>>,
+    keybinding_manager: Option<KeybindingManager>,
 }
 
 impl Default for ExtensionList {
@@ -29,6 +40,8 @@ impl Default for ExtensionList {
             storage: None,
             search_mode: false,
             search_input: Input::default(),
+            settings: None,
+            keybinding_manager: None,
         }
     }
 }
@@ -84,10 +97,10 @@ impl ExtensionList {
 
     fn previous(&mut self) {
         if !self.filtered_extensions.is_empty() {
-            if self.selected > 0 {
-                self.selected -= 1;
-            } else {
+            if self.selected == 0 {
                 self.selected = self.filtered_extensions.len() - 1;
+            } else {
+                self.selected -= 1;
             }
         }
     }
@@ -95,6 +108,32 @@ impl ExtensionList {
     fn get_selected_extension(&self) -> Option<&Extension> {
         self.filtered_extensions.get(self.selected)
             .and_then(|&idx| self.extensions.get(idx))
+    }
+    
+    // Public methods for testing
+    #[allow(dead_code)]
+    pub fn selected_index(&self) -> usize {
+        self.selected
+    }
+    
+    #[allow(dead_code)]
+    pub fn is_search_mode(&self) -> bool {
+        self.search_mode
+    }
+    
+    #[allow(dead_code)]
+    pub fn search_query(&self) -> &str {
+        self.search_input.value()
+    }
+    
+    #[allow(dead_code)]
+    pub fn filtered_count(&self) -> usize {
+        self.filtered_extensions.len()
+    }
+    
+    #[allow(dead_code)]
+    pub fn total_count(&self) -> usize {
+        self.extensions.len()
     }
 }
 
@@ -106,6 +145,12 @@ impl Component for ExtensionList {
 
     fn register_config_handler(&mut self, config: Config) -> Result<()> {
         self.config = config;
+        Ok(())
+    }
+
+    fn register_settings_handler(&mut self, settings: Arc<RwLock<UserSettings>>) -> Result<()> {
+        self.settings = Some(settings.clone());
+        self.keybinding_manager = Some(KeybindingManager::new(settings));
         Ok(())
     }
 
@@ -242,25 +287,87 @@ impl Component for ExtensionList {
             })
             .collect();
 
-        // Create the list widget
-        let list = List::new(items)
-            .block(block)
-            .highlight_style(Style::default().bg(theme::selection()))
-            .highlight_symbol("│ ");
+        // Check if list is empty
+        if self.extensions.is_empty() || (self.search_mode && self.filtered_extensions.is_empty() && !self.search_input.value().is_empty()) {
+            // Show empty state message
+            let empty_msg = if self.search_mode && !self.search_input.value().is_empty() {
+                vec![
+                    "No extensions match your search",
+                    "",
+                    "Try a different search term"
+                ]
+            } else {
+                vec![
+                    "No extensions found",
+                    "",
+                    "Press 'n' to create your first extension"
+                ]
+            };
+            
+            let empty_widget = Paragraph::new(empty_msg.join("\n"))
+                .style(Style::default().fg(theme::text_secondary()))
+                .alignment(Alignment::Center)
+                .block(block);
+            
+            frame.render_widget(empty_widget, list_area);
+        } else {
+            // Create the list widget
+            let list = List::new(items)
+                .block(block)
+                .highlight_style(Style::default().bg(theme::selection()))
+                .highlight_symbol("│ ");
 
-        // Create a stateful list to track selection
-        let mut state = ListState::default();
-        state.select(Some(self.selected));
-
-        // Render the list
-        frame.render_stateful_widget(list, list_area, &mut state);
+            // Create a stateful list to track selection
+            let mut state = ListState::default();
+            state.select(Some(self.selected));
+            
+            // Render the list
+            frame.render_stateful_widget(list, list_area, &mut state);
+        }
 
         // Add help text at the bottom
         if list_area.height > 4 {
-            let help_text = if self.search_mode {
-                " Type to search | Esc: Close search | ↑/↓: Navigate results "
+            let help_text = if let Some(ref kb_manager) = self.keybinding_manager {
+                // Use keybinding manager for dynamic help text
+                if self.search_mode {
+                    kb_manager.build_help_text(&[
+                        ("Type", "Search"),
+                        ("back", "Close search"),
+                        ("up", "Navigate results"),
+                    ])
+                } else {
+                    kb_manager.build_help_text(&[
+                        ("up", "Navigate"),
+                        ("down", "Navigate"),
+                        ("select", "View"),
+                        ("edit", "Edit"),
+                        ("create", "New"),
+                        ("delete", "Delete"),
+                        ("search", "Search"),
+                        ("quit", "Quit"),
+                    ])
+                }
             } else {
-                " ↑/↓: Navigate | Enter: View | e: Edit | n: New | d: Delete | /: Search | Tab: Profiles | q: Quit "
+                // Fallback to loading from disk if settings not available
+                use crate::utils::build_help_text;
+                if self.search_mode {
+                    build_help_text(&[
+                        ("Type", "Search"),
+                        ("back", "Close search"),
+                        ("up", "Navigate results"),
+                    ])
+                } else {
+                    build_help_text(&[
+                        ("up", "Navigate"),
+                        ("down", "Navigate"),
+                        ("select", "View"),
+                        ("edit", "Edit"),
+                        ("create", "New"),
+                        ("delete", "Delete"),
+                        ("search", "Search"),
+                        ("quit", "Quit"),
+                    ])
+                }
             };
             let help_style = Style::default().fg(theme::text_muted());
             let help_area = Rect {
@@ -320,47 +427,109 @@ impl Component for ExtensionList {
                         }
                     }
                 } else {
-                    // Normal mode
-                    match key.code {
-                        KeyCode::Up | KeyCode::Char('k') => {
+                    // Normal mode - use keybinding manager if available
+                    if let Some(ref kb_manager) = self.keybinding_manager {
+                        // Check configured keybindings
+                        if kb_manager.matches(&key, "up") {
                             self.previous();
-                            Ok(Some(Action::Render))
-                        }
-                        KeyCode::Down | KeyCode::Char('j') => {
+                            return Ok(Some(Action::Render));
+                        } else if kb_manager.matches(&key, "down") {
                             self.next();
-                            Ok(Some(Action::Render))
-                        }
-                        KeyCode::Enter => {
+                            return Ok(Some(Action::Render));
+                        } else if kb_manager.matches(&key, "select") {
                             if let Some(ext) = self.get_selected_extension() {
-                                Ok(Some(Action::ViewExtensionDetails(ext.id.clone())))
-                            } else {
-                                Ok(None)
+                                return Ok(Some(Action::ViewExtensionDetails(ext.id.clone())));
                             }
-                        }
-                        KeyCode::Char('n') => Ok(Some(Action::CreateNewExtension)),
-                        KeyCode::Char('e') => {
+                        } else if kb_manager.matches(&key, "create") {
+                            return Ok(Some(Action::CreateNewExtension));
+                        } else if kb_manager.matches(&key, "edit") {
                             if let Some(ext) = self.get_selected_extension() {
-                                Ok(Some(Action::EditExtension(ext.id.clone())))
-                            } else {
-                                Ok(None)
+                                return Ok(Some(Action::EditExtension(ext.id.clone())));
                             }
-                        }
-                        KeyCode::Char('d') => {
+                        } else if kb_manager.matches(&key, "delete") {
                             if let Some(ext) = self.get_selected_extension() {
-                                Ok(Some(Action::DeleteExtension(ext.id.clone())))
-                            } else {
-                                Ok(None)
+                                return Ok(Some(Action::DeleteExtension(ext.id.clone())));
                             }
-                        }
-                        KeyCode::Char('/') => {
-                            // Enter search mode
+                        } else if kb_manager.matches(&key, "search") {
                             self.search_mode = true;
                             self.search_input.reset();
-                            Ok(Some(Action::Render))
+                            return Ok(Some(Action::Render));
+                        } else if kb_manager.matches(&key, "quit") {
+                            return Ok(Some(Action::Quit));
                         }
-                        KeyCode::Char('q') => Ok(Some(Action::Quit)),
-                        KeyCode::Tab => Ok(Some(Action::NavigateToProfiles)),
-                        _ => Ok(None),
+                        
+                        // Handle special keys that might not be configurable yet
+                        match key.code {
+                            KeyCode::Home => {
+                                if !self.filtered_extensions.is_empty() {
+                                    self.selected = 0;
+                                }
+                                Ok(Some(Action::Render))
+                            }
+                            KeyCode::End => {
+                                if !self.filtered_extensions.is_empty() {
+                                    self.selected = self.filtered_extensions.len() - 1;
+                                }
+                                Ok(Some(Action::Render))
+                            }
+                            KeyCode::Tab => Ok(Some(Action::NavigateToProfiles)),
+                            _ => Ok(None),
+                        }
+                    } else {
+                        // Fallback to hardcoded keybindings if settings not available
+                        match key.code {
+                            KeyCode::Up | KeyCode::Char('k') => {
+                                self.previous();
+                                Ok(Some(Action::Render))
+                            }
+                            KeyCode::Down | KeyCode::Char('j') => {
+                                self.next();
+                                Ok(Some(Action::Render))
+                            }
+                            KeyCode::Home => {
+                                if !self.filtered_extensions.is_empty() {
+                                    self.selected = 0;
+                                }
+                                Ok(Some(Action::Render))
+                            }
+                            KeyCode::End => {
+                                if !self.filtered_extensions.is_empty() {
+                                    self.selected = self.filtered_extensions.len() - 1;
+                                }
+                                Ok(Some(Action::Render))
+                            }
+                            KeyCode::Enter => {
+                                if let Some(ext) = self.get_selected_extension() {
+                                    Ok(Some(Action::ViewExtensionDetails(ext.id.clone())))
+                                } else {
+                                    Ok(None)
+                                }
+                            }
+                            KeyCode::Char('n') => Ok(Some(Action::CreateNewExtension)),
+                            KeyCode::Char('e') => {
+                                if let Some(ext) = self.get_selected_extension() {
+                                    Ok(Some(Action::EditExtension(ext.id.clone())))
+                                } else {
+                                    Ok(None)
+                                }
+                            }
+                            KeyCode::Char('d') => {
+                                if let Some(ext) = self.get_selected_extension() {
+                                    Ok(Some(Action::DeleteExtension(ext.id.clone())))
+                                } else {
+                                    Ok(None)
+                                }
+                            }
+                            KeyCode::Char('/') => {
+                                // Enter search mode
+                                self.search_mode = true;
+                                self.search_input.reset();
+                                Ok(Some(Action::Render))
+                            }
+                            KeyCode::Char('q') => Ok(Some(Action::Quit)),
+                            KeyCode::Tab => Ok(Some(Action::NavigateToProfiles)),
+                            _ => Ok(None),
+                        }
                     }
                 }
             }

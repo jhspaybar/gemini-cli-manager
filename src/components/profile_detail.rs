@@ -33,6 +33,15 @@ impl ProfileDetail {
         detail.storage = Some(storage);
         detail
     }
+    
+    #[allow(dead_code)]
+    pub fn new(storage: Storage, profile_id: String) -> Self {
+        let mut detail = Self::with_storage(storage.clone());
+        if let Ok(profile) = storage.load_profile(&profile_id) {
+            detail.set_profile(profile);
+        }
+        detail
+    }
 
     pub fn set_profile(&mut self, profile: Profile) {
         // Load the extensions from storage
@@ -277,7 +286,17 @@ impl Component for ProfileDetail {
         frame.render_widget(paragraph, inner_area);
 
         // Help bar
-        let help_text = " ↑/↓: Scroll | Enter: Launch | e: Edit | b: Back | q: Quit ";
+        use crate::utils::build_help_text;
+        let help_text = build_help_text(&[
+            ("up", "Scroll"),
+            ("down", "Scroll"),
+            ("launch", "Launch"),
+            ("edit", "Edit"),
+            ("delete", "Delete"),
+            ("x", "Set default"),
+            ("back", "Back"),
+            ("quit", "Quit"),
+        ]);
         let help_bar = Paragraph::new(help_text)
             .style(Style::default().fg(theme::text_muted()))
             .alignment(Alignment::Center)
@@ -306,11 +325,8 @@ impl Component for ProfileDetail {
                     Ok(Some(Action::Render))
                 }
                 KeyCode::Enter => {
-                    if let Some(profile) = &self.profile {
-                        Ok(Some(Action::LaunchWithProfile(profile.id.clone())))
-                    } else {
-                        Ok(None)
-                    }
+                    // Enter selects things, not launch
+                    Ok(None)
                 }
                 KeyCode::Char('b') | KeyCode::Esc => Ok(Some(Action::NavigateBack)),
                 KeyCode::Char('e') => {
@@ -320,10 +336,39 @@ impl Component for ProfileDetail {
                         Ok(None)
                     }
                 }
+                KeyCode::Char('d') => {
+                    if let Some(profile) = &self.profile {
+                        Ok(Some(Action::DeleteProfile(profile.id.clone())))
+                    } else {
+                        Ok(None)
+                    }
+                }
+                KeyCode::Char('l') => {
+                    if let Some(profile) = &self.profile {
+                        Ok(Some(Action::LaunchWithProfile(profile.id.clone())))
+                    } else {
+                        Ok(None)
+                    }
+                }
+                KeyCode::Char('x') => {
+                    // TODO: Set default profile action not implemented
+                    Ok(None)
+                }
                 KeyCode::Char('q') => Ok(Some(Action::Quit)),
                 _ => Ok(None),
             },
             _ => Ok(None),
         }
+    }
+}
+
+// Test helper methods
+impl ProfileDetail {
+    /// Test helper method - returns current section
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    pub fn current_section(&self) -> usize {
+        // For now, we don't have sections, but this could track scroll position
+        0
     }
 }
