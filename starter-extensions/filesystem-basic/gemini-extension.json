@@ -1,12 +1,4 @@
 {
   "name": "Filesystem Operations",
-  "version": "1.0.0",
-  "mcpServers": {
-    "fs-server": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
-      "cwd": ".",
-      "timeout": 10000
-    }
-  }
+  "version": "1.0.0"
 }

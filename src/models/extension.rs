@@ -33,6 +33,9 @@ pub struct Extension {
 /// MCP (Model Context Protocol) server configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct McpServerConfig {
+    /// URL for URL-based servers (e.g., GitHub Copilot)
+    pub url: Option<String>,
+
     /// Command to execute for command-based servers
     pub command: Option<String>,
 

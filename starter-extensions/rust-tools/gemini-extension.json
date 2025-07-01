@@ -1,20 +1,4 @@
 {
   "name": "Rust Development Tools",
-  "version": "1.0.0",
-  "mcpServers": {
-    "rust-analyzer": {
-      "command": "rust-analyzer",
-      "args": ["--stdio"],
-      "cwd": ".",
-      "timeout": 30000
-    },
-    "cargo-tools": {
-      "command": "cargo",
-      "args": ["run", "--bin", "mcp-server"],
-      "cwd": ".",
-      "env": {
-        "RUST_LOG": "info"
-      }
-    }
-  }
+  "version": "1.0.0"
 }

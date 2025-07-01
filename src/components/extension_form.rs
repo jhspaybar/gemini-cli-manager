@@ -262,6 +262,7 @@ impl ExtensionForm {
             
             if !name.is_empty() && !command.is_empty() {
                 let server = McpServerConfig {
+                    url: None, // Command-based servers don't have URLs
                     command: Some(command),
                     args: if args.is_empty() { None } else { Some(args) },
                     cwd: if cwd.is_empty() { None } else { Some(cwd) },
