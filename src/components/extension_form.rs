@@ -262,7 +262,6 @@ impl ExtensionForm {
             
             if !name.is_empty() && !command.is_empty() {
                 let server = McpServerConfig {
-                    url: None, // MCP servers are command-based, not URL-based
                     command: Some(command),
                     args: if args.is_empty() { None } else { Some(args) },
                     cwd: if cwd.is_empty() { None } else { Some(cwd) },
@@ -703,9 +702,7 @@ impl Component for ExtensionForm {
                         Style::default().fg(theme::text_primary())
                     };
                     
-                    let content = if let Some(url) = &server.url {
-                        format!("{}: URL: {}", name, url)
-                    } else if let Some(cmd) = &server.command {
+                    let content = if let Some(cmd) = &server.command {
                         format!("{}: {} {}", 
                             name, 
                             cmd,

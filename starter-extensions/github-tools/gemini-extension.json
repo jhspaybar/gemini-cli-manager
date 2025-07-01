@@ -1,13 +1,15 @@
 {
-  "name": "github-tools",
+  "name": "GitHub Integration Tools",
   "version": "1.0.0",
   "mcpServers": {
     "github-api": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
+      "cwd": ".",
       "env": {
         "GITHUB_TOKEN": "$GITHUB_TOKEN"
-      }
+      },
+      "timeout": 30000
     }
   }
 }

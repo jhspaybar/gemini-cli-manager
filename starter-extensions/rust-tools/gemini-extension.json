@@ -1,20 +1,19 @@
 {
-  "name": "rust-tools",
+  "name": "Rust Development Tools",
   "version": "1.0.0",
   "mcpServers": {
     "rust-analyzer": {
       "command": "rust-analyzer",
       "args": ["--stdio"],
-      "env": {
-        "RUST_LOG": "error"
-      }
+      "cwd": ".",
+      "timeout": 30000
     },
-    "cargo-commands": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-rust-cargo"],
+    "cargo-tools": {
+      "command": "cargo",
+      "args": ["run", "--bin", "mcp-server"],
+      "cwd": ".",
       "env": {
-        "CARGO_HOME": "$CARGO_HOME",
-        "RUSTUP_HOME": "$RUSTUP_HOME"
+        "RUST_LOG": "info"
       }
     }
   }
