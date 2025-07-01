@@ -168,13 +168,8 @@ impl Launcher {
         
         // Write context file if present
         if let Some(content) = &extension.context_content {
-            // Use provided filename or default to GEMINI.md
-            let default_name = "GEMINI.md".to_string();
-            let filename = extension.context_file_name.as_ref()
-                .filter(|s| !s.trim().is_empty())
-                .unwrap_or(&default_name);
-            
-            let context_path = ext_dir.join(filename);
+            // Always write as GEMINI.md for Gemini CLI compatibility
+            let context_path = ext_dir.join("GEMINI.md");
             let mut file = fs::File::create(&context_path)?;
             file.write_all(content.as_bytes())?;
         }

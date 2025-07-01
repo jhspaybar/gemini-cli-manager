@@ -159,13 +159,14 @@ impl ImportDialog {
             }
         }
         
-        // Sort to prioritize GEMINI.md, then README.md, then others
+        // Sort to prioritize GEMINI.md, then extension-specific names, then generic names
         context_files.sort_by_key(|(name, _)| {
             match name.as_str() {
                 "GEMINI.md" => 0,
-                "README.md" => 1,
+                name if name.ends_with(".md") && name != "README.md" && name != "CONTEXT.md" => 1,
                 "CONTEXT.md" => 2,
-                _ => 3,
+                "README.md" => 3,
+                _ => 4,
             }
         });
         
@@ -268,6 +269,7 @@ impl ImportDialog {
                     let potential_names = vec![
                         format!("{}.md", extension.name.to_uppercase()),
                         format!("{}.md", extension.name),
+                        "GEMINI.md".to_string(),
                         "CONTEXT.md".to_string(),
                         "README.md".to_string(),
                     ];
@@ -278,6 +280,7 @@ impl ImportDialog {
                             if let Ok(context_content) = std::fs::read_to_string(&context_path) {
                                 // Update extension with context
                                 let mut updated = extension.clone();
+                                // Store original filename for reference, but it will be written as GEMINI.md
                                 updated.context_file_name = Some(name.clone());
                                 updated.context_content = Some(context_content);
                                 self.storage.save_extension(&updated)?;
