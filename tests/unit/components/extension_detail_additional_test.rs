@@ -185,6 +185,7 @@ mod tests {
             env: Some(env_vars),
             trust: Some(false),
             timeout: Some(5000),
+            url: None,
         });
         
         let mut ext = ExtensionBuilder::new("API Extension").build();
@@ -221,6 +222,7 @@ mod tests {
             env: None,
             trust: None,
             timeout: None,
+            url: None,
         });
         
         let mut ext = ExtensionBuilder::new("Remote Extension").build();

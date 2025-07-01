@@ -15,6 +15,7 @@ impl McpFixtures {
             env: None,
             timeout: None,
             trust: Some(true),
+            url: None,
         }
     }
     
@@ -36,6 +37,7 @@ impl McpFixtures {
             }),
             timeout: Some(30000),
             trust: Some(false),
+            url: None,
         }
     }
     
@@ -56,6 +58,7 @@ impl McpFixtures {
             }),
             timeout: Some(60000),
             trust: Some(true),
+            url: None,
         }
     }
     
@@ -72,6 +75,7 @@ impl McpFixtures {
             }),
             timeout: Some(10000),
             trust: Some(false),
+            url: None,
         }
     }
     
@@ -166,6 +170,7 @@ impl McpFixtures {
                     }),
                     timeout: Some(120000),
                     trust: Some(true),
+                    url: None,
                 });
                 servers
             },

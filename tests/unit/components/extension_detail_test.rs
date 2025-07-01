@@ -29,6 +29,7 @@ mod tests {
             env: Some(HashMap::new()),
             trust: Some(true),
             timeout: None,
+            url: None,
         });
         
         let mut ext = ExtensionBuilder::new("Test Extension")

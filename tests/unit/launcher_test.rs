@@ -139,7 +139,7 @@ mod tests {
         let content2 = WorkspaceVerifier::verify_context_file(
             &profile_workspace,
             "test2",
-            "CUSTOM.md"
+            "GEMINI.md"
         ).unwrap();
         assert!(content2.contains("Context Only Extension"));
         

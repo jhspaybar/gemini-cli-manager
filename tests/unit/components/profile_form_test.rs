@@ -118,13 +118,17 @@ mod tests {
         form.handle_events(Some(create_key_event(KeyCode::Tab))).unwrap();
         assert_eq!(form.current_field(), &FormField::Tags);
         
+        // Tab to LaunchConfig
+        form.handle_events(Some(create_key_event(KeyCode::Tab))).unwrap();
+        assert_eq!(form.current_field(), &FormField::LaunchConfig);
+        
         // Tab wraps back to Name
         form.handle_events(Some(create_key_event(KeyCode::Tab))).unwrap();
         assert_eq!(form.current_field(), &FormField::Name);
         
-        // Shift+Tab back to Tags
+        // Shift+Tab back to LaunchConfig
         form.handle_events(Some(create_key_event(KeyCode::BackTab))).unwrap();
-        assert_eq!(form.current_field(), &FormField::Tags);
+        assert_eq!(form.current_field(), &FormField::LaunchConfig);
     }
     
     #[test]
@@ -197,13 +201,13 @@ mod tests {
         form.handle_events(Some(create_key_event(KeyCode::Down))).unwrap();
         assert_eq!(form.extension_cursor(), 1);
         
-        // At last item, down should stay
+        // At last item, down should wrap to first
         form.handle_events(Some(create_key_event(KeyCode::Down))).unwrap();
-        assert_eq!(form.extension_cursor(), 1);
-        
-        // Move up
-        form.handle_events(Some(create_key_event(KeyCode::Up))).unwrap();
         assert_eq!(form.extension_cursor(), 0);
+        
+        // Move up from 0 should wrap to last (1)
+        form.handle_events(Some(create_key_event(KeyCode::Up))).unwrap();
+        assert_eq!(form.extension_cursor(), 1);
     }
     
     #[test]

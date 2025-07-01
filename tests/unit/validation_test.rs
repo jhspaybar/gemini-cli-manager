@@ -62,6 +62,7 @@ mod tests {
             env: None,
             timeout: None,
             trust: None,
+            url: None,
         });
         assert!(validate_extension_json(&ext1).is_ok());
         
@@ -74,6 +75,7 @@ mod tests {
             env: None,
             timeout: Some(5000),
             trust: Some(false),
+            url: None,
         });
         assert!(validate_extension_json(&ext2).is_ok());
         
@@ -86,6 +88,7 @@ mod tests {
             env: None,
             timeout: None,
             trust: None,
+            url: None,
         });
         let result = validate_extension_json(&ext3);
         assert!(result.is_err());
@@ -100,6 +103,7 @@ mod tests {
             env: None,
             timeout: None,
             trust: None,
+            url: None,
         });
         // In a real implementation, we might want to validate empty strings
         // For now, this would technically pass as command is Some(...)
@@ -123,6 +127,7 @@ mod tests {
             env: Some(env),
             timeout: None,
             trust: None,
+            url: None,
         });
         
         assert!(validate_extension_json(&ext).is_ok());
@@ -166,6 +171,7 @@ mod tests {
                 env: None,
                 timeout,
                 trust: None,
+                url: None,
             });
             assert!(validate_extension_json(&ext).is_ok());
         }

@@ -130,6 +130,7 @@ mod tests {
                     env: None,
                     timeout: None,
                     trust: Some(true),
+                    url: None,
                 });
                 servers
             },
@@ -202,6 +203,7 @@ mod tests {
             env: None,
             timeout: None,
             trust: None,
+            url: None,
         };
 
         // Valid server with timeout
@@ -212,6 +214,7 @@ mod tests {
             env: None,
             timeout: Some(5000),
             trust: Some(false),
+            url: None,
         };
 
         // Create extension with servers

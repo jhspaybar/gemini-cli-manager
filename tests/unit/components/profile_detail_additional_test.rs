@@ -326,6 +326,7 @@ mod tests {
             env: None,
             trust: Some(true),
             timeout: None,
+            url: None,
         });
         
         mcp_servers.insert("api-server".to_string(), McpServerConfig {
@@ -335,6 +336,7 @@ mod tests {
             env: None,
             trust: None,
             timeout: None,
+            url: None,
         });
         
         let mut ext = ExtensionBuilder::new("MCP Extension")
@@ -503,6 +505,7 @@ mod tests {
             env: None,
             trust: None,
             timeout: None,
+            url: None,
         });
         ext1.mcp_servers = mcp_servers1;
         storage.save_extension(&ext1).unwrap();
@@ -516,6 +519,7 @@ mod tests {
             env: None,
             trust: None,
             timeout: None,
+            url: None,
         });
         mcp_servers2.insert("server3".to_string(), McpServerConfig {
             command: Some("cmd3".to_string()),
@@ -524,6 +528,7 @@ mod tests {
             env: None,
             trust: None,
             timeout: None,
+            url: None,
         });
         ext2.mcp_servers = mcp_servers2;
         storage.save_extension(&ext2).unwrap();
