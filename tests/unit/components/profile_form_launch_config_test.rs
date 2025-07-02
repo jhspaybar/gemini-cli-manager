@@ -87,8 +87,8 @@ fn test_profile_backward_compatibility() {
     
     // Try to load the profile - should work with default launch_config
     let loaded = storage.load_profile("old-profile").unwrap();
-    assert_eq!(loaded.launch_config.clean_launch, false);
-    assert_eq!(loaded.launch_config.cleanup_on_exit, true);
+    assert!(!loaded.launch_config.clean_launch);
+    assert!(loaded.launch_config.cleanup_on_exit);
     assert!(loaded.launch_config.preserve_extensions.is_empty());
 }
 

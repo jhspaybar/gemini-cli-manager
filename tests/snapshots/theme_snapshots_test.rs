@@ -28,7 +28,7 @@ mod tests {
 
         for (theme_name, flavour) in themes {
             theme::set_flavour(flavour);
-            let output = render_fn().unwrap_or_else(|e| format!("Error: {}", e));
+            let output = render_fn().unwrap_or_else(|e| format!("Error: {e}"));
             assert_snapshot!(format!("{}_{}", name, theme_name), output);
         }
     }

@@ -62,10 +62,7 @@ impl Storage {
 
     /// Load an extension by ID
     pub fn load_extension(&self, id: &str) -> Result<Extension> {
-        let path = self
-            .data_dir
-            .join("extensions")
-            .join(format!("{id}.json"));
+        let path = self.data_dir.join("extensions").join(format!("{id}.json"));
         self.load_json(&path)
     }
 
@@ -77,10 +74,7 @@ impl Storage {
     /// Delete an extension
     #[allow(dead_code)]
     pub fn delete_extension(&self, id: &str) -> Result<()> {
-        let path = self
-            .data_dir
-            .join("extensions")
-            .join(format!("{id}.json"));
+        let path = self.data_dir.join("extensions").join(format!("{id}.json"));
         if path.exists() {
             fs::remove_file(path)?;
         }

@@ -112,7 +112,6 @@ pub struct KeybindingConfig {
     pub actions: ActionKeys,
 }
 
-
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct NavigationKeys {
     pub up: Vec<String>,

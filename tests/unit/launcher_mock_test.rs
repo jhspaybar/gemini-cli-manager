@@ -87,7 +87,7 @@ mod tests {
         };
 
         // Should expand to home directory
-        assert!(expanded.starts_with(&dirs::home_dir().unwrap()));
+        assert!(expanded.starts_with(dirs::home_dir().unwrap()));
         assert!(expanded.ends_with("test-dir"));
     }
 

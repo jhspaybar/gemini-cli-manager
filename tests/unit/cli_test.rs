@@ -5,16 +5,16 @@ mod tests {
 
     #[test]
     fn test_cli_default_values() {
-        let cli = Cli::parse_from(&["gemini-cli-manager"]);
+        let cli = Cli::parse_from(["gemini-cli-manager"]);
 
-        assert_eq!(cli.list_storage, false);
+        assert!(!cli.list_storage);
     }
 
     #[test]
     fn test_cli_list_storage_flag() {
-        let cli = Cli::parse_from(&["gemini-cli-manager", "--list-storage"]);
+        let cli = Cli::parse_from(["gemini-cli-manager", "--list-storage"]);
 
-        assert_eq!(cli.list_storage, true);
+        assert!(cli.list_storage);
     }
 
     #[test]
@@ -33,7 +33,7 @@ mod tests {
     #[test]
     fn test_cli_help() {
         // Test that help doesn't panic
-        let result = Cli::try_parse_from(&["gemini-cli-manager", "--help"]);
+        let result = Cli::try_parse_from(["gemini-cli-manager", "--help"]);
 
         // Help should return an error (clap's way of handling help)
         assert!(result.is_err());
@@ -46,7 +46,7 @@ mod tests {
     #[test]
     fn test_cli_version() {
         // Test that version doesn't panic
-        let result = Cli::try_parse_from(&["gemini-cli-manager", "--version"]);
+        let result = Cli::try_parse_from(["gemini-cli-manager", "--version"]);
 
         // Version should return an error (clap's way of handling version)
         assert!(result.is_err());

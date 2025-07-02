@@ -120,13 +120,13 @@ mod tests {
         // Add multiple extensions
         for i in 1..=3 {
             let extension = gemini_cli_manager::models::Extension {
-                id: format!("ext-{}", i),
-                name: format!("Extension {}", i),
+                id: format!("ext-{i}"),
+                name: format!("Extension {i}"),
                 version: "1.0.0".to_string(),
                 description: if i == 2 {
                     None
                 } else {
-                    Some(format!("Description {}", i))
+                    Some(format!("Description {i}"))
                 },
                 mcp_servers: HashMap::new(),
                 context_file_name: None,
@@ -143,14 +143,14 @@ mod tests {
         // Add multiple profiles
         for i in 1..=2 {
             let profile = gemini_cli_manager::models::Profile {
-                id: format!("profile-{}", i),
-                name: format!("Profile {}", i),
+                id: format!("profile-{i}"),
+                name: format!("Profile {i}"),
                 description: if i == 1 {
                     Some("First profile".to_string())
                 } else {
                     None
                 },
-                extension_ids: vec![format!("ext-{}", i)],
+                extension_ids: vec![format!("ext-{i}")],
                 environment_variables: HashMap::new(),
                 working_directory: None,
                 launch_config: LaunchConfig::default(),

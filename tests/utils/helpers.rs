@@ -48,7 +48,7 @@ pub fn buffer_to_string(buffer: &ratatui::buffer::Buffer) -> String {
         lines.push(line.trim_end().to_string());
     }
     // Remove trailing empty lines
-    while lines.last().map_or(false, |line| line.is_empty()) {
+    while lines.last().is_some_and(|line| line.is_empty()) {
         lines.pop();
     }
     lines.join("\n")
@@ -60,7 +60,7 @@ pub fn create_test_extension(name: &str) -> Extension {
         id: name.to_lowercase().replace(' ', "-"),
         name: name.to_string(),
         version: "1.0.0".to_string(),
-        description: Some(format!("Test extension: {}", name)),
+        description: Some(format!("Test extension: {name}")),
         mcp_servers: HashMap::new(),
         context_file_name: None,
         context_content: None,
@@ -77,7 +77,7 @@ pub fn create_test_profile(name: &str) -> Profile {
     Profile {
         id: name.to_lowercase().replace(' ', "-"),
         name: name.to_string(),
-        description: Some(format!("Test profile: {}", name)),
+        description: Some(format!("Test profile: {name}")),
         extension_ids: vec![],
         environment_variables: HashMap::new(),
         working_directory: None,
@@ -254,9 +254,7 @@ pub fn assert_buffer_contains(terminal: &Terminal<TestBackend>, expected: &str) 
     let content = buffer_to_string(terminal.backend().buffer());
     assert!(
         content.contains(expected),
-        "Expected to find '{}' in rendered output:\n{}",
-        expected,
-        content
+        "Expected to find '{expected}' in rendered output:\n{content}"
     );
 }
 
@@ -265,9 +263,7 @@ pub fn assert_buffer_not_contains(terminal: &Terminal<TestBackend>, unexpected: 
     let content = buffer_to_string(terminal.backend().buffer());
     assert!(
         !content.contains(unexpected),
-        "Did not expect to find '{}' in rendered output:\n{}",
-        unexpected,
-        content
+        "Did not expect to find '{unexpected}' in rendered output:\n{content}"
     );
 }
 
@@ -334,7 +330,7 @@ impl WorkspaceVerifier {
             .join(extension_id);
 
         if !ext_dir.exists() {
-            return Err(format!("Extension directory '{}' not found", extension_id));
+            return Err(format!("Extension directory '{extension_id}' not found"));
         }
 
         // Check for gemini-extension.json
@@ -344,18 +340,18 @@ impl WorkspaceVerifier {
         }
 
         // Validate JSON content
-        let content = fs::read_to_string(&config_file)
-            .map_err(|e| format!("Failed to read config: {}", e))?;
+        let content =
+            fs::read_to_string(&config_file).map_err(|e| format!("Failed to read config: {e}"))?;
 
         let json: serde_json::Value =
-            serde_json::from_str(&content).map_err(|e| format!("Invalid JSON: {}", e))?;
+            serde_json::from_str(&content).map_err(|e| format!("Invalid JSON: {e}"))?;
 
         // Check required fields
-        if !json.get("name").is_some() {
+        if json.get("name").is_none() {
             return Err("Missing 'name' field in extension config".to_string());
         }
 
-        if !json.get("version").is_some() {
+        if json.get("version").is_none() {
             return Err("Missing 'version' field in extension config".to_string());
         }
 
@@ -377,11 +373,11 @@ impl WorkspaceVerifier {
             .join(filename);
 
         if !context_file.exists() {
-            return Err(format!("Context file '{}' not found", filename));
+            return Err(format!("Context file '{filename}' not found"));
         }
 
         let content = fs::read_to_string(&context_file)
-            .map_err(|e| format!("Failed to read context file: {}", e))?;
+            .map_err(|e| format!("Failed to read context file: {e}"))?;
 
         if content.trim().is_empty() {
             return Err("Context file is empty".to_string());

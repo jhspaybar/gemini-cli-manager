@@ -294,8 +294,8 @@ mod tests {
         // Create many extensions
         let mut ext_ids = vec![];
         for i in 0..20 {
-            let ext = ExtensionBuilder::new(&format!("Extension {}", i))
-                .with_description(&format!("Description for extension {}", i))
+            let ext = ExtensionBuilder::new(&format!("Extension {i}"))
+                .with_description(&format!("Description for extension {i}"))
                 .build();
             storage.save_extension(&ext).unwrap();
             ext_ids.push(ext.id);
@@ -339,7 +339,7 @@ mod tests {
                 detail.draw(f, f.area()).unwrap();
             });
 
-            assert!(result.is_ok(), "Failed to render at {}x{}", width, height);
+            assert!(result.is_ok(), "Failed to render at {width}x{height}");
         }
     }
 }

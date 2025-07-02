@@ -390,7 +390,8 @@ impl ViewManager {
                         profile.name
                     )
                 } else {
-                    "Are you sure you want to delete this profile?\nThis action cannot be undone.".to_string()
+                    "Are you sure you want to delete this profile?\nThis action cannot be undone."
+                        .to_string()
                 };
 
                 // Create confirmation dialog
@@ -433,8 +434,8 @@ impl ViewManager {
                     if let Err(e) = self.storage.delete_extension(id) {
                         // Send error action
                         if let Some(tx) = &self.action_tx {
-                            let _ = tx
-                                .send(Action::Error(format!("Failed to delete extension: {e}")));
+                            let _ =
+                                tx.send(Action::Error(format!("Failed to delete extension: {e}")));
                         }
                     } else {
                         // Send success notification and refresh action

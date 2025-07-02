@@ -143,8 +143,7 @@ mod tests {
         for ext_id in &[&echo_ext.id, &multi_ext.id, &context_ext.id] {
             assert!(
                 WorkspaceVerifier::verify_extension_installed(&profile_workspace, ext_id).is_ok(),
-                "Extension {} not properly installed",
-                ext_id
+                "Extension {ext_id} not properly installed"
             );
         }
 

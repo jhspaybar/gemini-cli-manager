@@ -54,69 +54,61 @@ impl ThemeTestHelper {
     pub fn test_theme_contrast(flavour: ThemeFlavour) -> Vec<ContrastTestResult> {
         theme::set_flavour(flavour);
 
-        let mut results = vec![];
-
-        // Test primary text colors
-        results.push(ContrastTestResult {
-            name: "Primary text on background".to_string(),
-            fg: theme::text_primary(),
-            bg: theme::background(),
-            ratio: Self::contrast_ratio(theme::text_primary(), theme::background()),
-            meets_aa: Self::meets_wcag_aa(theme::text_primary(), theme::background()),
-        });
-
-        results.push(ContrastTestResult {
-            name: "Secondary text on background".to_string(),
-            fg: theme::text_secondary(),
-            bg: theme::background(),
-            ratio: Self::contrast_ratio(theme::text_secondary(), theme::background()),
-            meets_aa: Self::meets_wcag_aa(theme::text_secondary(), theme::background()),
-        });
-
-        results.push(ContrastTestResult {
-            name: "Muted text on background".to_string(),
-            fg: theme::text_muted(),
-            bg: theme::background(),
-            ratio: Self::contrast_ratio(theme::text_muted(), theme::background()),
-            meets_aa: Self::meets_wcag_aa(theme::text_muted(), theme::background()),
-        });
-
-        // Test selection colors
-        results.push(ContrastTestResult {
-            name: "Text on selection".to_string(),
-            fg: theme::text_primary(),
-            bg: theme::selection(),
-            ratio: Self::contrast_ratio(theme::text_primary(), theme::selection()),
-            meets_aa: Self::meets_wcag_aa(theme::text_primary(), theme::selection()),
-        });
-
-        // Test accent colors
-        results.push(ContrastTestResult {
-            name: "Highlight on background".to_string(),
-            fg: theme::highlight(),
-            bg: theme::background(),
-            ratio: Self::contrast_ratio(theme::highlight(), theme::background()),
-            meets_aa: Self::meets_wcag_aa(theme::highlight(), theme::background()),
-        });
-
-        // Test semantic colors
-        results.push(ContrastTestResult {
-            name: "Error text on background".to_string(),
-            fg: theme::error(),
-            bg: theme::background(),
-            ratio: Self::contrast_ratio(theme::error(), theme::background()),
-            meets_aa: Self::meets_wcag_aa(theme::error(), theme::background()),
-        });
-
-        results.push(ContrastTestResult {
-            name: "Success text on background".to_string(),
-            fg: theme::success(),
-            bg: theme::background(),
-            ratio: Self::contrast_ratio(theme::success(), theme::background()),
-            meets_aa: Self::meets_wcag_aa(theme::success(), theme::background()),
-        });
-
-        results
+        vec![
+            // Test primary text colors
+            ContrastTestResult {
+                name: "Primary text on background".to_string(),
+                fg: theme::text_primary(),
+                bg: theme::background(),
+                ratio: Self::contrast_ratio(theme::text_primary(), theme::background()),
+                meets_aa: Self::meets_wcag_aa(theme::text_primary(), theme::background()),
+            },
+            ContrastTestResult {
+                name: "Secondary text on background".to_string(),
+                fg: theme::text_secondary(),
+                bg: theme::background(),
+                ratio: Self::contrast_ratio(theme::text_secondary(), theme::background()),
+                meets_aa: Self::meets_wcag_aa(theme::text_secondary(), theme::background()),
+            },
+            ContrastTestResult {
+                name: "Muted text on background".to_string(),
+                fg: theme::text_muted(),
+                bg: theme::background(),
+                ratio: Self::contrast_ratio(theme::text_muted(), theme::background()),
+                meets_aa: Self::meets_wcag_aa(theme::text_muted(), theme::background()),
+            },
+            // Test selection colors
+            ContrastTestResult {
+                name: "Text on selection".to_string(),
+                fg: theme::text_primary(),
+                bg: theme::selection(),
+                ratio: Self::contrast_ratio(theme::text_primary(), theme::selection()),
+                meets_aa: Self::meets_wcag_aa(theme::text_primary(), theme::selection()),
+            },
+            // Test accent colors
+            ContrastTestResult {
+                name: "Highlight on background".to_string(),
+                fg: theme::highlight(),
+                bg: theme::background(),
+                ratio: Self::contrast_ratio(theme::highlight(), theme::background()),
+                meets_aa: Self::meets_wcag_aa(theme::highlight(), theme::background()),
+            },
+            // Test semantic colors
+            ContrastTestResult {
+                name: "Error text on background".to_string(),
+                fg: theme::error(),
+                bg: theme::background(),
+                ratio: Self::contrast_ratio(theme::error(), theme::background()),
+                meets_aa: Self::meets_wcag_aa(theme::error(), theme::background()),
+            },
+            ContrastTestResult {
+                name: "Success text on background".to_string(),
+                fg: theme::success(),
+                bg: theme::background(),
+                ratio: Self::contrast_ratio(theme::success(), theme::background()),
+                meets_aa: Self::meets_wcag_aa(theme::success(), theme::background()),
+            },
+        ]
     }
 
     /// Verify that focus indicators are visible
@@ -158,7 +150,7 @@ impl StyleVerifier {
         // This is a simplified check - in practice we'd need more sophisticated verification
         if let Some(fg) = style.fg {
             // Check if the color matches any theme color
-            let theme_colors = vec![
+            let theme_colors = [
                 theme::text_primary(),
                 theme::text_secondary(),
                 theme::text_muted(),

@@ -181,8 +181,8 @@ mod tests {
         // Create profile with many extensions to enable scrolling
         let mut ext_ids = vec![];
         for i in 0..20 {
-            let ext = ExtensionBuilder::new(&format!("Extension {}", i))
-                .with_description(&format!("Description {}", i))
+            let ext = ExtensionBuilder::new(&format!("Extension {i}"))
+                .with_description(&format!("Description {i}"))
                 .build();
             storage.save_extension(&ext).unwrap();
             ext_ids.push(ext.id);

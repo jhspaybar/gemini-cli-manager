@@ -21,7 +21,6 @@ pub struct ProfileDetail {
     scroll_offset: u16,
 }
 
-
 impl ProfileDetail {
     pub fn with_storage(storage: Storage) -> Self {
         Self {

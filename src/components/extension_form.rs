@@ -824,261 +824,260 @@ impl Component for ExtensionForm {
         use crossterm::event::{KeyCode, KeyModifiers};
 
         if let Some(crate::tui::Event::Key(key)) = event {
-                // Handle server editing mode separately
-                if self.editing_server.is_some() {
-                    match key.code {
-                        KeyCode::Esc => {
-                            self.editing_server = None;
-                            return Ok(Some(Action::Render));
-                        }
-                        KeyCode::Enter => {
-                            self.save_server();
-                            return Ok(Some(Action::Render));
-                        }
-                        KeyCode::Tab => {
-                            // Cycle through server fields
-                            self.server_field_cursor = (self.server_field_cursor + 1) % 7;
-                            return Ok(Some(Action::Render));
-                        }
-                        KeyCode::BackTab => {
-                            // Cycle backwards through server fields
-                            if self.server_field_cursor == 0 {
-                                self.server_field_cursor = 6;
-                            } else {
-                                self.server_field_cursor -= 1;
-                            }
-                            return Ok(Some(Action::Render));
-                        }
-                        KeyCode::Char(' ') if self.server_field_cursor == 6 => {
-                            // Toggle trust field
-                            self.server_trust_input = !self.server_trust_input;
-                            return Ok(Some(Action::Render));
-                        }
-                        _ => {
-                            // Handle input for the current field
-                            match self.server_field_cursor {
-                                0 => {
-                                    if self
-                                        .server_name_input
-                                        .handle_event(&crossterm::event::Event::Key(key))
-                                        .is_some()
-                                    {
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                1 => {
-                                    if self
-                                        .server_command_input
-                                        .handle_event(&crossterm::event::Event::Key(key))
-                                        .is_some()
-                                    {
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                2 => {
-                                    if self
-                                        .server_args_input
-                                        .handle_event(&crossterm::event::Event::Key(key))
-                                        .is_some()
-                                    {
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                3 => {
-                                    if self
-                                        .server_env_input
-                                        .handle_event(&crossterm::event::Event::Key(key))
-                                        .is_some()
-                                    {
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                4 => {
-                                    if self
-                                        .server_cwd_input
-                                        .handle_event(&crossterm::event::Event::Key(key))
-                                        .is_some()
-                                    {
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                5 => {
-                                    if self
-                                        .server_timeout_input
-                                        .handle_event(&crossterm::event::Event::Key(key))
-                                        .is_some()
-                                    {
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                _ => {}
-                            }
-                        }
-                    }
-                    return Ok(None);
-                }
-
-                // Normal form handling
-                match (key.code, key.modifiers) {
-                    (KeyCode::Esc, _) => {
-                        return Ok(Some(Action::NavigateBack));
-                    }
-                    (KeyCode::Char('s'), KeyModifiers::CONTROL) => {
-                        // Save extension
-                        if !self.name_input.value().is_empty()
-                            && !self.version_input.value().is_empty()
-                        {
-                            match self.save_extension() {
-                                Ok(_) => {
-                                    // Send success notification and refresh action
-                                    if let Some(tx) = &self.command_tx {
-                                        let action_verb = if self.edit_extension_id.is_some() {
-                                            "updated"
-                                        } else {
-                                            "created"
-                                        };
-                                        let _ = tx.send(Action::Success(format!(
-                                            "Extension {action_verb} successfully"
-                                        )));
-                                        let _ = tx.send(Action::RefreshExtensions);
-                                        let _ = tx.send(Action::Render);
-                                    }
-                                    return Ok(Some(Action::NavigateBack));
-                                }
-                                Err(e) => {
-                                    return Ok(Some(Action::Error(format!(
-                                        "Failed to save extension: {e}"
-                                    ))));
-                                }
-                            }
-                        } else {
-                            return Ok(Some(Action::Error(
-                                "Extension name and version are required".to_string(),
-                            )));
-                        }
-                    }
-                    (KeyCode::Tab, _) => {
-                        self.next_field();
+            // Handle server editing mode separately
+            if self.editing_server.is_some() {
+                match key.code {
+                    KeyCode::Esc => {
+                        self.editing_server = None;
                         return Ok(Some(Action::Render));
                     }
-                    (KeyCode::BackTab, _) => {
-                        self.previous_field();
+                    KeyCode::Enter => {
+                        self.save_server();
+                        return Ok(Some(Action::Render));
+                    }
+                    KeyCode::Tab => {
+                        // Cycle through server fields
+                        self.server_field_cursor = (self.server_field_cursor + 1) % 7;
+                        return Ok(Some(Action::Render));
+                    }
+                    KeyCode::BackTab => {
+                        // Cycle backwards through server fields
+                        if self.server_field_cursor == 0 {
+                            self.server_field_cursor = 6;
+                        } else {
+                            self.server_field_cursor -= 1;
+                        }
+                        return Ok(Some(Action::Render));
+                    }
+                    KeyCode::Char(' ') if self.server_field_cursor == 6 => {
+                        // Toggle trust field
+                        self.server_trust_input = !self.server_trust_input;
                         return Ok(Some(Action::Render));
                     }
                     _ => {
-                        // Handle field-specific input
-                        match self.current_field {
-                            FormField::Name => {
+                        // Handle input for the current field
+                        match self.server_field_cursor {
+                            0 => {
                                 if self
-                                    .name_input
+                                    .server_name_input
                                     .handle_event(&crossterm::event::Event::Key(key))
                                     .is_some()
                                 {
                                     return Ok(Some(Action::Render));
                                 }
                             }
-                            FormField::Version => {
+                            1 => {
                                 if self
-                                    .version_input
+                                    .server_command_input
                                     .handle_event(&crossterm::event::Event::Key(key))
                                     .is_some()
                                 {
                                     return Ok(Some(Action::Render));
                                 }
                             }
-                            FormField::Description => {
+                            2 => {
                                 if self
-                                    .description_input
+                                    .server_args_input
                                     .handle_event(&crossterm::event::Event::Key(key))
                                     .is_some()
                                 {
                                     return Ok(Some(Action::Render));
                                 }
                             }
-                            FormField::McpServers => match key.code {
-                                KeyCode::Up => {
-                                    if !self.mcp_servers.is_empty() {
-                                        if self.mcp_server_cursor == 0 {
-                                            self.mcp_server_cursor = self.mcp_servers.len() - 1;
-                                        } else {
-                                            self.mcp_server_cursor -= 1;
-                                        }
-                                        return Ok(Some(Action::Render));
+                            3 => {
+                                if self
+                                    .server_env_input
+                                    .handle_event(&crossterm::event::Event::Key(key))
+                                    .is_some()
+                                {
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            4 => {
+                                if self
+                                    .server_cwd_input
+                                    .handle_event(&crossterm::event::Event::Key(key))
+                                    .is_some()
+                                {
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            5 => {
+                                if self
+                                    .server_timeout_input
+                                    .handle_event(&crossterm::event::Event::Key(key))
+                                    .is_some()
+                                {
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+                return Ok(None);
+            }
+
+            // Normal form handling
+            match (key.code, key.modifiers) {
+                (KeyCode::Esc, _) => {
+                    return Ok(Some(Action::NavigateBack));
+                }
+                (KeyCode::Char('s'), KeyModifiers::CONTROL) => {
+                    // Save extension
+                    if !self.name_input.value().is_empty() && !self.version_input.value().is_empty()
+                    {
+                        match self.save_extension() {
+                            Ok(_) => {
+                                // Send success notification and refresh action
+                                if let Some(tx) = &self.command_tx {
+                                    let action_verb = if self.edit_extension_id.is_some() {
+                                        "updated"
+                                    } else {
+                                        "created"
+                                    };
+                                    let _ = tx.send(Action::Success(format!(
+                                        "Extension {action_verb} successfully"
+                                    )));
+                                    let _ = tx.send(Action::RefreshExtensions);
+                                    let _ = tx.send(Action::Render);
+                                }
+                                return Ok(Some(Action::NavigateBack));
+                            }
+                            Err(e) => {
+                                return Ok(Some(Action::Error(format!(
+                                    "Failed to save extension: {e}"
+                                ))));
+                            }
+                        }
+                    } else {
+                        return Ok(Some(Action::Error(
+                            "Extension name and version are required".to_string(),
+                        )));
+                    }
+                }
+                (KeyCode::Tab, _) => {
+                    self.next_field();
+                    return Ok(Some(Action::Render));
+                }
+                (KeyCode::BackTab, _) => {
+                    self.previous_field();
+                    return Ok(Some(Action::Render));
+                }
+                _ => {
+                    // Handle field-specific input
+                    match self.current_field {
+                        FormField::Name => {
+                            if self
+                                .name_input
+                                .handle_event(&crossterm::event::Event::Key(key))
+                                .is_some()
+                            {
+                                return Ok(Some(Action::Render));
+                            }
+                        }
+                        FormField::Version => {
+                            if self
+                                .version_input
+                                .handle_event(&crossterm::event::Event::Key(key))
+                                .is_some()
+                            {
+                                return Ok(Some(Action::Render));
+                            }
+                        }
+                        FormField::Description => {
+                            if self
+                                .description_input
+                                .handle_event(&crossterm::event::Event::Key(key))
+                                .is_some()
+                            {
+                                return Ok(Some(Action::Render));
+                            }
+                        }
+                        FormField::McpServers => match key.code {
+                            KeyCode::Up => {
+                                if !self.mcp_servers.is_empty() {
+                                    if self.mcp_server_cursor == 0 {
+                                        self.mcp_server_cursor = self.mcp_servers.len() - 1;
+                                    } else {
+                                        self.mcp_server_cursor -= 1;
                                     }
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            KeyCode::Down => {
+                                if !self.mcp_servers.is_empty() {
+                                    self.mcp_server_cursor =
+                                        (self.mcp_server_cursor + 1) % self.mcp_servers.len();
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            KeyCode::Char('n') => {
+                                self.start_add_server();
+                                return Ok(Some(Action::Render));
+                            }
+                            KeyCode::Char('d') => {
+                                if !self.mcp_servers.is_empty() {
+                                    self.delete_selected_server();
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            _ => {}
+                        },
+                        FormField::ContextFileName => {
+                            if self
+                                .context_file_name_input
+                                .handle_event(&crossterm::event::Event::Key(key))
+                                .is_some()
+                            {
+                                return Ok(Some(Action::Render));
+                            }
+                        }
+                        FormField::ContextContent => {
+                            match key.code {
+                                KeyCode::Up => {
+                                    if self.context_scroll_offset > 0 {
+                                        self.context_scroll_offset =
+                                            self.context_scroll_offset.saturating_sub(1);
+                                    }
+                                    return Ok(Some(Action::Render));
                                 }
                                 KeyCode::Down => {
-                                    if !self.mcp_servers.is_empty() {
-                                        self.mcp_server_cursor =
-                                            (self.mcp_server_cursor + 1) % self.mcp_servers.len();
-                                        return Ok(Some(Action::Render));
+                                    // Check if we need to scroll
+                                    let lines_count =
+                                        self.context_content_input.value().lines().count();
+                                    let new_offset = self
+                                        .context_scroll_offset
+                                        .saturating_add(1)
+                                        .min(lines_count.saturating_sub(1) as u16);
+                                    if new_offset != self.context_scroll_offset {
+                                        self.context_scroll_offset = new_offset;
                                     }
-                                }
-                                KeyCode::Char('n') => {
-                                    self.start_add_server();
                                     return Ok(Some(Action::Render));
                                 }
-                                KeyCode::Char('d') => {
-                                    if !self.mcp_servers.is_empty() {
-                                        self.delete_selected_server();
+                                _ => {
+                                    if self
+                                        .context_content_input
+                                        .handle_event(&crossterm::event::Event::Key(key))
+                                        .is_some()
+                                    {
                                         return Ok(Some(Action::Render));
-                                    }
-                                }
-                                _ => {}
-                            },
-                            FormField::ContextFileName => {
-                                if self
-                                    .context_file_name_input
-                                    .handle_event(&crossterm::event::Event::Key(key))
-                                    .is_some()
-                                {
-                                    return Ok(Some(Action::Render));
-                                }
-                            }
-                            FormField::ContextContent => {
-                                match key.code {
-                                    KeyCode::Up => {
-                                        if self.context_scroll_offset > 0 {
-                                            self.context_scroll_offset =
-                                                self.context_scroll_offset.saturating_sub(1);
-                                        }
-                                        return Ok(Some(Action::Render));
-                                    }
-                                    KeyCode::Down => {
-                                        // Check if we need to scroll
-                                        let lines_count =
-                                            self.context_content_input.value().lines().count();
-                                        let new_offset = self
-                                            .context_scroll_offset
-                                            .saturating_add(1)
-                                            .min(lines_count.saturating_sub(1) as u16);
-                                        if new_offset != self.context_scroll_offset {
-                                            self.context_scroll_offset = new_offset;
-                                        }
-                                        return Ok(Some(Action::Render));
-                                    }
-                                    _ => {
-                                        if self
-                                            .context_content_input
-                                            .handle_event(&crossterm::event::Event::Key(key))
-                                            .is_some()
-                                        {
-                                            return Ok(Some(Action::Render));
-                                        }
                                     }
                                 }
                             }
-                            FormField::Tags => {
-                                if self
-                                    .tags_input
-                                    .handle_event(&crossterm::event::Event::Key(key))
-                                    .is_some()
-                                {
-                                    return Ok(Some(Action::Render));
-                                }
+                        }
+                        FormField::Tags => {
+                            if self
+                                .tags_input
+                                .handle_event(&crossterm::event::Event::Key(key))
+                                .is_some()
+                            {
+                                return Ok(Some(Action::Render));
                             }
                         }
                     }
                 }
+            }
         }
         Ok(None)
     }

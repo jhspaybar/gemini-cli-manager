@@ -25,7 +25,7 @@ mod tests {
             }
             Ok(Err(e)) => {
                 // App returned an error - log it but don't fail the test
-                eprintln!("App run returned error: {}", e);
+                eprintln!("App run returned error: {e}");
             }
             Err(_) => {
                 // Timeout - app is running normally

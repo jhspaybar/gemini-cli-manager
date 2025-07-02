@@ -39,7 +39,7 @@ mod tests {
 
     #[test]
     fn test_trace_dbg_with_complex_expressions() {
-        let vec = vec![1, 2, 3];
+        let vec = [1, 2, 3];
         let result = trace_dbg!(vec.len());
         assert_eq!(result, 3);
 

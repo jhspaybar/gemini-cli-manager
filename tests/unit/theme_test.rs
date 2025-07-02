@@ -167,8 +167,7 @@ mod tests {
         for flavour in themes {
             assert!(
                 ThemeTestHelper::test_focus_visibility(flavour),
-                "{:?} theme: Focus indicator not visible enough",
-                flavour
+                "{flavour:?} theme: Focus indicator not visible enough"
             );
         }
     }
@@ -218,8 +217,7 @@ mod tests {
             assert_ne!(
                 theme::selection(),
                 theme::background(),
-                "{:?}: Selection same as background",
-                flavour
+                "{flavour:?}: Selection same as background"
             );
 
             // Text should be readable on selection
@@ -228,9 +226,7 @@ mod tests {
             // Selection can have lower contrast since it's temporary and has other visual cues
             assert!(
                 contrast >= 2.0,
-                "{:?}: Text not readable on selection (contrast: {:.2})",
-                flavour,
-                contrast
+                "{flavour:?}: Text not readable on selection (contrast: {contrast:.2})"
             );
         }
     }
@@ -254,12 +250,11 @@ mod tests {
             ];
 
             for color in text_colors {
-                assert_ne!(color, Color::Black, "{:?}: Found black text color", flavour);
+                assert_ne!(color, Color::Black, "{flavour:?}: Found black text color");
                 assert_ne!(
                     color,
                     Color::Rgb(0, 0, 0),
-                    "{:?}: Found RGB black text color",
-                    flavour
+                    "{flavour:?}: Found RGB black text color"
                 );
             }
         }
@@ -283,16 +278,12 @@ mod tests {
 
             assert!(
                 border_contrast >= 1.3,
-                "{:?}: Border not visible enough (contrast: {:.2})",
-                flavour,
-                border_contrast
+                "{flavour:?}: Border not visible enough (contrast: {border_contrast:.2})"
             );
 
             assert!(
                 border_contrast <= 4.5,
-                "{:?}: Border too prominent (contrast: {:.2})",
-                flavour,
-                border_contrast
+                "{flavour:?}: Border too prominent (contrast: {border_contrast:.2})"
             );
         }
     }
@@ -322,10 +313,7 @@ mod tests {
 
             assert!(
                 text_on_surface >= min_contrast,
-                "{:?}: Input text not readable on surface (contrast: {:.2}, minimum: {:.1})",
-                flavour,
-                text_on_surface,
-                min_contrast
+                "{flavour:?}: Input text not readable on surface (contrast: {text_on_surface:.2}, minimum: {min_contrast:.1})"
             );
         }
     }

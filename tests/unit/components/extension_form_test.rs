@@ -133,7 +133,7 @@ mod tests {
         let mut form = create_test_form();
 
         // Try to save with empty name
-        form.handle_events(Some(create_key_event(KeyCode::Char('s').into())))
+        form.handle_events(Some(create_key_event(KeyCode::Char('s'))))
             .unwrap();
 
         // Should show error
@@ -276,7 +276,7 @@ mod tests {
                 form.draw(f, f.area()).unwrap();
             });
 
-            assert!(result.is_ok(), "Failed to render at {}x{}", width, height);
+            assert!(result.is_ok(), "Failed to render at {width}x{height}");
         }
     }
 

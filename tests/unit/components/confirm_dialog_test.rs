@@ -259,7 +259,7 @@ mod tests {
                 dialog.draw(f, f.area()).unwrap();
             });
 
-            assert!(result.is_ok(), "Failed to render at {}x{}", width, height);
+            assert!(result.is_ok(), "Failed to render at {width}x{height}");
         }
     }
 

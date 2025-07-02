@@ -514,138 +514,137 @@ impl Component for ProfileForm {
         use crossterm::event::{KeyCode, KeyModifiers};
 
         if let Some(crate::tui::Event::Key(key)) = event {
-                match (key.code, key.modifiers) {
-                    (KeyCode::Esc, _) => {
-                        return Ok(Some(Action::NavigateBack));
-                    }
-                    (KeyCode::Char('s'), KeyModifiers::CONTROL) => {
-                        // Save profile
-                        if !self.name_input.value().is_empty() {
-                            match self.save_profile() {
-                                Ok(_) => {
-                                    // Send success notification and refresh action
-                                    if let Some(tx) = &self.command_tx {
-                                        let action_verb = if self.edit_profile_id.is_some() {
-                                            "updated"
-                                        } else {
-                                            "created"
-                                        };
-                                        let _ = tx.send(Action::Success(format!(
-                                            "Profile {action_verb} successfully"
-                                        )));
-                                        let _ = tx.send(Action::RefreshProfiles);
-                                        let _ = tx.send(Action::Render);
-                                    }
-                                    return Ok(Some(Action::NavigateBack));
+            match (key.code, key.modifiers) {
+                (KeyCode::Esc, _) => {
+                    return Ok(Some(Action::NavigateBack));
+                }
+                (KeyCode::Char('s'), KeyModifiers::CONTROL) => {
+                    // Save profile
+                    if !self.name_input.value().is_empty() {
+                        match self.save_profile() {
+                            Ok(_) => {
+                                // Send success notification and refresh action
+                                if let Some(tx) = &self.command_tx {
+                                    let action_verb = if self.edit_profile_id.is_some() {
+                                        "updated"
+                                    } else {
+                                        "created"
+                                    };
+                                    let _ = tx.send(Action::Success(format!(
+                                        "Profile {action_verb} successfully"
+                                    )));
+                                    let _ = tx.send(Action::RefreshProfiles);
+                                    let _ = tx.send(Action::Render);
                                 }
-                                Err(e) => {
-                                    return Ok(Some(Action::Error(format!(
-                                        "Failed to save profile: {e}"
-                                    ))));
-                                }
+                                return Ok(Some(Action::NavigateBack));
                             }
-                        } else {
-                            return Ok(Some(Action::Error("Profile name is required".to_string())));
+                            Err(e) => {
+                                return Ok(Some(Action::Error(format!(
+                                    "Failed to save profile: {e}"
+                                ))));
+                            }
                         }
-                    }
-                    (KeyCode::Tab, _) => {
-                        self.next_field();
-                        return Ok(Some(Action::Render));
-                    }
-                    (KeyCode::BackTab, _) => {
-                        self.previous_field();
-                        return Ok(Some(Action::Render));
-                    }
-                    _ => {
-                        // Handle field-specific input
-                        match self.current_field {
-                            FormField::Name => {
-                                if self
-                                    .name_input
-                                    .handle_event(&crossterm::event::Event::Key(key))
-                                    .is_some()
-                                {
-                                    return Ok(Some(Action::Render));
-                                }
-                            }
-                            FormField::Description => {
-                                if self
-                                    .description_input
-                                    .handle_event(&crossterm::event::Event::Key(key))
-                                    .is_some()
-                                {
-                                    return Ok(Some(Action::Render));
-                                }
-                            }
-                            FormField::WorkingDirectory => {
-                                if self
-                                    .working_directory_input
-                                    .handle_event(&crossterm::event::Event::Key(key))
-                                    .is_some()
-                                {
-                                    return Ok(Some(Action::Render));
-                                }
-                            }
-                            FormField::Extensions => match key.code {
-                                KeyCode::Up => {
-                                    if !self.available_extensions.is_empty() {
-                                        if self.extension_cursor == 0 {
-                                            self.extension_cursor =
-                                                self.available_extensions.len() - 1;
-                                        } else {
-                                            self.extension_cursor -= 1;
-                                        }
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                KeyCode::Down => {
-                                    if !self.available_extensions.is_empty() {
-                                        self.extension_cursor = (self.extension_cursor + 1)
-                                            % self.available_extensions.len();
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                KeyCode::Char(' ') => {
-                                    self.toggle_extension();
-                                    return Ok(Some(Action::Render));
-                                }
-                                _ => {}
-                            },
-                            FormField::Tags => {
-                                if self
-                                    .tags_input
-                                    .handle_event(&crossterm::event::Event::Key(key))
-                                    .is_some()
-                                {
-                                    return Ok(Some(Action::Render));
-                                }
-                            }
-                            FormField::LaunchConfig => match key.code {
-                                KeyCode::Up => {
-                                    if self.launch_config_cursor > 0 {
-                                        self.launch_config_cursor -= 1;
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                KeyCode::Down => {
-                                    if self.launch_config_cursor < 1 {
-                                        self.launch_config_cursor += 1;
-                                        return Ok(Some(Action::Render));
-                                    }
-                                }
-                                KeyCode::Char(' ') => {
-                                    match self.launch_config_cursor {
-                                        0 => self.clean_launch = !self.clean_launch,
-                                        1 => self.cleanup_on_exit = !self.cleanup_on_exit,
-                                        _ => {}
-                                    }
-                                    return Ok(Some(Action::Render));
-                                }
-                                _ => {}
-                            },
-                        }
+                    } else {
+                        return Ok(Some(Action::Error("Profile name is required".to_string())));
                     }
                 }
+                (KeyCode::Tab, _) => {
+                    self.next_field();
+                    return Ok(Some(Action::Render));
+                }
+                (KeyCode::BackTab, _) => {
+                    self.previous_field();
+                    return Ok(Some(Action::Render));
+                }
+                _ => {
+                    // Handle field-specific input
+                    match self.current_field {
+                        FormField::Name => {
+                            if self
+                                .name_input
+                                .handle_event(&crossterm::event::Event::Key(key))
+                                .is_some()
+                            {
+                                return Ok(Some(Action::Render));
+                            }
+                        }
+                        FormField::Description => {
+                            if self
+                                .description_input
+                                .handle_event(&crossterm::event::Event::Key(key))
+                                .is_some()
+                            {
+                                return Ok(Some(Action::Render));
+                            }
+                        }
+                        FormField::WorkingDirectory => {
+                            if self
+                                .working_directory_input
+                                .handle_event(&crossterm::event::Event::Key(key))
+                                .is_some()
+                            {
+                                return Ok(Some(Action::Render));
+                            }
+                        }
+                        FormField::Extensions => match key.code {
+                            KeyCode::Up => {
+                                if !self.available_extensions.is_empty() {
+                                    if self.extension_cursor == 0 {
+                                        self.extension_cursor = self.available_extensions.len() - 1;
+                                    } else {
+                                        self.extension_cursor -= 1;
+                                    }
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            KeyCode::Down => {
+                                if !self.available_extensions.is_empty() {
+                                    self.extension_cursor = (self.extension_cursor + 1)
+                                        % self.available_extensions.len();
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            KeyCode::Char(' ') => {
+                                self.toggle_extension();
+                                return Ok(Some(Action::Render));
+                            }
+                            _ => {}
+                        },
+                        FormField::Tags => {
+                            if self
+                                .tags_input
+                                .handle_event(&crossterm::event::Event::Key(key))
+                                .is_some()
+                            {
+                                return Ok(Some(Action::Render));
+                            }
+                        }
+                        FormField::LaunchConfig => match key.code {
+                            KeyCode::Up => {
+                                if self.launch_config_cursor > 0 {
+                                    self.launch_config_cursor -= 1;
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            KeyCode::Down => {
+                                if self.launch_config_cursor < 1 {
+                                    self.launch_config_cursor += 1;
+                                    return Ok(Some(Action::Render));
+                                }
+                            }
+                            KeyCode::Char(' ') => {
+                                match self.launch_config_cursor {
+                                    0 => self.clean_launch = !self.clean_launch,
+                                    1 => self.cleanup_on_exit = !self.cleanup_on_exit,
+                                    _ => {}
+                                }
+                                return Ok(Some(Action::Render));
+                            }
+                            _ => {}
+                        },
+                    }
+                }
+            }
         }
         Ok(None)
     }

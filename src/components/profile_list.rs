@@ -23,7 +23,6 @@ pub struct ProfileList {
     settings: Option<Arc<RwLock<UserSettings>>>,
 }
 
-
 impl ProfileList {
     pub fn with_storage(storage: Storage) -> Self {
         let mut list = Self {

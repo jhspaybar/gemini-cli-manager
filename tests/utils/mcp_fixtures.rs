@@ -349,14 +349,13 @@ pub fn validate_extension_json(extension: &Extension) -> Result<(), String> {
     for (name, server) in &extension.mcp_servers {
         // Must have command
         if server.command.is_none() {
-            return Err(format!("Server '{}' must have a command", name));
+            return Err(format!("Server '{name}' must have a command"));
         }
 
         // If command-based, args should be present (but can be empty)
         if server.command.is_some() && server.args.is_none() {
             return Err(format!(
-                "Server '{}' with command should have args field",
-                name
+                "Server '{name}' with command should have args field"
             ));
         }
     }

@@ -26,7 +26,6 @@ pub struct ExtensionList {
     keybinding_manager: Option<KeybindingManager>,
 }
 
-
 impl ExtensionList {
     pub fn with_storage(storage: Storage) -> Self {
         let mut list = Self {

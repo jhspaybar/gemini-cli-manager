@@ -217,7 +217,7 @@ mod tests {
             assert!(
                 expanded
                     .to_string_lossy()
-                    .contains(&expected_prefix.to_string_lossy().as_ref())
+                    .contains(expected_prefix.to_string_lossy().as_ref())
             );
         }
     }
@@ -250,8 +250,7 @@ mod tests {
         for ext_id in &[&ext1.id, &ext2.id, &ext3.id] {
             assert!(
                 WorkspaceVerifier::verify_extension_installed(&profile_workspace, ext_id).is_ok(),
-                "Extension {} not installed",
-                ext_id
+                "Extension {ext_id} not installed"
             );
         }
     }

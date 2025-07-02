@@ -14,7 +14,6 @@ pub struct ExtensionDetail {
     scroll_offset: u16,
 }
 
-
 impl ExtensionDetail {
     pub fn with_storage(storage: Storage) -> Self {
         Self {
