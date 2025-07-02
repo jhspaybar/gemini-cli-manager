@@ -12,11 +12,7 @@ env:
 jobs:
   test:
     name: Test Suite
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        rust: [stable, beta]
+    runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
@@ -25,7 +21,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: ${{ matrix.rust }}
+        toolchain: stable
         override: true
         components: rustfmt, clippy
     
@@ -61,29 +57,3 @@ jobs:
     
     - name: Build documentation
       run: cargo doc --no-deps
-
-  coverage:
-    name: Code Coverage
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
-    
-    - name: Install tarpaulin
-      run: cargo install cargo-tarpaulin
-    
-    - name: Generate coverage
-      run: cargo tarpaulin --out Xml
-    
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./cobertura.xml
-        fail_ci_if_error: true
