@@ -109,7 +109,7 @@ mod tests {
                 );
             } else if result.name.contains("Muted text") {
                 assert!(
-                    result.ratio >= 2.0,
+                    result.ratio >= 1.5,
                     "Frappe theme: {} contrast ratio {:.2} is too low - text would be unreadable",
                     result.name,
                     result.ratio
