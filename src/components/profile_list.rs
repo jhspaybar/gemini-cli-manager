@@ -125,11 +125,12 @@ impl ProfileList {
 
     fn check_keybinding(&self, key: &crossterm::event::KeyEvent, action: &str) -> bool {
         if let Some(settings) = &self.settings
-            && let Ok(settings_lock) = settings.read() {
-                let configured_keys = settings_lock.keybindings.get_keys_for_action(action);
-                let key_str = format_key_event(key);
-                return configured_keys.contains(&key_str);
-            }
+            && let Ok(settings_lock) = settings.read()
+        {
+            let configured_keys = settings_lock.keybindings.get_keys_for_action(action);
+            let key_str = format_key_event(key);
+            return configured_keys.contains(&key_str);
+        }
         false
     }
 }
@@ -218,10 +219,11 @@ impl Component for ProfileList {
             Action::RefreshProfiles => {
                 // Reload profiles from storage
                 if let Some(storage) = &self.storage
-                    && let Ok(profiles) = storage.list_profiles() {
-                        self.profiles = profiles;
-                        self.update_filter();
-                    }
+                    && let Ok(profiles) = storage.list_profiles()
+                {
+                    self.profiles = profiles;
+                    self.update_filter();
+                }
             }
             _ => {}
         }

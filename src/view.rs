@@ -475,15 +475,17 @@ impl ViewManager {
             Action::Tick => {
                 // Clear old error messages (using longer duration)
                 if let Some((_, timestamp)) = &self.error_message
-                    && timestamp.elapsed() > self.error_display_duration {
-                        self.error_message = None;
-                    }
+                    && timestamp.elapsed() > self.error_display_duration
+                {
+                    self.error_message = None;
+                }
 
                 // Clear old success messages
                 if let Some((_, timestamp)) = &self.success_message
-                    && timestamp.elapsed() > self.message_display_duration {
-                        self.success_message = None;
-                    }
+                    && timestamp.elapsed() > self.message_display_duration
+                {
+                    self.success_message = None;
+                }
             }
             _ => {}
         }
@@ -624,10 +626,11 @@ impl ViewManager {
         // Handle error message dismissal
         if self.error_message.is_some()
             && let Some(crate::tui::Event::Key(key)) = &event
-            && key.code == KeyCode::Esc {
-                    self.error_message = None;
-                    return Ok(Some(Action::Render));
-                }
+            && key.code == KeyCode::Esc
+        {
+            self.error_message = None;
+            return Ok(Some(Action::Render));
+        }
 
         // Forward events only to the current view
         if let Some(view) = self.views.get_mut(&self.current_view) {

@@ -81,18 +81,20 @@ impl Component for ProfileDetail {
             Action::ViewProfileDetails(id) => {
                 // Load the profile from storage
                 if let Some(storage) = &self.storage
-                    && let Ok(profile) = storage.load_profile(&id) {
-                        self.set_profile(profile);
-                    }
+                    && let Ok(profile) = storage.load_profile(&id)
+                {
+                    self.set_profile(profile);
+                }
             }
             Action::RefreshProfiles => {
                 // Reload the current profile if we have one
                 if let Some(current_profile) = &self.profile {
                     let profile_id = current_profile.id.clone();
                     if let Some(storage) = &self.storage
-                        && let Ok(profile) = storage.load_profile(&profile_id) {
-                            self.set_profile(profile);
-                        }
+                        && let Ok(profile) = storage.load_profile(&profile_id)
+                    {
+                        self.set_profile(profile);
+                    }
                 }
             }
             _ => {}

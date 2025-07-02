@@ -63,9 +63,10 @@ impl Component for ExtensionDetail {
         if let Action::ViewExtensionDetails(id) = action {
             // Load the extension from storage
             if let Some(storage) = &self.storage
-                && let Ok(extension) = storage.load_extension(&id) {
-                    self.set_extension(extension);
-                }
+                && let Ok(extension) = storage.load_extension(&id)
+            {
+                self.set_extension(extension);
+            }
         }
         Ok(None)
     }

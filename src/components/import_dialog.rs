@@ -167,9 +167,11 @@ impl ImportDialog {
                 let path = entry.path();
                 if path.is_file()
                     && let Some(name) = path.file_name().and_then(|n| n.to_str())
-                    && name.ends_with(".md") && !name.starts_with(".") {
-                        context_files.push((name.to_string(), path));
-                    }
+                    && name.ends_with(".md")
+                    && !name.starts_with(".")
+                {
+                    context_files.push((name.to_string(), path));
+                }
             }
         }
 
@@ -303,15 +305,16 @@ impl ImportDialog {
                     for name in potential_names {
                         let context_path = parent.join(&name);
                         if context_path.exists()
-                            && let Ok(context_content) = std::fs::read_to_string(&context_path) {
-                                // Update extension with context
-                                let mut updated = extension.clone();
-                                // Store original filename for reference, but it will be written as GEMINI.md
-                                updated.context_file_name = Some(name.clone());
-                                updated.context_content = Some(context_content);
-                                self.storage.save_extension(&updated)?;
-                                break;
-                            }
+                            && let Ok(context_content) = std::fs::read_to_string(&context_path)
+                        {
+                            // Update extension with context
+                            let mut updated = extension.clone();
+                            // Store original filename for reference, but it will be written as GEMINI.md
+                            updated.context_file_name = Some(name.clone());
+                            updated.context_content = Some(context_content);
+                            self.storage.save_extension(&updated)?;
+                            break;
+                        }
                     }
                 }
 

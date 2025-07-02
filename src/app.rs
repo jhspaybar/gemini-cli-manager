@@ -45,12 +45,13 @@ impl App {
 
         // Apply saved theme from the loaded settings
         if let Ok(settings_lock) = settings.read()
-            && let Err(e) = crate::theme::set_theme_by_name(&settings_lock.theme) {
-                debug!(
-                    "Warning: Could not apply saved theme '{}': {}",
-                    settings_lock.theme, e
-                );
-            }
+            && let Err(e) = crate::theme::set_theme_by_name(&settings_lock.theme)
+        {
+            debug!(
+                "Warning: Could not apply saved theme '{}': {}",
+                settings_lock.theme, e
+            );
+        }
 
         // Create view manager with storage
         let view_manager = ViewManager::with_storage(storage.clone());

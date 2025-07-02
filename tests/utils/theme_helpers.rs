@@ -182,29 +182,31 @@ impl StyleVerifier {
                 // Check for black text on dark backgrounds
                 if let Some(fg) = cell.style().fg
                     && (fg == Color::Black || fg == Color::Rgb(0, 0, 0))
-                    && let Some(bg) = cell.style().bg {
-                            // Check if background is dark
-                            let bg_luminance = ThemeTestHelper::get_luminance(bg);
-                            if bg_luminance < 0.5 {
-                                issues.push(ColorIssue {
-                                    position: (x, y),
-                                    description: "Black text on dark background".to_string(),
-                                    fg,
-                                    bg,
-                                });
-                            }
-                        }
-
-                // Check for invisible text (same fg and bg)
-                if let (Some(fg), Some(bg)) = (cell.style().fg, cell.style().bg)
-                    && fg == bg {
+                    && let Some(bg) = cell.style().bg
+                {
+                    // Check if background is dark
+                    let bg_luminance = ThemeTestHelper::get_luminance(bg);
+                    if bg_luminance < 0.5 {
                         issues.push(ColorIssue {
                             position: (x, y),
-                            description: "Text same color as background".to_string(),
+                            description: "Black text on dark background".to_string(),
                             fg,
                             bg,
                         });
                     }
+                }
+
+                // Check for invisible text (same fg and bg)
+                if let (Some(fg), Some(bg)) = (cell.style().fg, cell.style().bg)
+                    && fg == bg
+                {
+                    issues.push(ColorIssue {
+                        position: (x, y),
+                        description: "Text same color as background".to_string(),
+                        fg,
+                        bg,
+                    });
+                }
             }
         }
 

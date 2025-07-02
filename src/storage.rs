@@ -165,7 +165,7 @@ impl Storage {
                 .map(|entry| entry.path())
                 .filter(|path| path.extension().and_then(|s| s.to_str()) == Some("json"))
                 .collect();
-            
+
             // Sort paths to ensure consistent ordering
             paths.sort();
 

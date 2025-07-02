@@ -12,7 +12,7 @@ mod tests {
             // Skip test in CI
             return;
         }
-        
+
         // Test creating a Tui instance
         let tui = Tui::new();
         assert!(tui.is_ok(), "Tui should be created successfully");
@@ -25,7 +25,7 @@ mod tests {
             // Skip test in CI
             return;
         }
-        
+
         let tui = Tui::new().unwrap().tick_rate(120.0);
 
         // Just verify we can set tick rate without errors
@@ -39,7 +39,7 @@ mod tests {
             // Skip test in CI
             return;
         }
-        
+
         let tui = Tui::new().unwrap().frame_rate(60.0);
 
         // Just verify we can set frame rate without errors
@@ -53,7 +53,7 @@ mod tests {
             // Skip test in CI
             return;
         }
-        
+
         let tui = Tui::new()
             .unwrap()
             .tick_rate(120.0)
@@ -132,7 +132,7 @@ mod tests {
             // Skip test in CI
             return;
         }
-        
+
         let mut tui = Tui::new().unwrap();
         let rect = Rect::new(0, 0, 100, 50);
 

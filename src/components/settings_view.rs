@@ -406,9 +406,10 @@ impl Settings {
 
             // Update shared settings first
             if let Some(ref shared_settings) = self.shared_settings
-                && let Ok(mut settings_guard) = shared_settings.write() {
-                    settings_guard.theme = theme.name.clone();
-                }
+                && let Ok(mut settings_guard) = shared_settings.write()
+            {
+                settings_guard.theme = theme.name.clone();
+            }
 
             // Then persist to disk
             if let Some(manager) = &mut self.settings_manager {
@@ -661,9 +662,9 @@ impl Component for Settings {
                 .available_themes
                 .iter()
                 .position(|t| t.name == settings_guard.theme)
-            {
-                self.selected_theme = index;
-            }
+        {
+            self.selected_theme = index;
+        }
 
         Ok(())
     }
@@ -809,98 +810,84 @@ impl Component for Settings {
                         if !self.captured_keys.is_empty()
                             && let Some(action) =
                                 self.keybinding_actions.get(self.selected_keybinding)
+                        {
+                            self.editing_keybinding = false;
+                            let keys = self.captured_keys.clone();
+                            self.captured_keys.clear();
+
+                            // Update shared settings first
+                            if let Some(ref shared_settings) = self.shared_settings
+                                && let Ok(mut settings_guard) = shared_settings.write()
                             {
-                                self.editing_keybinding = false;
-                                let keys = self.captured_keys.clone();
-                                self.captured_keys.clear();
-
-                                // Update shared settings first
-                                if let Some(ref shared_settings) = self.shared_settings
-                                    && let Ok(mut settings_guard) = shared_settings.write() {
-                                        // Update the appropriate keybinding in shared settings
-                                        match action.as_str() {
-                                            "up" => {
-                                                settings_guard.keybindings.navigation.up =
-                                                    keys.clone()
-                                            }
-                                            "down" => {
-                                                settings_guard.keybindings.navigation.down =
-                                                    keys.clone()
-                                            }
-                                            "left" => {
-                                                settings_guard.keybindings.navigation.left =
-                                                    keys.clone()
-                                            }
-                                            "right" => {
-                                                settings_guard.keybindings.navigation.right =
-                                                    keys.clone()
-                                            }
-                                            "back" => {
-                                                settings_guard.keybindings.navigation.back =
-                                                    keys.clone()
-                                            }
-                                            "quit" => {
-                                                settings_guard.keybindings.navigation.quit =
-                                                    keys.clone()
-                                            }
-                                            "edit" => {
-                                                settings_guard.keybindings.actions.edit =
-                                                    keys.clone()
-                                            }
-                                            "delete" => {
-                                                settings_guard.keybindings.actions.delete =
-                                                    keys.clone()
-                                            }
-                                            "create" => {
-                                                settings_guard.keybindings.actions.create =
-                                                    keys.clone()
-                                            }
-                                            "import" => {
-                                                settings_guard.keybindings.actions.import =
-                                                    keys.clone()
-                                            }
-                                            "launch" => {
-                                                settings_guard.keybindings.actions.launch =
-                                                    keys.clone()
-                                            }
-                                            "select" => {
-                                                settings_guard.keybindings.actions.select =
-                                                    keys.clone()
-                                            }
-                                            "search" => {
-                                                settings_guard.keybindings.actions.search =
-                                                    keys.clone()
-                                            }
-                                            _ => {}
-                                        }
+                                // Update the appropriate keybinding in shared settings
+                                match action.as_str() {
+                                    "up" => settings_guard.keybindings.navigation.up = keys.clone(),
+                                    "down" => {
+                                        settings_guard.keybindings.navigation.down = keys.clone()
                                     }
-
-                                // Then persist to disk
-                                if let Some(manager) = &mut self.settings_manager {
-                                    match manager.update_keybinding(action, keys.clone()) {
-                                        Ok(()) => {
-                                            if let Some(tx) = &self.command_tx {
-                                                let _ = tx.send(Action::Success(format!(
-                                                    "Keybinding for '{action}' updated successfully"
-                                                )));
-                                                let _ = tx.send(Action::Render);
-                                            }
-                                        }
-                                        Err(e) => {
-                                            if let Some(tx) = &self.command_tx {
-                                                let _ = tx.send(Action::Error(format!(
-                                                    "Failed to update keybinding: {e}"
-                                                )));
-                                            }
-                                        }
+                                    "left" => {
+                                        settings_guard.keybindings.navigation.left = keys.clone()
                                     }
-                                } else if let Some(tx) = &self.command_tx {
-                                    let _ = tx.send(Action::Error(
-                                        "Settings manager not initialized".to_string(),
-                                    ));
+                                    "right" => {
+                                        settings_guard.keybindings.navigation.right = keys.clone()
+                                    }
+                                    "back" => {
+                                        settings_guard.keybindings.navigation.back = keys.clone()
+                                    }
+                                    "quit" => {
+                                        settings_guard.keybindings.navigation.quit = keys.clone()
+                                    }
+                                    "edit" => {
+                                        settings_guard.keybindings.actions.edit = keys.clone()
+                                    }
+                                    "delete" => {
+                                        settings_guard.keybindings.actions.delete = keys.clone()
+                                    }
+                                    "create" => {
+                                        settings_guard.keybindings.actions.create = keys.clone()
+                                    }
+                                    "import" => {
+                                        settings_guard.keybindings.actions.import = keys.clone()
+                                    }
+                                    "launch" => {
+                                        settings_guard.keybindings.actions.launch = keys.clone()
+                                    }
+                                    "select" => {
+                                        settings_guard.keybindings.actions.select = keys.clone()
+                                    }
+                                    "search" => {
+                                        settings_guard.keybindings.actions.search = keys.clone()
+                                    }
+                                    _ => {}
                                 }
-                                return Ok(Some(Action::Render));
                             }
+
+                            // Then persist to disk
+                            if let Some(manager) = &mut self.settings_manager {
+                                match manager.update_keybinding(action, keys.clone()) {
+                                    Ok(()) => {
+                                        if let Some(tx) = &self.command_tx {
+                                            let _ = tx.send(Action::Success(format!(
+                                                "Keybinding for '{action}' updated successfully"
+                                            )));
+                                            let _ = tx.send(Action::Render);
+                                        }
+                                    }
+                                    Err(e) => {
+                                        if let Some(tx) = &self.command_tx {
+                                            let _ = tx.send(Action::Error(format!(
+                                                "Failed to update keybinding: {e}"
+                                            )));
+                                        }
+                                    }
+                                }
+                            } else if let Some(tx) = &self.command_tx {
+                                let _ = tx.send(Action::Error(
+                                    "Settings manager not initialized".to_string(),
+                                ));
+                            }
+                            return Ok(Some(Action::Render));
+                        }
                         return Ok(Some(Action::Render));
                     }
                     (KeyCode::Backspace, _) => {
