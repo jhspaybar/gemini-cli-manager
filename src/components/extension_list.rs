@@ -158,12 +158,11 @@ impl Component for ExtensionList {
             }
             Action::RefreshExtensions => {
                 // Reload extensions from storage
-                if let Some(storage) = &self.storage {
-                    if let Ok(extensions) = storage.list_extensions() {
+                if let Some(storage) = &self.storage
+                    && let Ok(extensions) = storage.list_extensions() {
                         self.extensions = extensions;
                         self.update_filter();
                     }
-                }
             }
             _ => {}
         }

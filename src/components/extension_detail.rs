@@ -62,11 +62,10 @@ impl Component for ExtensionDetail {
     fn update(&mut self, action: Action) -> Result<Option<Action>> {
         if let Action::ViewExtensionDetails(id) = action {
             // Load the extension from storage
-            if let Some(storage) = &self.storage {
-                if let Ok(extension) = storage.load_extension(&id) {
+            if let Some(storage) = &self.storage
+                && let Ok(extension) = storage.load_extension(&id) {
                     self.set_extension(extension);
                 }
-            }
         }
         Ok(None)
     }

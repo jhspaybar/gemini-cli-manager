@@ -405,11 +405,10 @@ impl Settings {
             }
 
             // Update shared settings first
-            if let Some(ref shared_settings) = self.shared_settings {
-                if let Ok(mut settings_guard) = shared_settings.write() {
+            if let Some(ref shared_settings) = self.shared_settings
+                && let Ok(mut settings_guard) = shared_settings.write() {
                     settings_guard.theme = theme.name.clone();
                 }
-            }
 
             // Then persist to disk
             if let Some(manager) = &mut self.settings_manager {
@@ -657,15 +656,14 @@ impl Component for Settings {
         self.keybinding_manager = Some(KeybindingManager::new(settings.clone()));
 
         // Initialize theme selection based on current settings
-        if let Ok(settings_guard) = settings.read() {
-            if let Some(index) = self
+        if let Ok(settings_guard) = settings.read()
+            && let Some(index) = self
                 .available_themes
                 .iter()
                 .position(|t| t.name == settings_guard.theme)
             {
                 self.selected_theme = index;
             }
-        }
 
         Ok(())
     }
@@ -808,8 +806,8 @@ impl Component for Settings {
                     }
                     (KeyCode::Char('s'), crossterm::event::KeyModifiers::CONTROL) => {
                         // Save the captured keys with Ctrl+S
-                        if !self.captured_keys.is_empty() {
-                            if let Some(action) =
+                        if !self.captured_keys.is_empty()
+                            && let Some(action) =
                                 self.keybinding_actions.get(self.selected_keybinding)
                             {
                                 self.editing_keybinding = false;
@@ -817,8 +815,8 @@ impl Component for Settings {
                                 self.captured_keys.clear();
 
                                 // Update shared settings first
-                                if let Some(ref shared_settings) = self.shared_settings {
-                                    if let Ok(mut settings_guard) = shared_settings.write() {
+                                if let Some(ref shared_settings) = self.shared_settings
+                                    && let Ok(mut settings_guard) = shared_settings.write() {
                                         // Update the appropriate keybinding in shared settings
                                         match action.as_str() {
                                             "up" => {
@@ -876,7 +874,6 @@ impl Component for Settings {
                                             _ => {}
                                         }
                                     }
-                                }
 
                                 // Then persist to disk
                                 if let Some(manager) = &mut self.settings_manager {
@@ -904,7 +901,6 @@ impl Component for Settings {
                                 }
                                 return Ok(Some(Action::Render));
                             }
-                        }
                         return Ok(Some(Action::Render));
                     }
                     (KeyCode::Backspace, _) => {

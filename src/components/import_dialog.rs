@@ -165,13 +165,11 @@ impl ImportDialog {
         if let Ok(entries) = std::fs::read_dir(dir_path) {
             for entry in entries.flatten() {
                 let path = entry.path();
-                if path.is_file() {
-                    if let Some(name) = path.file_name().and_then(|n| n.to_str()) {
-                        if name.ends_with(".md") && !name.starts_with(".") {
-                            context_files.push((name.to_string(), path));
-                        }
+                if path.is_file()
+                    && let Some(name) = path.file_name().and_then(|n| n.to_str())
+                    && name.ends_with(".md") && !name.starts_with(".") {
+                        context_files.push((name.to_string(), path));
                     }
-                }
             }
         }
 
@@ -304,8 +302,8 @@ impl ImportDialog {
 
                     for name in potential_names {
                         let context_path = parent.join(&name);
-                        if context_path.exists() {
-                            if let Ok(context_content) = std::fs::read_to_string(&context_path) {
+                        if context_path.exists()
+                            && let Ok(context_content) = std::fs::read_to_string(&context_path) {
                                 // Update extension with context
                                 let mut updated = extension.clone();
                                 // Store original filename for reference, but it will be written as GEMINI.md
@@ -314,7 +312,6 @@ impl ImportDialog {
                                 self.storage.save_extension(&updated)?;
                                 break;
                             }
-                        }
                     }
                 }
 
