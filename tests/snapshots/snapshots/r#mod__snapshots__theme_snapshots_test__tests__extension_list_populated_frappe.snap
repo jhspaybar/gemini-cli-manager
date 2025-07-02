@@ -3,17 +3,17 @@ source: tests/snapshots/theme_snapshots_test.rs
 expression: output
 ---
 ╭───────────────────────────────── Extensions ─────────────────────────────────╮
-││ Echo Test Extension v1.0.0                                                  │
-│    Test extension with echo MCP server                                       │
-│    1 MCP servers | 2 tags                                                    │
+││ AI Assistant v2.0.0                                                         │
+│    Advanced AI-powered development assistant                                 │
+│    0 MCP servers | 3 tags                                                    │
 │                                                                              │
 │  Database Tools v1.5.3                                                       │
 │    Comprehensive database management and migration tools                     │
 │    0 MCP servers | 3 tags                                                    │
 │                                                                              │
-│  AI Assistant v2.0.0                                                         │
-│    Advanced AI-powered development assistant                                 │
-│    0 MCP servers | 3 tags                                                    │
+│  Echo Test Extension v1.0.0                                                  │
+│    Test extension with echo MCP server                                       │
+│    1 MCP servers | 2 tags                                                    │
 │                                                                              │
 │                                                                              │
 │                                                                              │

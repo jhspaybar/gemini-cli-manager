@@ -159,15 +159,21 @@ impl Storage {
         let mut items = Vec::new();
 
         if dir.exists() {
-            for entry in fs::read_dir(dir)? {
-                let entry = entry?;
-                let path = entry.path();
+            // Collect all paths first to sort them
+            let mut paths: Vec<PathBuf> = fs::read_dir(dir)?
+                .filter_map(|entry| entry.ok())
+                .map(|entry| entry.path())
+                .filter(|path| path.extension().and_then(|s| s.to_str()) == Some("json"))
+                .collect();
+            
+            // Sort paths to ensure consistent ordering
+            paths.sort();
 
-                if path.extension().and_then(|s| s.to_str()) == Some("json") {
-                    match self.load_json::<T>(&path) {
-                        Ok(item) => items.push(item),
-                        Err(e) => eprintln!("Warning: Failed to load {path:?}: {e}"),
-                    }
+            // Load items in sorted order
+            for path in paths {
+                match self.load_json::<T>(&path) {
+                    Ok(item) => items.push(item),
+                    Err(e) => eprintln!("Warning: Failed to load {path:?}: {e}"),
                 }
             }
         }
