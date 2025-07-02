@@ -2,6 +2,8 @@
 
 A Terminal User Interface (TUI) application for managing Gemini CLI workspace configurations through profiles and extensions.
 
+![Gemini CLI Manager Demo](demo.gif)
+
 ## Overview
 
 Gemini CLI Manager is a **workspace configuration manager** that enables you to:
@@ -130,17 +132,19 @@ The project includes several production-ready starter extensions in the `starter
 ### Importing Starter Extensions
 
 ```bash
-# Method 1: Use the import script (recommended)
-./import-starter-extensions.sh
-
-# Method 2: Manual import via the UI
+# Method 1: Import via the UI (recommended)
 # 1. Launch the application
 # 2. Go to Extensions tab
 # 3. Press 'i' to import
-# 4. Follow the on-screen instructions
+# 4. Navigate to starter-extensions directory
+# 5. Select the extension to import
 
-# Method 3: Manual copy (advanced)
-cp starter-extensions/*/extension.json ~/.local/share/gemini-cli-manager/extensions/
+# Method 2: Manual copy (advanced)
+# The data directory varies by platform:
+# - macOS: ~/Library/Application Support/gemini-cli-manager/
+# - Linux: ~/.local/share/gemini-cli-manager/
+# - Windows: %APPDATA%\gemini-cli-manager\
+# Copy extensions to the appropriate directory for your platform
 ```
 
 After importing, the extensions will appear in the Extensions tab of the application.

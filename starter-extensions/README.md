@@ -15,12 +15,19 @@ Complete GitHub API integration toolkit with authentication, rate limiting, repo
 
 ## Usage
 
-Run the import script from the project root:
-```bash
-./import-starter-extensions.sh
-```
+To import these extensions:
 
-Or manually copy extension.json files to your data directory.
+1. **Using the UI (recommended)**:
+   - Launch the Gemini CLI Manager
+   - Press 'i' in the Extensions tab
+   - Navigate to the starter-extensions directory
+   - Select the extension you want to import
+
+2. **Manual copy**:
+   Copy the extension directories to your platform's data directory:
+   - **macOS**: `~/Library/Application Support/gemini-cli-manager/extensions/`
+   - **Linux**: `~/.local/share/gemini-cli-manager/extensions/`
+   - **Windows**: `%APPDATA%\gemini-cli-manager\extensions\`
 
 ## Creating Your Own Extensions
 
