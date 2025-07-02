@@ -57,7 +57,7 @@ pub trait Component {
     ///
     /// # Arguments
     ///
-    /// * `settings` - Shared user settings wrapped in Arc<RwLock>.
+    /// * `settings` - Shared user settings wrapped in `Arc<RwLock>`.
     ///
     /// # Returns
     ///
