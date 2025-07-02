@@ -190,7 +190,7 @@ mod tests {
         // Note: Catppuccin is a well-designed color scheme, but some semantic colors
         // may have lower contrast ratios. We'll use a more lenient threshold for CI.
         let min_ratio = 2.5; // Lowered from 3.0 for CI compatibility
-        
+
         assert!(
             ThemeTestHelper::contrast_ratio(error, theme::background()) >= min_ratio,
             "Error color not visible on background"
