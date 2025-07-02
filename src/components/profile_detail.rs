@@ -3,8 +3,15 @@ use ratatui::{prelude::*, widgets::*};
 use tokio::sync::mpsc::UnboundedSender;
 
 use super::Component;
-use crate::{action::Action, config::Config, models::{Extension, Profile}, storage::Storage, theme};
+use crate::{
+    action::Action,
+    config::Config,
+    models::{Extension, Profile},
+    storage::Storage,
+    theme,
+};
 
+#[derive(Default)]
 pub struct ProfileDetail {
     command_tx: Option<UnboundedSender<Action>>,
     config: Config,
@@ -14,26 +21,15 @@ pub struct ProfileDetail {
     scroll_offset: u16,
 }
 
-impl Default for ProfileDetail {
-    fn default() -> Self {
-        Self {
-            command_tx: None,
-            config: Config::default(),
-            storage: None,
-            profile: None,
-            extensions: Vec::new(),
-            scroll_offset: 0,
-        }
-    }
-}
 
 impl ProfileDetail {
     pub fn with_storage(storage: Storage) -> Self {
-        let mut detail = Self::default();
-        detail.storage = Some(storage);
-        detail
+        Self {
+            storage: Some(storage),
+            ..Self::default()
+        }
     }
-    
+
     #[allow(dead_code)]
     pub fn new(storage: Storage, profile_id: String) -> Self {
         let mut detail = Self::with_storage(storage.clone());
@@ -46,14 +42,15 @@ impl ProfileDetail {
     pub fn set_profile(&mut self, profile: Profile) {
         // Load the extensions from storage
         if let Some(storage) = &self.storage {
-            self.extensions = profile.extension_ids
+            self.extensions = profile
+                .extension_ids
                 .iter()
                 .filter_map(|ext_id| storage.load_extension(ext_id).ok())
                 .collect();
         } else {
             self.extensions = Vec::new();
         }
-        
+
         self.profile = Some(profile);
         self.scroll_offset = 0;
     }
@@ -113,11 +110,11 @@ impl Component for ProfileDetail {
                 .title(" Profile Details ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded);
-            
+
             let text = Paragraph::new("No profile selected")
                 .alignment(Alignment::Center)
                 .block(block);
-            
+
             frame.render_widget(text, area);
             return Ok(());
         };
@@ -127,7 +124,7 @@ impl Component for ProfileDetail {
             .direction(Direction::Vertical)
             .constraints([
                 Constraint::Length(area.height.saturating_sub(3)), // Main content
-                Constraint::Length(3),                               // Help bar
+                Constraint::Length(3),                             // Help bar
             ])
             .split(area);
 
@@ -146,7 +143,12 @@ impl Component for ProfileDetail {
         // Description
         if let Some(desc) = &profile.description {
             content.push(Line::from(vec![
-                Span::styled("Description: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "Description: ",
+                    Style::default()
+                        .fg(theme::highlight())
+                        .add_modifier(Modifier::BOLD),
+                ),
                 Span::styled(desc, Style::default().fg(theme::text_primary())),
             ]));
             content.push(Line::from(""));
@@ -154,22 +156,42 @@ impl Component for ProfileDetail {
 
         // ID
         content.push(Line::from(vec![
-            Span::styled("ID: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "ID: ",
+                Style::default()
+                    .fg(theme::highlight())
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled(&profile.id, Style::default().fg(theme::text_primary())),
         ]));
 
         // Default status
         if profile.metadata.is_default {
             content.push(Line::from(vec![
-                Span::styled("Status: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-                Span::styled("Default Profile", Style::default().fg(theme::primary()).add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "Status: ",
+                    Style::default()
+                        .fg(theme::highlight())
+                        .add_modifier(Modifier::BOLD),
+                ),
+                Span::styled(
+                    "Default Profile",
+                    Style::default()
+                        .fg(theme::primary())
+                        .add_modifier(Modifier::BOLD),
+                ),
             ]));
         }
 
         // Tags
         if !profile.metadata.tags.is_empty() {
             content.push(Line::from(vec![
-                Span::styled("Tags: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "Tags: ",
+                    Style::default()
+                        .fg(theme::highlight())
+                        .add_modifier(Modifier::BOLD),
+                ),
                 Span::styled(
                     profile.metadata.tags.join(", "),
                     Style::default().fg(theme::accent()),
@@ -180,54 +202,89 @@ impl Component for ProfileDetail {
         // Working directory
         if let Some(dir) = &profile.working_directory {
             content.push(Line::from(vec![
-                Span::styled("Working Directory: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "Working Directory: ",
+                    Style::default()
+                        .fg(theme::highlight())
+                        .add_modifier(Modifier::BOLD),
+                ),
                 Span::styled(dir, Style::default().fg(theme::text_primary())),
             ]));
         }
 
         // Creation date
         content.push(Line::from(vec![
-            Span::styled("Created: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-            Span::styled(profile.metadata.created_at.format("%Y-%m-%d %H:%M:%S").to_string(), Style::default().fg(theme::text_primary())),
+            Span::styled(
+                "Created: ",
+                Style::default()
+                    .fg(theme::highlight())
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                profile
+                    .metadata
+                    .created_at
+                    .format("%Y-%m-%d %H:%M:%S")
+                    .to_string(),
+                Style::default().fg(theme::text_primary()),
+            ),
         ]));
         content.push(Line::from(""));
 
         // Extensions section
         content.push(Line::from(Span::styled(
             "Extensions",
-            Style::default().fg(theme::info()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+            Style::default()
+                .fg(theme::info())
+                .add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
         )));
         content.push(Line::from(""));
 
         if self.extensions.is_empty() {
-            content.push(Line::from(Span::styled("  No extensions included", Style::default().fg(theme::text_muted()))));
+            content.push(Line::from(Span::styled(
+                "  No extensions included",
+                Style::default().fg(theme::text_muted()),
+            )));
         } else {
             for ext in &self.extensions {
                 content.push(Line::from(vec![
                     Span::styled("  ", Style::default().fg(theme::text_primary())),
-                    Span::styled(format!("• {}", ext.name), Style::default().fg(theme::success())),
+                    Span::styled(
+                        format!("• {}", ext.name),
+                        Style::default().fg(theme::success()),
+                    ),
                     Span::styled(" ", Style::default().fg(theme::text_primary())),
-                    Span::styled(format!("v{}", ext.version), Style::default().fg(theme::text_muted())),
+                    Span::styled(
+                        format!("v{}", ext.version),
+                        Style::default().fg(theme::text_muted()),
+                    ),
                 ]));
-                
+
                 if let Some(desc) = &ext.description {
                     content.push(Line::from(vec![
                         Span::styled("    ", Style::default().fg(theme::text_primary())),
                         Span::styled(desc, Style::default().fg(theme::text_secondary())),
                     ]));
                 }
-                
+
                 // Show MCP servers
                 if !ext.mcp_servers.is_empty() {
                     content.push(Line::from(vec![
                         Span::styled("    ", Style::default().fg(theme::text_primary())),
                         Span::styled(
-                            format!("MCP Servers: {}", ext.mcp_servers.keys().cloned().collect::<Vec<_>>().join(", ")),
+                            format!(
+                                "MCP Servers: {}",
+                                ext.mcp_servers
+                                    .keys()
+                                    .cloned()
+                                    .collect::<Vec<_>>()
+                                    .join(", ")
+                            ),
                             Style::default().fg(theme::text_muted()),
                         ),
                     ]));
                 }
-                
+
                 content.push(Line::from(""));
             }
         }
@@ -235,49 +292,76 @@ impl Component for ProfileDetail {
         // Launch Configuration section
         content.push(Line::from(Span::styled(
             "Launch Configuration",
-            Style::default().fg(theme::info()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+            Style::default()
+                .fg(theme::info())
+                .add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
         )));
         content.push(Line::from(""));
-        
+
         content.push(Line::from(vec![
-            Span::styled("  Clean Launch: ", Style::default().fg(theme::text_primary())),
             Span::styled(
-                if profile.launch_config.clean_launch { "Yes" } else { "No" },
-                Style::default().fg(if profile.launch_config.clean_launch { theme::success() } else { theme::text_secondary() })
+                "  Clean Launch: ",
+                Style::default().fg(theme::text_primary()),
+            ),
+            Span::styled(
+                if profile.launch_config.clean_launch {
+                    "Yes"
+                } else {
+                    "No"
+                },
+                Style::default().fg(if profile.launch_config.clean_launch {
+                    theme::success()
+                } else {
+                    theme::text_secondary()
+                }),
             ),
         ]));
-        
+
         content.push(Line::from(vec![
-            Span::styled("  Cleanup on Exit: ", Style::default().fg(theme::text_primary())),
             Span::styled(
-                if profile.launch_config.cleanup_on_exit { "Yes" } else { "No" },
-                Style::default().fg(if profile.launch_config.cleanup_on_exit { theme::success() } else { theme::text_secondary() })
+                "  Cleanup on Exit: ",
+                Style::default().fg(theme::text_primary()),
+            ),
+            Span::styled(
+                if profile.launch_config.cleanup_on_exit {
+                    "Yes"
+                } else {
+                    "No"
+                },
+                Style::default().fg(if profile.launch_config.cleanup_on_exit {
+                    theme::success()
+                } else {
+                    theme::text_secondary()
+                }),
             ),
         ]));
-        
+
         content.push(Line::from(""));
-        
+
         // Environment Variables section
         if !profile.environment_variables.is_empty() {
             content.push(Line::from(Span::styled(
                 "Environment Variables",
-                Style::default().fg(theme::info()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+                Style::default()
+                    .fg(theme::info())
+                    .add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
             )));
             content.push(Line::from(""));
 
             for (key, value) in &profile.environment_variables {
                 // Mask sensitive values
-                let display_value = if key.contains("TOKEN") || key.contains("KEY") || key.contains("SECRET") {
-                    let len = value.len();
-                    if len > 8 {
-                        format!("{}...{}", &value[..4], &value[len-4..])
+                let display_value =
+                    if key.contains("TOKEN") || key.contains("KEY") || key.contains("SECRET") {
+                        let len = value.len();
+                        if len > 8 {
+                            format!("{}...{}", &value[..4], &value[len - 4..])
+                        } else {
+                            "***".to_string()
+                        }
                     } else {
-                        "***".to_string()
-                    }
-                } else {
-                    value.clone()
-                };
-                
+                        value.clone()
+                    };
+
                 content.push(Line::from(vec![
                     Span::styled("  ", Style::default().fg(theme::text_primary())),
                     Span::styled(key, Style::default().fg(theme::highlight())),
@@ -291,20 +375,35 @@ impl Component for ProfileDetail {
         // Summary
         content.push(Line::from(Span::styled(
             "Summary",
-            Style::default().fg(theme::info()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+            Style::default()
+                .fg(theme::info())
+                .add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
         )));
         content.push(Line::from(""));
-        content.push(Line::from(Span::styled(format!("  • {} extensions", self.extensions.len()), Style::default().fg(theme::text_primary()))));
-        content.push(Line::from(Span::styled(format!("  • {} environment variables", profile.environment_variables.len()), Style::default().fg(theme::text_primary()))));
-        
-        let total_mcp_servers: usize = self.extensions.iter()
+        content.push(Line::from(Span::styled(
+            format!("  • {} extensions", self.extensions.len()),
+            Style::default().fg(theme::text_primary()),
+        )));
+        content.push(Line::from(Span::styled(
+            format!(
+                "  • {} environment variables",
+                profile.environment_variables.len()
+            ),
+            Style::default().fg(theme::text_primary()),
+        )));
+
+        let total_mcp_servers: usize = self
+            .extensions
+            .iter()
             .map(|ext| ext.mcp_servers.len())
             .sum();
-        content.push(Line::from(Span::styled(format!("  • {} MCP servers total", total_mcp_servers), Style::default().fg(theme::text_primary()))));
+        content.push(Line::from(Span::styled(
+            format!("  • {total_mcp_servers} MCP servers total"),
+            Style::default().fg(theme::text_primary()),
+        )));
 
         // Create scrollable paragraph
-        let paragraph = Paragraph::new(content)
-            .scroll((self.scroll_offset, 0));
+        let paragraph = Paragraph::new(content).scroll((self.scroll_offset, 0));
 
         // Render main content
         frame.render_widget(block, chunks[0]);

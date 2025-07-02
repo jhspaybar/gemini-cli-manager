@@ -1,14 +1,14 @@
 #[cfg(test)]
 mod tests {
+    use chrono::Utc;
     use gemini_cli_manager::{
+        launcher::Launcher,
         models::{Extension, Profile, extension::McpServerConfig, profile::LaunchConfig},
         storage::Storage,
-        launcher::Launcher,
         theme::{self, ThemeFlavour},
     };
     use std::collections::HashMap;
     use tempfile::TempDir;
-    use chrono::Utc;
 
     // Simple storage tests
     #[test]
@@ -16,7 +16,7 @@ mod tests {
         let temp_dir = TempDir::new().unwrap();
         let storage = Storage::with_data_dir(temp_dir.path().to_path_buf());
         let _ = storage.init();
-        
+
         // Get initial count
         let initial_count = storage.list_extensions().unwrap().len();
 
@@ -94,7 +94,7 @@ mod tests {
     fn test_launcher_workspace_setup() {
         let workspace_temp = TempDir::new().unwrap();
         let storage_temp = TempDir::new().unwrap();
-        
+
         let storage = Storage::with_data_dir(storage_temp.path().to_path_buf());
         let launcher = Launcher::with_storage(storage);
 
@@ -111,7 +111,7 @@ mod tests {
     fn test_launcher_extension_installation() {
         let workspace_temp = TempDir::new().unwrap();
         let storage_temp = TempDir::new().unwrap();
-        
+
         let storage = Storage::with_data_dir(storage_temp.path().to_path_buf());
         let _ = storage.init();
 
@@ -123,15 +123,18 @@ mod tests {
             description: Some("Echo test extension".to_string()),
             mcp_servers: {
                 let mut servers = HashMap::new();
-                servers.insert("echo".to_string(), McpServerConfig {
-                    command: Some("node".to_string()),
-                    args: Some(vec!["echo.js".to_string()]),
-                    cwd: None,
-                    env: None,
-                    timeout: None,
-                    trust: Some(true),
-                    url: None,
-                });
+                servers.insert(
+                    "echo".to_string(),
+                    McpServerConfig {
+                        command: Some("node".to_string()),
+                        args: Some(vec!["echo.js".to_string()]),
+                        cwd: None,
+                        env: None,
+                        timeout: None,
+                        trust: Some(true),
+                        url: None,
+                    },
+                );
                 servers
             },
             context_file_name: Some("GEMINI.md".to_string()),
@@ -166,15 +169,20 @@ mod tests {
 
         let workspace_dir = workspace_temp.path().join(&profile.id);
         launcher.setup_workspace(&workspace_dir).unwrap();
-        launcher.install_extensions_for_profile(&profile, &workspace_dir).unwrap();
+        launcher
+            .install_extensions_for_profile(&profile, &workspace_dir)
+            .unwrap();
 
         // Verify extension installed
-        let ext_dir = workspace_dir.join(".gemini").join("extensions").join(&ext.id);
+        let ext_dir = workspace_dir
+            .join(".gemini")
+            .join("extensions")
+            .join(&ext.id);
         assert!(ext_dir.exists());
-        
+
         let config_file = ext_dir.join("gemini-extension.json");
         assert!(config_file.exists());
-        
+
         let context_file = ext_dir.join("GEMINI.md");
         assert!(context_file.exists());
     }
@@ -183,12 +191,12 @@ mod tests {
     fn test_theme_contrast() {
         // Test that text is visible in dark theme
         theme::set_flavour(ThemeFlavour::Mocha);
-        
+
         // Just verify we can access theme colors
         let _bg = theme::background();
         let _fg = theme::text_primary();
         let _border = theme::border();
-        
+
         // In a real test, we'd calculate contrast ratios
         // For now, just ensure theme system works
     }
@@ -265,11 +273,15 @@ mod tests {
         };
 
         // Add environment variables
-        profile.environment_variables.insert("TEST_VAR".to_string(), "test_value".to_string());
-        profile.environment_variables.insert("ANOTHER_VAR".to_string(), "another_value".to_string());
+        profile
+            .environment_variables
+            .insert("TEST_VAR".to_string(), "test_value".to_string());
+        profile
+            .environment_variables
+            .insert("ANOTHER_VAR".to_string(), "another_value".to_string());
 
         let env = launcher.prepare_environment(&profile);
-        
+
         assert_eq!(env.get("TEST_VAR"), Some(&"test_value".to_string()));
         assert_eq!(env.get("ANOTHER_VAR"), Some(&"another_value".to_string()));
         assert_eq!(env.get("GEMINI_PROFILE"), Some(&"env-test".to_string()));

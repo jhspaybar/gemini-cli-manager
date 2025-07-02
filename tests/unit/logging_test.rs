@@ -23,7 +23,7 @@ mod tests {
     fn test_logging_init_creates_directory() {
         // Initialize logging
         let _ = logging::init();
-        
+
         // Since logging might already be initialized from other tests,
         // we can't test directory creation reliably. Just ensure it doesn't panic.
     }
@@ -34,10 +34,10 @@ mod tests {
         unsafe {
             env::set_var(&*logging::LOG_ENV, "debug");
         }
-        
+
         // Try to initialize (might fail if already initialized)
         let _result = logging::init();
-        
+
         // Clean up
         unsafe {
             env::remove_var(&*logging::LOG_ENV);
@@ -50,10 +50,10 @@ mod tests {
         unsafe {
             env::set_var("RUST_LOG", "info");
         }
-        
+
         // Try to initialize
         let _result = logging::init();
-        
+
         // Clean up
         unsafe {
             env::remove_var("RUST_LOG");

@@ -8,7 +8,7 @@ mod tests {
         // Test that init can be called successfully
         // Note: This might fail if already initialized in other tests
         let _ = errors::init();
-        
+
         // Note: We can't easily test the panic hook without actually panicking
         // which would fail the test
     }
@@ -19,19 +19,19 @@ mod tests {
         let value = 42;
         let result = trace_dbg!(value);
         assert_eq!(result, 42);
-        
+
         // Test with expression
         let result = trace_dbg!(1 + 2);
         assert_eq!(result, 3);
-        
+
         // Test with custom level
         let result = trace_dbg!(level: tracing::Level::INFO, value);
         assert_eq!(result, 42);
-        
+
         // Test with custom target
         let result = trace_dbg!(target: "test_target", value);
         assert_eq!(result, 42);
-        
+
         // Test with both custom target and level
         let result = trace_dbg!(target: "test_target", level: tracing::Level::WARN, value);
         assert_eq!(result, 42);
@@ -42,11 +42,11 @@ mod tests {
         let vec = vec![1, 2, 3];
         let result = trace_dbg!(vec.len());
         assert_eq!(result, 3);
-        
+
         let string = "hello";
         let result = trace_dbg!(string.to_uppercase());
         assert_eq!(result, "HELLO");
-        
+
         // Test that it returns the value unchanged
         let mut counter = 0;
         let result = trace_dbg!({
@@ -64,5 +64,4 @@ mod tests {
         let returned = trace_dbg!(original);
         assert_eq!(returned, "test");
     }
-
 }

@@ -5,6 +5,7 @@ use tokio::sync::mpsc::UnboundedSender;
 use super::Component;
 use crate::{action::Action, config::Config, models::Extension, storage::Storage, theme};
 
+#[derive(Default)]
 pub struct ExtensionDetail {
     command_tx: Option<UnboundedSender<Action>>,
     config: Config,
@@ -13,25 +14,15 @@ pub struct ExtensionDetail {
     scroll_offset: u16,
 }
 
-impl Default for ExtensionDetail {
-    fn default() -> Self {
-        Self {
-            command_tx: None,
-            config: Config::default(),
-            storage: None,
-            extension: None,
-            scroll_offset: 0,
-        }
-    }
-}
 
 impl ExtensionDetail {
     pub fn with_storage(storage: Storage) -> Self {
-        let mut detail = Self::default();
-        detail.storage = Some(storage);
-        detail
+        Self {
+            storage: Some(storage),
+            ..Self::default()
+        }
     }
-    
+
     #[allow(dead_code)]
     pub fn new(storage: Storage, extension_id: String) -> Self {
         let mut detail = Self::with_storage(storage.clone());
@@ -70,16 +61,13 @@ impl Component for ExtensionDetail {
     }
 
     fn update(&mut self, action: Action) -> Result<Option<Action>> {
-        match action {
-            Action::ViewExtensionDetails(id) => {
-                // Load the extension from storage
-                if let Some(storage) = &self.storage {
-                    if let Ok(extension) = storage.load_extension(&id) {
-                        self.set_extension(extension);
-                    }
+        if let Action::ViewExtensionDetails(id) = action {
+            // Load the extension from storage
+            if let Some(storage) = &self.storage {
+                if let Ok(extension) = storage.load_extension(&id) {
+                    self.set_extension(extension);
                 }
             }
-            _ => {}
         }
         Ok(None)
     }
@@ -91,11 +79,11 @@ impl Component for ExtensionDetail {
                 .title(" Extension Details ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded);
-            
+
             let text = Paragraph::new("No extension selected")
                 .alignment(Alignment::Center)
                 .block(block);
-            
+
             frame.render_widget(text, area);
             return Ok(());
         };
@@ -105,7 +93,7 @@ impl Component for ExtensionDetail {
             .direction(Direction::Vertical)
             .constraints([
                 Constraint::Length(area.height.saturating_sub(3)), // Main content
-                Constraint::Length(3),                               // Help bar
+                Constraint::Length(3),                             // Help bar
             ])
             .split(area);
 
@@ -124,7 +112,12 @@ impl Component for ExtensionDetail {
         // Description
         if let Some(desc) = &extension.description {
             content.push(Line::from(vec![
-                Span::styled("Description: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "Description: ",
+                    Style::default()
+                        .fg(theme::highlight())
+                        .add_modifier(Modifier::BOLD),
+                ),
                 Span::styled(desc, Style::default().fg(theme::text_primary())),
             ]));
             content.push(Line::from(""));
@@ -132,7 +125,12 @@ impl Component for ExtensionDetail {
 
         // ID
         content.push(Line::from(vec![
-            Span::styled("ID: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "ID: ",
+                Style::default()
+                    .fg(theme::highlight())
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled(&extension.id, Style::default().fg(theme::text_primary())),
         ]));
         content.push(Line::from(""));
@@ -140,7 +138,12 @@ impl Component for ExtensionDetail {
         // Tags
         if !extension.metadata.tags.is_empty() {
             content.push(Line::from(vec![
-                Span::styled("Tags: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "Tags: ",
+                    Style::default()
+                        .fg(theme::highlight())
+                        .add_modifier(Modifier::BOLD),
+                ),
                 Span::styled(
                     extension.metadata.tags.join(", "),
                     Style::default().fg(theme::primary()),
@@ -151,14 +154,31 @@ impl Component for ExtensionDetail {
 
         // Import date
         content.push(Line::from(vec![
-            Span::styled("Imported: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
-            Span::styled(extension.metadata.imported_at.format("%Y-%m-%d %H:%M:%S").to_string(), Style::default().fg(theme::text_primary())),
+            Span::styled(
+                "Imported: ",
+                Style::default()
+                    .fg(theme::highlight())
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                extension
+                    .metadata
+                    .imported_at
+                    .format("%Y-%m-%d %H:%M:%S")
+                    .to_string(),
+                Style::default().fg(theme::text_primary()),
+            ),
         ]));
-        
+
         // Source path
         if let Some(path) = &extension.metadata.source_path {
             content.push(Line::from(vec![
-                Span::styled("Source: ", Style::default().fg(theme::highlight()).add_modifier(Modifier::BOLD)),
+                Span::styled(
+                    "Source: ",
+                    Style::default()
+                        .fg(theme::highlight())
+                        .add_modifier(Modifier::BOLD),
+                ),
                 Span::styled(path, Style::default().fg(theme::text_primary())),
             ]));
         }
@@ -168,14 +188,16 @@ impl Component for ExtensionDetail {
         if !extension.mcp_servers.is_empty() {
             content.push(Line::from(Span::styled(
                 "MCP Servers",
-                Style::default().fg(theme::accent()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+                Style::default()
+                    .fg(theme::accent())
+                    .add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
             )));
             content.push(Line::from(""));
 
             for (name, config) in &extension.mcp_servers {
                 content.push(Line::from(vec![
                     Span::styled("  ", Style::default().fg(theme::text_primary())),
-                    Span::styled(format!("• {}", name), Style::default().fg(theme::success())),
+                    Span::styled(format!("• {name}"), Style::default().fg(theme::success())),
                 ]));
 
                 // Server type - MCP servers can be URL-based or command-based
@@ -195,11 +217,17 @@ impl Component for ExtensionDetail {
                         Span::styled(" - ", Style::default().fg(theme::text_secondary())),
                         Span::styled(cmd, Style::default().fg(theme::text_primary())),
                     ]));
-                    
+
                     if let Some(args) = &config.args {
                         content.push(Line::from(vec![
-                            Span::styled("    Args: ", Style::default().fg(theme::text_secondary())),
-                            Span::styled(args.join(" "), Style::default().fg(theme::text_primary())),
+                            Span::styled(
+                                "    Args: ",
+                                Style::default().fg(theme::text_secondary()),
+                            ),
+                            Span::styled(
+                                args.join(" "),
+                                Style::default().fg(theme::text_primary()),
+                            ),
                         ]));
                     }
                 }
@@ -222,7 +250,11 @@ impl Component for ExtensionDetail {
                         Span::styled("    Trust: ", Style::default().fg(theme::text_secondary())),
                         Span::styled(
                             if trust { "Yes" } else { "No" },
-                            Style::default().fg(if trust { theme::success() } else { theme::error() }),
+                            Style::default().fg(if trust {
+                                theme::success()
+                            } else {
+                                theme::error()
+                            }),
                         ),
                     ]));
                 }
@@ -234,17 +266,21 @@ impl Component for ExtensionDetail {
         // Context file section
         if let Some(content_text) = &extension.context_content {
             // Determine filename - use provided or default to GEMINI.md
-            let filename = extension.context_file_name.as_ref()
+            let filename = extension
+                .context_file_name
+                .as_ref()
                 .filter(|s| !s.trim().is_empty())
                 .map(|s| s.as_str())
                 .unwrap_or("GEMINI.md");
-            
+
             content.push(Line::from(Span::styled(
-                format!("Context File: {}", filename),
-                Style::default().fg(theme::accent()).add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
+                format!("Context File: {filename}"),
+                Style::default()
+                    .fg(theme::accent())
+                    .add_modifier(Modifier::BOLD | Modifier::UNDERLINED),
             )));
             content.push(Line::from(""));
-            
+
             // Add context file content with proper indentation
             for line in content_text.lines() {
                 content.push(Line::from(vec![
@@ -256,8 +292,7 @@ impl Component for ExtensionDetail {
         }
 
         // Create scrollable paragraph
-        let paragraph = Paragraph::new(content)
-            .scroll((self.scroll_offset, 0));
+        let paragraph = Paragraph::new(content).scroll((self.scroll_offset, 0));
 
         // Render main content
         frame.render_widget(block, chunks[0]);

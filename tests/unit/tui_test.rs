@@ -12,20 +12,16 @@ mod tests {
 
     #[tokio::test]
     async fn test_tui_with_tick_rate() {
-        let tui = Tui::new()
-            .unwrap()
-            .tick_rate(120.0);
-        
+        let tui = Tui::new().unwrap().tick_rate(120.0);
+
         // Just verify we can set tick rate without errors
         drop(tui);
     }
 
     #[tokio::test]
     async fn test_tui_with_frame_rate() {
-        let tui = Tui::new()
-            .unwrap()
-            .frame_rate(60.0);
-        
+        let tui = Tui::new().unwrap().frame_rate(60.0);
+
         // Just verify we can set frame rate without errors
         drop(tui);
     }
@@ -37,15 +33,15 @@ mod tests {
             .tick_rate(120.0)
             .frame_rate(60.0)
             .mouse(true);
-        
+
         // Just verify we can chain builder methods
         drop(tui);
     }
 
     #[test]
     fn test_event_creation() {
-        use crossterm::event::{KeyCode, KeyEvent, KeyModifiers, KeyEventKind, KeyEventState};
-        
+        use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyEventState, KeyModifiers};
+
         // Test creating key event
         let key_event = KeyEvent {
             code: KeyCode::Char('q'),
@@ -54,7 +50,7 @@ mod tests {
             state: KeyEventState::NONE,
         };
         let event = Event::Key(key_event);
-        
+
         match event {
             Event::Key(k) => assert_eq!(k.code, KeyCode::Char('q')),
             _ => panic!("Expected key event"),
@@ -63,8 +59,8 @@ mod tests {
 
     #[test]
     fn test_mouse_event_creation() {
-        use crossterm::event::{MouseEvent, MouseEventKind, MouseButton};
-        
+        use crossterm::event::{MouseButton, MouseEvent, MouseEventKind};
+
         let mouse_event = MouseEvent {
             kind: MouseEventKind::Down(MouseButton::Left),
             column: 10,
@@ -72,7 +68,7 @@ mod tests {
             modifiers: crossterm::event::KeyModifiers::NONE,
         };
         let event = Event::Mouse(mouse_event);
-        
+
         match event {
             Event::Mouse(m) => {
                 assert_eq!(m.column, 10);
@@ -107,7 +103,7 @@ mod tests {
     async fn test_tui_resize() {
         let mut tui = Tui::new().unwrap();
         let rect = Rect::new(0, 0, 100, 50);
-        
+
         // Test resize method
         let result = tui.resize(rect);
         assert!(result.is_ok(), "Resize should succeed");
@@ -128,7 +124,7 @@ mod tests {
             Event::Paste("test".to_string()),
             Event::Resize(80, 24),
         ];
-        
+
         // Just verify they can be created
     }
 
@@ -159,7 +155,7 @@ mod tests {
             }),
             Event::Resize(80, 24),
         ];
-        
+
         // Verify we can match on each event type
         for event in events {
             match event {

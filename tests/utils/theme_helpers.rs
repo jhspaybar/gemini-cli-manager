@@ -28,34 +28,34 @@ impl ThemeTestHelper {
             _ => 0.5, // Default for unknown colors
         }
     }
-    
+
     /// Calculate contrast ratio between two colors
     pub fn contrast_ratio(fg: Color, bg: Color) -> f32 {
         let l1 = Self::get_luminance(fg);
         let l2 = Self::get_luminance(bg);
-        
+
         let lighter = l1.max(l2);
         let darker = l1.min(l2);
-        
+
         (lighter + 0.05) / (darker + 0.05)
     }
-    
+
     /// Check if contrast meets WCAG AA standards (4.5:1 for normal text)
     pub fn meets_wcag_aa(fg: Color, bg: Color) -> bool {
         Self::contrast_ratio(fg, bg) >= 4.5
     }
-    
+
     /// Check if contrast meets WCAG AAA standards (7:1 for normal text)
     pub fn meets_wcag_aaa(fg: Color, bg: Color) -> bool {
         Self::contrast_ratio(fg, bg) >= 7.0
     }
-    
+
     /// Test all text color combinations for a theme
     pub fn test_theme_contrast(flavour: ThemeFlavour) -> Vec<ContrastTestResult> {
         theme::set_flavour(flavour);
-        
+
         let mut results = vec![];
-        
+
         // Test primary text colors
         results.push(ContrastTestResult {
             name: "Primary text on background".to_string(),
@@ -64,7 +64,7 @@ impl ThemeTestHelper {
             ratio: Self::contrast_ratio(theme::text_primary(), theme::background()),
             meets_aa: Self::meets_wcag_aa(theme::text_primary(), theme::background()),
         });
-        
+
         results.push(ContrastTestResult {
             name: "Secondary text on background".to_string(),
             fg: theme::text_secondary(),
@@ -72,7 +72,7 @@ impl ThemeTestHelper {
             ratio: Self::contrast_ratio(theme::text_secondary(), theme::background()),
             meets_aa: Self::meets_wcag_aa(theme::text_secondary(), theme::background()),
         });
-        
+
         results.push(ContrastTestResult {
             name: "Muted text on background".to_string(),
             fg: theme::text_muted(),
@@ -80,7 +80,7 @@ impl ThemeTestHelper {
             ratio: Self::contrast_ratio(theme::text_muted(), theme::background()),
             meets_aa: Self::meets_wcag_aa(theme::text_muted(), theme::background()),
         });
-        
+
         // Test selection colors
         results.push(ContrastTestResult {
             name: "Text on selection".to_string(),
@@ -89,7 +89,7 @@ impl ThemeTestHelper {
             ratio: Self::contrast_ratio(theme::text_primary(), theme::selection()),
             meets_aa: Self::meets_wcag_aa(theme::text_primary(), theme::selection()),
         });
-        
+
         // Test accent colors
         results.push(ContrastTestResult {
             name: "Highlight on background".to_string(),
@@ -98,7 +98,7 @@ impl ThemeTestHelper {
             ratio: Self::contrast_ratio(theme::highlight(), theme::background()),
             meets_aa: Self::meets_wcag_aa(theme::highlight(), theme::background()),
         });
-        
+
         // Test semantic colors
         results.push(ContrastTestResult {
             name: "Error text on background".to_string(),
@@ -107,7 +107,7 @@ impl ThemeTestHelper {
             ratio: Self::contrast_ratio(theme::error(), theme::background()),
             meets_aa: Self::meets_wcag_aa(theme::error(), theme::background()),
         });
-        
+
         results.push(ContrastTestResult {
             name: "Success text on background".to_string(),
             fg: theme::success(),
@@ -115,14 +115,14 @@ impl ThemeTestHelper {
             ratio: Self::contrast_ratio(theme::success(), theme::background()),
             meets_aa: Self::meets_wcag_aa(theme::success(), theme::background()),
         });
-        
+
         results
     }
-    
+
     /// Verify that focus indicators are visible
     pub fn test_focus_visibility(flavour: ThemeFlavour) -> bool {
         theme::set_flavour(flavour);
-        
+
         // Border focused should be visible against background
         // Using a lower threshold since focus indicators often use color rather than just brightness
         Self::contrast_ratio(theme::border_focused(), theme::background()) >= 2.0
@@ -171,22 +171,22 @@ impl StyleVerifier {
                 theme::warning(),
                 theme::info(),
             ];
-            
+
             theme_colors.contains(&fg)
         } else {
             // No foreground color is OK
             true
         }
     }
-    
+
     /// Verify all text in a rendered component uses proper colors
     pub fn verify_buffer_colors(buffer: &ratatui::buffer::Buffer) -> Vec<ColorIssue> {
         let mut issues = vec![];
-        
+
         for y in 0..buffer.area.height {
             for x in 0..buffer.area.width {
                 let cell = &buffer[(x, y)];
-                
+
                 // Check for black text on dark backgrounds
                 if let Some(fg) = cell.style().fg {
                     if fg == Color::Black || fg == Color::Rgb(0, 0, 0) {
@@ -204,7 +204,7 @@ impl StyleVerifier {
                         }
                     }
                 }
-                
+
                 // Check for invisible text (same fg and bg)
                 if let (Some(fg), Some(bg)) = (cell.style().fg, cell.style().bg) {
                     if fg == bg {
@@ -218,7 +218,7 @@ impl StyleVerifier {
                 }
             }
         }
-        
+
         issues
     }
 }
@@ -234,25 +234,28 @@ pub struct ColorIssue {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_contrast_calculation() {
         // White on black should have high contrast
         let ratio = ThemeTestHelper::contrast_ratio(Color::White, Color::Black);
         assert!(ratio > 20.0);
-        
+
         // Same color should have ratio of 1
         let ratio = ThemeTestHelper::contrast_ratio(Color::Gray, Color::Gray);
         assert!((ratio - 1.0).abs() < 0.1);
     }
-    
+
     #[test]
     fn test_wcag_compliance() {
         // White on black should meet both AA and AAA
         assert!(ThemeTestHelper::meets_wcag_aa(Color::White, Color::Black));
         assert!(ThemeTestHelper::meets_wcag_aaa(Color::White, Color::Black));
-        
+
         // Very dark gray (RGB 40,40,40) on black should fail AA (contrast ~2.5:1)
-        assert!(!ThemeTestHelper::meets_wcag_aa(Color::Rgb(40, 40, 40), Color::Black));
+        assert!(!ThemeTestHelper::meets_wcag_aa(
+            Color::Rgb(40, 40, 40),
+            Color::Black
+        ));
     }
 }

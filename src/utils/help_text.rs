@@ -9,7 +9,7 @@ impl<'a> HelpTextBuilder<'a> {
     pub fn new(keybindings: &'a KeybindingConfig) -> Self {
         Self { keybindings }
     }
-    
+
     /// Get all keys for an action (for display in help text)
     fn get_keys(&self, action: &str) -> String {
         let keys = self.keybindings.get_keys_for_action(action);
@@ -19,22 +19,21 @@ impl<'a> HelpTextBuilder<'a> {
             keys.join(", ")
         }
     }
-    
+
     /// Build help text for a list of actions
     pub fn build(&self, actions: &[(&str, &str)]) -> String {
-        let parts: Vec<String> = actions.iter()
-            .map(|(action, label)| {
-                format!("{}: {}", self.get_keys(action), label)
-            })
+        let parts: Vec<String> = actions
+            .iter()
+            .map(|(action, label)| format!("{}: {}", self.get_keys(action), label))
             .collect();
-        
+
         if parts.is_empty() {
             String::new()
         } else {
             format!(" {} ", parts.join(" | "))
         }
     }
-    
+
     /// Common help text patterns
     #[allow(dead_code)]
     pub fn navigation_help(&self) -> String {
@@ -46,7 +45,7 @@ impl<'a> HelpTextBuilder<'a> {
             ("quit", "Quit"),
         ])
     }
-    
+
     #[allow(dead_code)]
     pub fn list_help(&self) -> String {
         self.build(&[
@@ -59,7 +58,7 @@ impl<'a> HelpTextBuilder<'a> {
             ("quit", "Quit"),
         ])
     }
-    
+
     #[allow(dead_code)]
     pub fn form_help(&self) -> String {
         self.build(&[

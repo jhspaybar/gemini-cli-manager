@@ -2,15 +2,15 @@ use color_eyre::Result;
 use ratatui::{prelude::*, widgets::*};
 
 use super::Component;
-use crate::{view::ViewType, theme};
+use crate::{theme, view::ViewType};
 
 pub struct TabBar {
     current_view: ViewType,
     tabs: Vec<(String, ViewType)>,
 }
 
-impl TabBar {
-    pub fn new() -> Self {
+impl Default for TabBar {
+    fn default() -> Self {
         Self {
             current_view: ViewType::ExtensionList,
             tabs: vec![
@@ -19,6 +19,12 @@ impl TabBar {
                 ("Settings".to_string(), ViewType::Settings),
             ],
         }
+    }
+}
+
+impl TabBar {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub fn set_current_view(&mut self, view: ViewType) {
@@ -29,7 +35,7 @@ impl TabBar {
 impl Component for TabBar {
     fn update(&mut self, action: crate::action::Action) -> Result<Option<crate::action::Action>> {
         use crate::action::Action;
-        
+
         // Update current view based on navigation actions
         match action {
             Action::NavigateToExtensions => {
@@ -53,7 +59,7 @@ impl Component for TabBar {
             }
             _ => {}
         }
-        
+
         Ok(None)
     }
 
@@ -70,9 +76,18 @@ impl Component for TabBar {
             .map(|(title, view_type)| {
                 let is_active = match (self.current_view, view_type) {
                     // Extensions tab is active for extension-related views
-                    (ViewType::ExtensionList | ViewType::ExtensionDetail, ViewType::ExtensionList) => true,
+                    (
+                        ViewType::ExtensionList | ViewType::ExtensionDetail,
+                        ViewType::ExtensionList,
+                    ) => true,
                     // Profiles tab is active for all profile-related views
-                    (ViewType::ProfileList | ViewType::ProfileDetail | ViewType::ProfileCreate | ViewType::ProfileEdit, ViewType::ProfileList) => true,
+                    (
+                        ViewType::ProfileList
+                        | ViewType::ProfileDetail
+                        | ViewType::ProfileCreate
+                        | ViewType::ProfileEdit,
+                        ViewType::ProfileList,
+                    ) => true,
                     // Settings tab is active for settings view
                     (ViewType::Settings, ViewType::Settings) => true,
                     _ => false,
@@ -112,12 +127,18 @@ impl Component for TabBar {
                     .bg(theme::selection())
                     .add_modifier(Modifier::BOLD),
             )
-            .divider(Span::styled(" │ ", Style::default().fg(theme::text_secondary())));
+            .divider(Span::styled(
+                " │ ",
+                Style::default().fg(theme::text_secondary()),
+            ));
 
         // Select the active tab
         let selected = match self.current_view {
             ViewType::ExtensionList | ViewType::ExtensionDetail => 0,
-            ViewType::ProfileList | ViewType::ProfileDetail | ViewType::ProfileCreate | ViewType::ProfileEdit => 1,
+            ViewType::ProfileList
+            | ViewType::ProfileDetail
+            | ViewType::ProfileCreate
+            | ViewType::ProfileEdit => 1,
             ViewType::Settings => 2,
             _ => 0,
         };
@@ -126,7 +147,13 @@ impl Component for TabBar {
         frame.render_widget(tabs.select(selected), area);
 
         // Add breadcrumb for detail/form views
-        if matches!(self.current_view, ViewType::ExtensionDetail | ViewType::ProfileDetail | ViewType::ProfileCreate | ViewType::ProfileEdit) {
+        if matches!(
+            self.current_view,
+            ViewType::ExtensionDetail
+                | ViewType::ProfileDetail
+                | ViewType::ProfileCreate
+                | ViewType::ProfileEdit
+        ) {
             let breadcrumb = match self.current_view {
                 ViewType::ExtensionDetail => " > Extension Details",
                 ViewType::ProfileDetail => " > Profile Details",

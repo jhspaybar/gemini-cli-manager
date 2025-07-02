@@ -9,11 +9,17 @@ use tokio::sync::mpsc::UnboundedSender;
 use crate::{
     action::Action,
     components::{
-        confirm_dialog::ConfirmDialog, extension_detail::ExtensionDetail, 
-        extension_form::ExtensionForm, extension_list::ExtensionList, 
-        import_dialog::ImportDialog, profile_detail::ProfileDetail, 
-        profile_form::ProfileForm, profile_list::ProfileList, 
-        settings_view::{Settings, UserSettings}, tab_bar::TabBar, Component,
+        Component,
+        confirm_dialog::ConfirmDialog,
+        extension_detail::ExtensionDetail,
+        extension_form::ExtensionForm,
+        extension_list::ExtensionList,
+        import_dialog::ImportDialog,
+        profile_detail::ProfileDetail,
+        profile_form::ProfileForm,
+        profile_list::ProfileList,
+        settings_view::{Settings, UserSettings},
+        tab_bar::TabBar,
     },
     config::Config,
     storage::Storage,
@@ -46,48 +52,75 @@ pub struct ViewManager {
     deleting_profile_id: Option<String>,
     editing_extension_id: Option<String>,
     deleting_extension_id: Option<String>,
-    came_from_detail_view: bool,  // Track if we came from detail view when editing
+    came_from_detail_view: bool, // Track if we came from detail view when editing
     error_message: Option<(String, Instant)>,
     success_message: Option<(String, Instant)>,
     message_display_duration: Duration,
     error_display_duration: Duration,
 }
 
-impl ViewManager {
-    #[allow(dead_code)]
-    pub fn new() -> Self {
+impl Default for ViewManager {
+    fn default() -> Self {
         // Create a default storage instance
         let storage = Storage::default();
         Self::with_storage(storage)
     }
-    
+}
+
+impl ViewManager {
+    #[allow(dead_code)]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     /// Test helper method - returns current view
     #[doc(hidden)]
     #[allow(dead_code)]
     pub fn current_view(&self) -> ViewType {
         self.current_view
     }
-    
+
     /// Test helper method - checks if error is displayed
     #[doc(hidden)]
     #[allow(dead_code)]
     pub fn has_error(&self) -> bool {
         self.error_message.is_some()
     }
-    
+
     pub fn with_storage(storage: Storage) -> Self {
         let mut views: HashMap<ViewType, Box<dyn Component>> = HashMap::new();
-        
+
         // Initialize views with storage
-        views.insert(ViewType::ExtensionList, Box::new(ExtensionList::with_storage(storage.clone())));
-        views.insert(ViewType::ExtensionDetail, Box::new(ExtensionDetail::with_storage(storage.clone())));
-        views.insert(ViewType::ExtensionCreate, Box::new(ExtensionForm::new(storage.clone())));
-        views.insert(ViewType::ExtensionImport, Box::new(ImportDialog::new(storage.clone())));
-        views.insert(ViewType::ProfileList, Box::new(ProfileList::with_storage(storage.clone())));
-        views.insert(ViewType::ProfileDetail, Box::new(ProfileDetail::with_storage(storage.clone())));
-        views.insert(ViewType::ProfileCreate, Box::new(ProfileForm::new(storage.clone())));
+        views.insert(
+            ViewType::ExtensionList,
+            Box::new(ExtensionList::with_storage(storage.clone())),
+        );
+        views.insert(
+            ViewType::ExtensionDetail,
+            Box::new(ExtensionDetail::with_storage(storage.clone())),
+        );
+        views.insert(
+            ViewType::ExtensionCreate,
+            Box::new(ExtensionForm::new(storage.clone())),
+        );
+        views.insert(
+            ViewType::ExtensionImport,
+            Box::new(ImportDialog::new(storage.clone())),
+        );
+        views.insert(
+            ViewType::ProfileList,
+            Box::new(ProfileList::with_storage(storage.clone())),
+        );
+        views.insert(
+            ViewType::ProfileDetail,
+            Box::new(ProfileDetail::with_storage(storage.clone())),
+        );
+        views.insert(
+            ViewType::ProfileCreate,
+            Box::new(ProfileForm::new(storage.clone())),
+        );
         views.insert(ViewType::Settings, Box::new(Settings::new()));
-        
+
         Self {
             current_view: ViewType::ExtensionList,
             previous_view: None,
@@ -109,12 +142,12 @@ impl ViewManager {
 
     pub fn register_action_handler(&mut self, tx: UnboundedSender<Action>) -> Result<()> {
         self.action_tx = Some(tx.clone());
-        
+
         // Register action handler for all views
         for (_, view) in self.views.iter_mut() {
             view.register_action_handler(tx.clone())?;
         }
-        
+
         Ok(())
     }
 
@@ -123,7 +156,7 @@ impl ViewManager {
         for (_, view) in self.views.iter_mut() {
             view.register_config_handler(config.clone())?;
         }
-        
+
         Ok(())
     }
 
@@ -132,7 +165,7 @@ impl ViewManager {
         for (_, view) in self.views.iter_mut() {
             view.register_settings_handler(settings.clone())?;
         }
-        
+
         Ok(())
     }
 
@@ -141,7 +174,7 @@ impl ViewManager {
         for (_, view) in self.views.iter_mut() {
             view.init(size)?;
         }
-        
+
         Ok(())
     }
 
@@ -155,16 +188,17 @@ impl ViewManager {
                 // Clear any editing state when creating new
                 self.editing_extension_id = None;
                 self.came_from_detail_view = false;
-                
+
                 // Create a fresh ExtensionForm for creating new extensions
                 let mut create_form = ExtensionForm::new(self.storage.clone());
-                
+
                 // Register action handler for the new form
                 if let Some(tx) = &self.action_tx {
                     let _ = create_form.register_action_handler(tx.clone());
                 }
-                
-                self.views.insert(ViewType::ExtensionCreate, Box::new(create_form));
+
+                self.views
+                    .insert(ViewType::ExtensionCreate, Box::new(create_form));
                 self.navigate_to(ViewType::ExtensionCreate);
             }
             Action::ImportExtension => {
@@ -178,21 +212,23 @@ impl ViewManager {
             Action::EditExtension(id) => {
                 // Track where we came from
                 self.came_from_detail_view = self.current_view == ViewType::ExtensionDetail;
-                
+
                 // Store the extension ID we're editing
                 self.editing_extension_id = Some(id.clone());
-                
+
                 // Load the extension into the edit form
-                if let Ok(extension) = self.storage.load_extension(&id) {
+                if let Ok(extension) = self.storage.load_extension(id) {
                     // Create a new edit form with the extension data
-                    let mut edit_form = ExtensionForm::with_extension(self.storage.clone(), &extension);
-                    
+                    let mut edit_form =
+                        ExtensionForm::with_extension(self.storage.clone(), &extension);
+
                     // Register action handler for the new form
                     if let Some(tx) = &self.action_tx {
                         let _ = edit_form.register_action_handler(tx.clone());
                     }
-                    
-                    self.views.insert(ViewType::ExtensionEdit, Box::new(edit_form));
+
+                    self.views
+                        .insert(ViewType::ExtensionEdit, Box::new(edit_form));
                     self.navigate_to(ViewType::ExtensionEdit);
                 }
             }
@@ -201,10 +237,10 @@ impl ViewManager {
                 let profiles = self.storage.list_profiles().unwrap_or_default();
                 let referenced_by: Vec<String> = profiles
                     .iter()
-                    .filter(|p| p.extension_ids.contains(&id))
+                    .filter(|p| p.extension_ids.contains(id))
                     .map(|p| p.name.clone())
                     .collect();
-                
+
                 if !referenced_by.is_empty() {
                     // Show error message
                     let message = format!(
@@ -216,20 +252,21 @@ impl ViewManager {
                 } else {
                     // Store the extension ID to delete
                     self.deleting_extension_id = Some(id.clone());
-                    
+
                     // Load the extension to get its name for the confirmation message
-                    let message = if let Ok(extension) = self.storage.load_extension(&id) {
-                        format!("Are you sure you want to delete the extension '{}'?\nThis action cannot be undone.", extension.name)
+                    let message = if let Ok(extension) = self.storage.load_extension(id) {
+                        format!(
+                            "Are you sure you want to delete the extension '{}'?\nThis action cannot be undone.",
+                            extension.name
+                        )
                     } else {
-                        format!("Are you sure you want to delete this extension?\nThis action cannot be undone.")
+                        "Are you sure you want to delete this extension?\nThis action cannot be undone.".to_string()
                     };
-                    
+
                     // Create confirmation dialog
-                    let dialog = ConfirmDialog::new(
-                        "Delete Extension",
-                        &message,
-                    ).with_actions(Action::ConfirmDelete, Action::CancelDelete);
-                    
+                    let dialog = ConfirmDialog::new("Delete Extension", &message)
+                        .with_actions(Action::ConfirmDelete, Action::CancelDelete);
+
                     self.views.insert(ViewType::ConfirmDelete, Box::new(dialog));
                     self.navigate_to(ViewType::ConfirmDelete);
                 }
@@ -240,21 +277,22 @@ impl ViewManager {
             Action::EditProfile(id) => {
                 // Track where we came from
                 self.came_from_detail_view = self.current_view == ViewType::ProfileDetail;
-                
+
                 // Store the profile ID we're editing
                 self.editing_profile_id = Some(id.clone());
-                
+
                 // Load the profile into the edit form
-                if let Ok(profile) = self.storage.load_profile(&id) {
+                if let Ok(profile) = self.storage.load_profile(id) {
                     // Create a new edit form with the profile data
                     let mut edit_form = ProfileForm::with_profile(self.storage.clone(), &profile);
-                    
+
                     // Register action handler for the new form
                     if let Some(tx) = &self.action_tx {
                         let _ = edit_form.register_action_handler(tx.clone());
                     }
-                    
-                    self.views.insert(ViewType::ProfileEdit, Box::new(edit_form));
+
+                    self.views
+                        .insert(ViewType::ProfileEdit, Box::new(edit_form));
                     self.navigate_to(ViewType::ProfileEdit);
                 }
             }
@@ -262,16 +300,17 @@ impl ViewManager {
                 // Clear any editing state when creating new
                 self.editing_profile_id = None;
                 self.came_from_detail_view = false;
-                
+
                 // Create a fresh ProfileForm for creating new profiles
                 let mut create_form = ProfileForm::new(self.storage.clone());
-                
+
                 // Register action handler for the new form
                 if let Some(tx) = &self.action_tx {
                     let _ = create_form.register_action_handler(tx.clone());
                 }
-                
-                self.views.insert(ViewType::ProfileCreate, Box::new(create_form));
+
+                self.views
+                    .insert(ViewType::ProfileCreate, Box::new(create_form));
                 self.navigate_to(ViewType::ProfileCreate);
             }
             Action::NavigateBack => {
@@ -343,20 +382,21 @@ impl ViewManager {
             Action::DeleteProfile(id) => {
                 // Store the profile ID to delete
                 self.deleting_profile_id = Some(id.clone());
-                
+
                 // Load the profile to get its name for the confirmation message
-                let message = if let Ok(profile) = self.storage.load_profile(&id) {
-                    format!("Are you sure you want to delete the profile '{}'?\nThis action cannot be undone.", profile.name)
+                let message = if let Ok(profile) = self.storage.load_profile(id) {
+                    format!(
+                        "Are you sure you want to delete the profile '{}'?\nThis action cannot be undone.",
+                        profile.name
+                    )
                 } else {
-                    format!("Are you sure you want to delete this profile?\nThis action cannot be undone.")
+                    "Are you sure you want to delete this profile?\nThis action cannot be undone.".to_string()
                 };
-                
+
                 // Create confirmation dialog
-                let dialog = ConfirmDialog::new(
-                    "Delete Profile",
-                    &message,
-                ).with_actions(Action::ConfirmDelete, Action::CancelDelete);
-                
+                let dialog = ConfirmDialog::new("Delete Profile", &message)
+                    .with_actions(Action::ConfirmDelete, Action::CancelDelete);
+
                 self.views.insert(ViewType::ConfirmDelete, Box::new(dialog));
                 self.navigate_to(ViewType::ConfirmDelete);
             }
@@ -367,19 +407,21 @@ impl ViewManager {
                     if let Err(e) = self.storage.delete_profile(id) {
                         // Send error action
                         if let Some(tx) = &self.action_tx {
-                            let _ = tx.send(Action::Error(format!("Failed to delete profile: {}", e)));
+                            let _ =
+                                tx.send(Action::Error(format!("Failed to delete profile: {e}")));
                         }
                     } else {
                         // Send success notification and refresh action
                         if let Some(tx) = &self.action_tx {
-                            let _ = tx.send(Action::Success("Profile deleted successfully".to_string()));
+                            let _ = tx
+                                .send(Action::Success("Profile deleted successfully".to_string()));
                             let _ = tx.send(Action::RefreshProfiles);
                             let _ = tx.send(Action::Render);
                         }
                     }
                     // Clear deletion state
                     self.deleting_profile_id = None;
-                    
+
                     // If we were in profile detail view, go to list instead
                     if self.previous_view == Some(ViewType::ProfileDetail) {
                         self.navigate_to(ViewType::ProfileList);
@@ -391,19 +433,22 @@ impl ViewManager {
                     if let Err(e) = self.storage.delete_extension(id) {
                         // Send error action
                         if let Some(tx) = &self.action_tx {
-                            let _ = tx.send(Action::Error(format!("Failed to delete extension: {}", e)));
+                            let _ = tx
+                                .send(Action::Error(format!("Failed to delete extension: {e}")));
                         }
                     } else {
                         // Send success notification and refresh action
                         if let Some(tx) = &self.action_tx {
-                            let _ = tx.send(Action::Success("Extension deleted successfully".to_string()));
+                            let _ = tx.send(Action::Success(
+                                "Extension deleted successfully".to_string(),
+                            ));
                             let _ = tx.send(Action::RefreshExtensions);
                             let _ = tx.send(Action::Render);
                         }
                     }
                     // Clear deletion state
                     self.deleting_extension_id = None;
-                    
+
                     // If we were in extension detail view, go to list instead
                     if self.previous_view == Some(ViewType::ExtensionDetail) {
                         self.navigate_to(ViewType::ExtensionList);
@@ -433,7 +478,7 @@ impl ViewManager {
                         self.error_message = None;
                     }
                 }
-                
+
                 // Clear old success messages
                 if let Some((_, timestamp)) = &self.success_message {
                     if timestamp.elapsed() > self.message_display_duration {
@@ -443,13 +488,13 @@ impl ViewManager {
             }
             _ => {}
         }
-        
+
         // Clone action for passing to components
         let action_clone = action.clone();
-        
+
         // Update tab bar
         self.tab_bar.update(action_clone.clone())?;
-        
+
         // Forward action to all views (they'll handle what's relevant to them)
         let mut result = None;
         for (_, view) in self.views.iter_mut() {
@@ -457,7 +502,7 @@ impl ViewManager {
                 result = Some(action);
             }
         }
-        
+
         Ok(result)
     }
 
@@ -465,7 +510,7 @@ impl ViewManager {
         use ratatui::layout::{Constraint, Direction, Layout};
         use ratatui::style::Modifier;
         use ratatui::widgets::{Block, BorderType, Borders, Clear, Paragraph, Wrap};
-        
+
         // Split area into tab bar and content
         let chunks = Layout::default()
             .direction(Direction::Vertical)
@@ -474,45 +519,51 @@ impl ViewManager {
                 Constraint::Min(0),    // Content
             ])
             .split(area);
-        
+
         // Draw tab bar
         self.tab_bar.draw(frame, chunks[0])?;
-        
+
         // Draw current view in remaining space
         if let Some(view) = self.views.get_mut(&self.current_view) {
             view.draw(frame, chunks[1])?;
         }
-        
+
         // Draw error message if present
         if let Some((message, _)) = &self.error_message {
             let popup_area = self.centered_rect(60, 20, area);
-            
+
             // Clear the area first
             frame.render_widget(Clear, popup_area);
-            
+
             // Create error block with background
             let error_block = Block::default()
                 .title(" Error ")
-                .title_style(Style::default().fg(theme::error()).add_modifier(Modifier::BOLD))
+                .title_style(
+                    Style::default()
+                        .fg(theme::error())
+                        .add_modifier(Modifier::BOLD),
+                )
                 .title_alignment(Alignment::Center)
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .border_style(Style::default().fg(theme::error()))
                 .style(Style::default().bg(theme::overlay()));
-            
-            let error_content = format!("✗ {}\n\n(Press Esc to dismiss)", message);
+
+            let error_content = format!("✗ {message}\n\n(Press Esc to dismiss)");
             let error_text = Paragraph::new(error_content)
                 .block(error_block)
-                .style(Style::default()
-                    .fg(theme::error())
-                    .bg(theme::overlay())
-                    .add_modifier(Modifier::BOLD))
+                .style(
+                    Style::default()
+                        .fg(theme::error())
+                        .bg(theme::overlay())
+                        .add_modifier(Modifier::BOLD),
+                )
                 .alignment(Alignment::Center)
                 .wrap(Wrap { trim: true });
-            
+
             frame.render_widget(error_text, popup_area);
         }
-        
+
         // Draw success message if present
         if let Some((message, _)) = &self.success_message {
             // Position in top-right corner
@@ -524,37 +575,43 @@ impl ViewManager {
                 width: notification_width,
                 height: notification_height,
             };
-            
+
             // Clear the area first
             frame.render_widget(Clear, notification_area);
-            
+
             // Create success block with background
             let success_block = Block::default()
                 .title(" Success ")
-                .title_style(Style::default().fg(theme::success()).add_modifier(Modifier::BOLD))
+                .title_style(
+                    Style::default()
+                        .fg(theme::success())
+                        .add_modifier(Modifier::BOLD),
+                )
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .border_style(Style::default().fg(theme::success()))
                 .style(Style::default().bg(theme::surface()));
-            
-            let success_text = Paragraph::new(format!("✓ {}", message))
-                .style(Style::default()
-                    .fg(theme::success())
-                    .bg(theme::surface())
-                    .add_modifier(Modifier::BOLD))
+
+            let success_text = Paragraph::new(format!("✓ {message}"))
+                .style(
+                    Style::default()
+                        .fg(theme::success())
+                        .bg(theme::surface())
+                        .add_modifier(Modifier::BOLD),
+                )
                 .block(success_block)
                 .wrap(Wrap { trim: true });
-            
+
             frame.render_widget(success_text, notification_area);
         }
-        
+
         Ok(())
     }
-    
+
     /// Helper function to create a centered rect
     fn centered_rect(&self, percent_x: u16, percent_y: u16, area: Rect) -> Rect {
         use ratatui::layout::{Constraint, Flex, Layout};
-        
+
         let vertical = Layout::vertical([Constraint::Percentage(percent_y)]).flex(Flex::Center);
         let horizontal = Layout::horizontal([Constraint::Percentage(percent_x)]).flex(Flex::Center);
         let [area] = vertical.areas(area);
@@ -562,12 +619,9 @@ impl ViewManager {
         area
     }
 
-    pub fn handle_events(
-        &mut self,
-        event: Option<crate::tui::Event>,
-    ) -> Result<Option<Action>> {
+    pub fn handle_events(&mut self, event: Option<crate::tui::Event>) -> Result<Option<Action>> {
         use crossterm::event::KeyCode;
-        
+
         // Handle error message dismissal
         if self.error_message.is_some() {
             if let Some(crate::tui::Event::Key(key)) = &event {
@@ -577,7 +631,7 @@ impl ViewManager {
                 }
             }
         }
-        
+
         // Forward events only to the current view
         if let Some(view) = self.views.get_mut(&self.current_view) {
             view.handle_events(event)

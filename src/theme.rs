@@ -1,22 +1,22 @@
 #![allow(dead_code)]
 
-use catppuccin::{PALETTE, Flavor, FlavorColors};
+use catppuccin::{Flavor, FlavorColors, PALETTE};
+use lazy_static::lazy_static;
 use ratatui::style::Color;
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
-use lazy_static::lazy_static;
 
 /// Available theme flavours from Catppuccin
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum ThemeFlavour {
     Latte,     // Light theme
-    Frappe,    // Light-dark theme  
+    Frappe,    // Light-dark theme
     Macchiato, // Dark theme
     Mocha,     // Darker theme
 }
 
 impl ThemeFlavour {
-    fn to_flavor(&self) -> &'static Flavor {
+    fn to_flavor(self) -> &'static Flavor {
         match self {
             ThemeFlavour::Latte => &PALETTE.latte,
             ThemeFlavour::Frappe => &PALETTE.frappe,
@@ -49,11 +49,11 @@ impl Theme {
     pub fn background(&self) -> Color {
         self.colors.base.into()
     }
-    
+
     pub fn surface(&self) -> Color {
         self.colors.surface0.into()
     }
-    
+
     pub fn overlay(&self) -> Color {
         self.colors.surface1.into()
     }
@@ -62,17 +62,17 @@ impl Theme {
     pub fn text_primary(&self) -> Color {
         self.colors.text.into()
     }
-    
+
     pub fn text_secondary(&self) -> Color {
         self.colors.subtext1.into()
     }
-    
+
     pub fn text_muted(&self) -> Color {
         // Use overlay1 instead of subtext0 for better contrast
         // overlay1 has better visibility while still being muted
         self.colors.overlay1.into()
     }
-    
+
     pub fn text_disabled(&self) -> Color {
         self.colors.overlay0.into()
     }
@@ -81,15 +81,15 @@ impl Theme {
     pub fn primary(&self) -> Color {
         self.colors.blue.into()
     }
-    
+
     pub fn secondary(&self) -> Color {
         self.colors.mauve.into()
     }
-    
+
     pub fn accent(&self) -> Color {
         self.colors.pink.into()
     }
-    
+
     pub fn highlight(&self) -> Color {
         self.colors.yellow.into()
     }
@@ -98,15 +98,15 @@ impl Theme {
     pub fn success(&self) -> Color {
         self.colors.green.into()
     }
-    
+
     pub fn warning(&self) -> Color {
         self.colors.peach.into()
     }
-    
+
     pub fn error(&self) -> Color {
         self.colors.red.into()
     }
-    
+
     pub fn info(&self) -> Color {
         self.colors.sky.into()
     }
@@ -115,23 +115,23 @@ impl Theme {
     pub fn border(&self) -> Color {
         self.colors.surface2.into()
     }
-    
+
     pub fn border_focused(&self) -> Color {
         self.colors.blue.into()
     }
-    
+
     pub fn selection(&self) -> Color {
         // Use a color with better contrast for selections
         // Using sapphire with low alpha would be ideal, but ratatui doesn't support alpha
         // So we'll use surface1 which provides better contrast than surface2
         self.colors.surface1.into()
     }
-    
+
     pub fn selection_bar(&self) -> Color {
         // For list selections, use an accent color for better visibility
         self.colors.sapphire.into()
     }
-    
+
     pub fn cursor(&self) -> Color {
         self.colors.rosewater.into()
     }
@@ -155,7 +155,7 @@ where
     F: FnOnce(&Theme) -> R,
 {
     let theme = CURRENT_THEME.lock().unwrap();
-    f(&*theme)
+    f(&theme)
 }
 
 /// Set the current theme
@@ -176,7 +176,7 @@ pub fn set_theme_by_name(name: &str) -> Result<(), String> {
         "macchiato" => ThemeFlavour::Macchiato,
         "frappe" => ThemeFlavour::Frappe,
         "latte" => ThemeFlavour::Latte,
-        _ => return Err(format!("Unknown theme: {}", name)),
+        _ => return Err(format!("Unknown theme: {name}")),
     };
     set_flavour(flavour);
     Ok(())
@@ -191,23 +191,63 @@ pub fn get_current_theme_name() -> String {
 }
 
 /// Helper functions for common color needs
-pub fn background() -> Color { with_theme(|t| t.background()) }
-pub fn surface() -> Color { with_theme(|t| t.surface()) }
-pub fn overlay() -> Color { with_theme(|t| t.overlay()) }
-pub fn text_primary() -> Color { with_theme(|t| t.text_primary()) }
-pub fn text_secondary() -> Color { with_theme(|t| t.text_secondary()) }
-pub fn text_muted() -> Color { with_theme(|t| t.text_muted()) }
-pub fn text_disabled() -> Color { with_theme(|t| t.text_disabled()) }
-pub fn primary() -> Color { with_theme(|t| t.primary()) }
-pub fn secondary() -> Color { with_theme(|t| t.secondary()) }
-pub fn accent() -> Color { with_theme(|t| t.accent()) }
-pub fn highlight() -> Color { with_theme(|t| t.highlight()) }
-pub fn border() -> Color { with_theme(|t| t.border()) }
-pub fn border_focused() -> Color { with_theme(|t| t.border_focused()) }
-pub fn selection() -> Color { with_theme(|t| t.selection()) }
-pub fn selection_bar() -> Color { with_theme(|t| t.selection_bar()) }
-pub fn cursor() -> Color { with_theme(|t| t.cursor()) }
-pub fn success() -> Color { with_theme(|t| t.success()) }
-pub fn error() -> Color { with_theme(|t| t.error()) }
-pub fn warning() -> Color { with_theme(|t| t.warning()) }
-pub fn info() -> Color { with_theme(|t| t.info()) }
+pub fn background() -> Color {
+    with_theme(|t| t.background())
+}
+pub fn surface() -> Color {
+    with_theme(|t| t.surface())
+}
+pub fn overlay() -> Color {
+    with_theme(|t| t.overlay())
+}
+pub fn text_primary() -> Color {
+    with_theme(|t| t.text_primary())
+}
+pub fn text_secondary() -> Color {
+    with_theme(|t| t.text_secondary())
+}
+pub fn text_muted() -> Color {
+    with_theme(|t| t.text_muted())
+}
+pub fn text_disabled() -> Color {
+    with_theme(|t| t.text_disabled())
+}
+pub fn primary() -> Color {
+    with_theme(|t| t.primary())
+}
+pub fn secondary() -> Color {
+    with_theme(|t| t.secondary())
+}
+pub fn accent() -> Color {
+    with_theme(|t| t.accent())
+}
+pub fn highlight() -> Color {
+    with_theme(|t| t.highlight())
+}
+pub fn border() -> Color {
+    with_theme(|t| t.border())
+}
+pub fn border_focused() -> Color {
+    with_theme(|t| t.border_focused())
+}
+pub fn selection() -> Color {
+    with_theme(|t| t.selection())
+}
+pub fn selection_bar() -> Color {
+    with_theme(|t| t.selection_bar())
+}
+pub fn cursor() -> Color {
+    with_theme(|t| t.cursor())
+}
+pub fn success() -> Color {
+    with_theme(|t| t.success())
+}
+pub fn error() -> Color {
+    with_theme(|t| t.error())
+}
+pub fn warning() -> Color {
+    with_theme(|t| t.warning())
+}
+pub fn info() -> Color {
+    with_theme(|t| t.info())
+}

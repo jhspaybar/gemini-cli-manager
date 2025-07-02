@@ -17,7 +17,7 @@ pub enum Action {
     // Extension management actions
     ViewExtensionDetails(String), // Extension ID
     ImportExtension,
-    ResetImportDialog,       // Reset import dialog state
+    ResetImportDialog, // Reset import dialog state
     CreateNewExtension,
     EditExtension(String),   // Extension ID
     DeleteExtension(String), // Extension ID
@@ -30,7 +30,7 @@ pub enum Action {
     NavigateBack,
 
     // Profile management actions
-    ViewProfileDetails(String),// Profile ID
+    ViewProfileDetails(String), // Profile ID
     CreateProfile,
     EditProfile(String),       // Profile ID
     DeleteProfile(String),     // Profile ID
@@ -40,8 +40,8 @@ pub enum Action {
     RefreshProfiles,           // Reload profiles from storage
 
     // Settings actions
-    ChangeTheme(String),       // Theme name
+    ChangeTheme(String),              // Theme name
     UpdateKeybinding(String, String), // Action name, key combination
-    ResetKeybindings,          // Reset to defaults
-    SaveSettings,              // Save settings to file
+    ResetKeybindings,                 // Reset to defaults
+    SaveSettings,                     // Save settings to file
 }

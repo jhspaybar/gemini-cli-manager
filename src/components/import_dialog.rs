@@ -1,21 +1,21 @@
-use std::path::{Path, PathBuf};
-use std::time::Instant;
-use std::collections::HashMap;
 use chrono::Utc;
 use color_eyre::Result;
 use ratatui::{prelude::*, widgets::*};
 use ratatui_explorer::{FileExplorer, Theme as ExplorerTheme};
 use serde::Deserialize;
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
+use std::time::Instant;
 use tokio::sync::mpsc::UnboundedSender;
 
 use super::Component;
 use crate::{
-    action::Action, 
-    config::Config, 
+    action::Action,
+    config::Config,
     models::extension::{Extension, ExtensionMetadata, McpServerConfig},
-    storage::Storage, 
-    theme, 
-    tui::Event
+    storage::Storage,
+    theme,
+    tui::Event,
 };
 
 pub struct ImportDialog {
@@ -64,15 +64,23 @@ impl ImportDialog {
         let explorer_theme = ExplorerTheme::default()
             .with_dir_style(Style::default().fg(theme::primary()))
             .with_item_style(Style::default().fg(theme::text_primary()))
-            .with_highlight_dir_style(Style::default().bg(theme::selection()).fg(theme::background()))
-            .with_highlight_item_style(Style::default().bg(theme::selection()).fg(theme::background()));
-        
+            .with_highlight_dir_style(
+                Style::default()
+                    .bg(theme::selection())
+                    .fg(theme::background()),
+            )
+            .with_highlight_item_style(
+                Style::default()
+                    .bg(theme::selection())
+                    .fg(theme::background()),
+            );
+
         // Initialize explorer with theme
         let explorer = FileExplorer::with_theme(explorer_theme).unwrap_or_else(|_| {
             // Fallback to default if theme fails
             FileExplorer::new().unwrap()
         });
-        
+
         Self {
             action_tx: None,
             explorer,
@@ -81,7 +89,7 @@ impl ImportDialog {
             state_timestamp: None,
         }
     }
-    
+
     /// Reset the dialog state for a fresh import session
     pub fn reset(&mut self) {
         self.state = ImportState::Selecting;
@@ -89,7 +97,7 @@ impl ImportDialog {
         // The explorer maintains its own state (current directory)
         // which is fine - users might want to stay in the same directory
     }
-    
+
     fn import_extension(&mut self, path: PathBuf) -> Result<()> {
         // Check if it's a directory or a file
         if path.is_dir() {
@@ -101,18 +109,19 @@ impl ImportDialog {
             // Import MD file as a minimal extension
             self.import_from_md_file(path)?;
         } else {
-            self.state = ImportState::Error("Please select a .json, .md file, or a directory".to_string());
+            self.state =
+                ImportState::Error("Please select a .json, .md file, or a directory".to_string());
             self.state_timestamp = Some(Instant::now());
         }
-        
+
         Ok(())
     }
-    
+
     fn import_from_directory(&mut self, dir_path: PathBuf) -> Result<()> {
         // Look for extension.json or gemini-extension.json
         let extension_path = dir_path.join("extension.json");
         let gemini_extension_path = dir_path.join("gemini-extension.json");
-        
+
         let json_path = if extension_path.exists() {
             Some(extension_path)
         } else if gemini_extension_path.exists() {
@@ -120,33 +129,39 @@ impl ImportDialog {
         } else {
             None
         };
-        
+
         // Look for context files
         let context_files = self.find_context_files(&dir_path);
-        
+
         if json_path.is_none() && context_files.is_empty() {
-            self.state = ImportState::Error("No extension.json or context files found in directory".to_string());
+            self.state = ImportState::Error(
+                "No extension.json or context files found in directory".to_string(),
+            );
             self.state_timestamp = Some(Instant::now());
             return Ok(());
         }
-        
+
         if let Some(json_path) = json_path {
             // Import with JSON file
             self.import_from_file(json_path)?;
         } else if let Some((context_name, context_path)) = context_files.first() {
             // Import just the context file as a minimal extension
-            self.import_context_as_extension(context_path.clone(), context_name.clone(), Some(dir_path))?;
+            self.import_context_as_extension(
+                context_path.clone(),
+                context_name.clone(),
+                Some(dir_path),
+            )?;
         }
-        
+
         Ok(())
     }
-    
+
     fn find_context_files(&self, dir_path: &Path) -> Vec<(String, PathBuf)> {
         let mut context_files = Vec::new();
-        
+
         // Common context file patterns (for reference)
         // We'll look for: GEMINI.md, README.md, CONTEXT.md, or any .md file
-        
+
         if let Ok(entries) = std::fs::read_dir(dir_path) {
             for entry in entries.flatten() {
                 let path = entry.path();
@@ -159,37 +174,44 @@ impl ImportDialog {
                 }
             }
         }
-        
+
         // Sort to prioritize GEMINI.md, then extension-specific names, then generic names
-        context_files.sort_by_key(|(name, _)| {
-            match name.as_str() {
-                "GEMINI.md" => 0,
-                name if name.ends_with(".md") && name != "README.md" && name != "CONTEXT.md" => 1,
-                "CONTEXT.md" => 2,
-                "README.md" => 3,
-                _ => 4,
-            }
+        context_files.sort_by_key(|(name, _)| match name.as_str() {
+            "GEMINI.md" => 0,
+            name if name.ends_with(".md") && name != "README.md" && name != "CONTEXT.md" => 1,
+            "CONTEXT.md" => 2,
+            "README.md" => 3,
+            _ => 4,
         });
-        
+
         context_files
     }
-    
+
     fn import_from_md_file(&mut self, path: PathBuf) -> Result<()> {
         if let Some(file_name) = path.file_name().and_then(|n| n.to_str()) {
-            self.import_context_as_extension(path.clone(), file_name.to_string(), path.parent().map(|p| p.to_path_buf()))?;
+            self.import_context_as_extension(
+                path.clone(),
+                file_name.to_string(),
+                path.parent().map(|p| p.to_path_buf()),
+            )?;
         } else {
             self.state = ImportState::Error("Invalid file path".to_string());
             self.state_timestamp = Some(Instant::now());
         }
         Ok(())
     }
-    
-    fn import_context_as_extension(&mut self, context_path: PathBuf, context_name: String, base_dir: Option<PathBuf>) -> Result<()> {
+
+    fn import_context_as_extension(
+        &mut self,
+        context_path: PathBuf,
+        context_name: String,
+        base_dir: Option<PathBuf>,
+    ) -> Result<()> {
         self.state = ImportState::Importing;
-        
+
         // Read the context file
         let context_content = std::fs::read_to_string(&context_path)?;
-        
+
         // Generate a name from the file or directory
         let extension_name = if let Some(dir) = &base_dir {
             dir.file_name()
@@ -197,18 +219,21 @@ impl ImportDialog {
                 .unwrap_or("imported-context")
                 .to_string()
         } else {
-            context_path.file_stem()
+            context_path
+                .file_stem()
                 .and_then(|n| n.to_str())
                 .unwrap_or("imported-context")
                 .to_string()
         };
-        
+
         // Create a minimal extension with just the context
         let extension = Extension {
             id: uuid::Uuid::new_v4().to_string(),
             name: extension_name.clone(),
             version: "1.0.0".to_string(),
-            description: Some(format!("Context-only extension imported from {}", context_name)),
+            description: Some(format!(
+                "Context-only extension imported from {context_name}"
+            )),
             mcp_servers: HashMap::new(),
             context_file_name: Some(context_name),
             context_content: Some(context_content),
@@ -218,31 +243,35 @@ impl ImportDialog {
                 tags: vec!["context-only".to_string()],
             },
         };
-        
+
         self.storage.save_extension(&extension)?;
-        
+
         // Send success message and navigate back
         if let Some(tx) = &self.action_tx {
-            let _ = tx.send(Action::Success(format!("Successfully imported context: {}", extension_name)));
+            let _ = tx.send(Action::Success(format!(
+                "Successfully imported context: {extension_name}"
+            )));
             let _ = tx.send(Action::RefreshExtensions);
             let _ = tx.send(Action::NavigateBack);
         }
-        
+
         Ok(())
     }
-    
+
     fn import_from_file(&mut self, path: PathBuf) -> Result<()> {
         self.state = ImportState::Importing;
-        
+
         // Read the file
         let content = std::fs::read_to_string(&path)?;
-        
+
         // Parse as import extension first
         match serde_json::from_str::<ImportExtension>(&content) {
             Ok(import_ext) => {
                 // Convert to our Extension format
                 let mut extension = Extension {
-                    id: import_ext.id.unwrap_or_else(|| uuid::Uuid::new_v4().to_string()),
+                    id: import_ext
+                        .id
+                        .unwrap_or_else(|| uuid::Uuid::new_v4().to_string()),
                     name: import_ext.name,
                     version: import_ext.version,
                     description: import_ext.description,
@@ -252,18 +281,16 @@ impl ImportDialog {
                     metadata: ExtensionMetadata {
                         imported_at: Utc::now(),
                         source_path: Some(path.to_string_lossy().to_string()),
-                        tags: import_ext.metadata
-                            .and_then(|m| m.tags)
-                            .unwrap_or_default(),
+                        tags: import_ext.metadata.and_then(|m| m.tags).unwrap_or_default(),
                     },
                 };
-                
+
                 // Always generate a new ID to avoid conflicts
                 extension.id = uuid::Uuid::new_v4().to_string();
-                
+
                 // Save the extension
                 self.storage.save_extension(&extension)?;
-                
+
                 // Check if there's a context file in the same directory
                 if let Some(parent) = path.parent() {
                     // Look for common context file names
@@ -274,7 +301,7 @@ impl ImportDialog {
                         "CONTEXT.md".to_string(),
                         "README.md".to_string(),
                     ];
-                    
+
                     for name in potential_names {
                         let context_path = parent.join(&name);
                         if context_path.exists() {
@@ -290,20 +317,23 @@ impl ImportDialog {
                         }
                     }
                 }
-                
+
                 // Send success message and navigate back
                 if let Some(tx) = &self.action_tx {
-                    let _ = tx.send(Action::Success(format!("Successfully imported: {}", extension.name)));
+                    let _ = tx.send(Action::Success(format!(
+                        "Successfully imported: {}",
+                        extension.name
+                    )));
                     let _ = tx.send(Action::RefreshExtensions);
                     let _ = tx.send(Action::NavigateBack);
                 }
             }
             Err(e) => {
-                self.state = ImportState::Error(format!("Failed to parse extension: {}", e));
+                self.state = ImportState::Error(format!("Failed to parse extension: {e}"));
                 self.state_timestamp = Some(Instant::now());
             }
         }
-        
+
         Ok(())
     }
 }
@@ -334,22 +364,26 @@ impl Component for ImportDialog {
     fn draw(&mut self, frame: &mut Frame, area: Rect) -> Result<()> {
         // Create a centered popup area
         let popup_area = self.centered_rect(80, 80, area);
-        
+
         // Clear the background
         frame.render_widget(Clear, popup_area);
-        
+
         // Create the main block
         let block = Block::default()
             .title(" Import Extension ")
-            .title_style(Style::default().fg(theme::primary()).add_modifier(Modifier::BOLD))
+            .title_style(
+                Style::default()
+                    .fg(theme::primary())
+                    .add_modifier(Modifier::BOLD),
+            )
             .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_style(Style::default().fg(theme::border()))
             .style(Style::default().bg(theme::surface()));
-        
+
         let inner_area = block.inner(popup_area);
         frame.render_widget(block, popup_area);
-        
+
         match &self.state {
             ImportState::Selecting => {
                 // Split area for instructions and explorer
@@ -361,20 +395,22 @@ impl Component for ImportDialog {
                         Constraint::Length(3), // Help text
                     ])
                     .split(inner_area);
-                
+
                 // Instructions
                 let instructions = Paragraph::new("Select a .json extension file, .md context file, or a directory containing either:")
                     .style(Style::default().fg(theme::text_primary()))
                     .alignment(Alignment::Center);
                 frame.render_widget(instructions, chunks[0]);
-                
+
                 // File explorer
                 frame.render_widget(&self.explorer.widget(), chunks[1]);
-                
+
                 // Help text
-                let help = Paragraph::new("↑/↓: Navigate | Enter: Select | Esc: Cancel | h: Toggle hidden files")
-                    .style(Style::default().fg(theme::text_secondary()))
-                    .alignment(Alignment::Center);
+                let help = Paragraph::new(
+                    "↑/↓: Navigate | Enter: Select | Esc: Cancel | h: Toggle hidden files",
+                )
+                .style(Style::default().fg(theme::text_secondary()))
+                .alignment(Alignment::Center);
                 frame.render_widget(help, chunks[2]);
             }
             ImportState::Importing => {
@@ -392,26 +428,30 @@ impl Component for ImportDialog {
                         Constraint::Length(3), // Instructions
                     ])
                     .split(inner_area);
-                
-                let error = Paragraph::new(format!("✗ {}", msg))
-                    .style(Style::default().fg(theme::error()).add_modifier(Modifier::BOLD))
+
+                let error = Paragraph::new(format!("✗ {msg}"))
+                    .style(
+                        Style::default()
+                            .fg(theme::error())
+                            .add_modifier(Modifier::BOLD),
+                    )
                     .alignment(Alignment::Center)
                     .wrap(Wrap { trim: true });
                 frame.render_widget(error, chunks[0]);
-                
+
                 let instructions = Paragraph::new("Press any key to continue")
                     .style(Style::default().fg(theme::text_secondary()))
                     .alignment(Alignment::Center);
                 frame.render_widget(instructions, chunks[1]);
             }
         }
-        
+
         Ok(())
     }
 
     fn handle_events(&mut self, event: Option<Event>) -> Result<Option<Action>> {
         use crossterm::event::{Event as CEvent, KeyCode};
-        
+
         if let Some(Event::Key(key)) = event {
             match &self.state {
                 ImportState::Selecting => {
@@ -420,13 +460,13 @@ impl Component for ImportDialog {
                         KeyCode::Enter => {
                             let selected = self.explorer.current();
                             let path = selected.path().to_path_buf();
-                            
+
                             // Check if it's a directory that might contain an extension
                             if selected.is_dir() {
                                 // Check if this directory contains an extension
-                                let has_extension = path.join("extension.json").exists() || 
-                                                   path.join("gemini-extension.json").exists();
-                                
+                                let has_extension = path.join("extension.json").exists()
+                                    || path.join("gemini-extension.json").exists();
+
                                 if has_extension {
                                     // Import the extension from this directory
                                     if let Err(e) = self.import_extension(path) {
@@ -461,7 +501,7 @@ impl Component for ImportDialog {
                 _ => {}
             }
         }
-        
+
         Ok(None)
     }
 }

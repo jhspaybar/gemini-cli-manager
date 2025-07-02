@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use gemini_cli_manager::App;
-    use tokio::time::{timeout, Duration};
+    use tokio::time::{Duration, timeout};
 
     #[tokio::test]
     async fn test_app_initialization() {
@@ -12,12 +12,12 @@ mod tests {
     #[tokio::test]
     async fn test_app_run_immediate_exit() {
         let mut app = App::new().unwrap();
-        
+
         // In test environment without a real terminal, the app might exit immediately
         // or timeout. Either is acceptable for this test.
         let run_future = app.run();
         let result = timeout(Duration::from_millis(100), run_future).await;
-        
+
         // Just verify that we can call run without panicking
         match result {
             Ok(Ok(())) => {
@@ -38,7 +38,7 @@ mod tests {
         // Test that we can create multiple app instances
         let app1 = App::new();
         assert!(app1.is_ok());
-        
+
         let app2 = App::new();
         assert!(app2.is_ok());
     }

@@ -1,5 +1,5 @@
-use gemini_cli_manager::models::extension::{Extension, ExtensionMetadata, McpServerConfig};
 use chrono::Utc;
+use gemini_cli_manager::models::extension::{Extension, ExtensionMetadata, McpServerConfig};
 use std::collections::HashMap;
 
 /// Test fixtures for MCP server configurations
@@ -18,7 +18,7 @@ impl McpFixtures {
             url: None,
         }
     }
-    
+
     /// Create a Docker-based echo server
     pub fn echo_server_docker() -> McpServerConfig {
         McpServerConfig {
@@ -40,15 +40,12 @@ impl McpFixtures {
             url: None,
         }
     }
-    
+
     /// Create a Python echo server
     pub fn echo_server_python() -> McpServerConfig {
         McpServerConfig {
             command: Some("python".to_string()),
-            args: Some(vec![
-                "-m".to_string(),
-                "mcp_echo_server".to_string(),
-            ]),
+            args: Some(vec!["-m".to_string(), "mcp_echo_server".to_string()]),
             cwd: Some("./servers".to_string()),
             env: Some({
                 let mut env = HashMap::new();
@@ -61,7 +58,7 @@ impl McpFixtures {
             url: None,
         }
     }
-    
+
     /// Create a command-based server with environment configuration
     pub fn env_configured_server() -> McpServerConfig {
         McpServerConfig {
@@ -78,7 +75,7 @@ impl McpFixtures {
             url: None,
         }
     }
-    
+
     /// Create an extension with echo server
     pub fn echo_extension() -> Extension {
         Extension {
@@ -100,7 +97,7 @@ impl McpFixtures {
             },
         }
     }
-    
+
     /// Create an extension with multiple servers
     pub fn multi_server_extension() -> Extension {
         Extension {
@@ -124,7 +121,7 @@ impl McpFixtures {
             },
         }
     }
-    
+
     /// Create an extension with only context (no servers)
     pub fn context_only_extension() -> Extension {
         Extension {
@@ -142,7 +139,7 @@ impl McpFixtures {
             },
         }
     }
-    
+
     /// Create a fully populated extension
     pub fn full_featured_extension() -> Extension {
         Extension {
@@ -152,26 +149,29 @@ impl McpFixtures {
             description: Some("Extension demonstrating all features".to_string()),
             mcp_servers: {
                 let mut servers = HashMap::new();
-                servers.insert("main-server".to_string(), McpServerConfig {
-                    command: Some("npx".to_string()),
-                    args: Some(vec![
-                        "-y".to_string(),
-                        "@example/mcp-server".to_string(),
-                        "--config".to_string(),
-                        "production.json".to_string(),
-                    ]),
-                    cwd: Some("$HOME/.mcp/servers".to_string()),
-                    env: Some({
-                        let mut env = HashMap::new();
-                        env.insert("NODE_ENV".to_string(), "production".to_string());
-                        env.insert("LOG_LEVEL".to_string(), "info".to_string());
-                        env.insert("API_TOKEN".to_string(), "$MCP_API_TOKEN".to_string());
-                        env
-                    }),
-                    timeout: Some(120000),
-                    trust: Some(true),
-                    url: None,
-                });
+                servers.insert(
+                    "main-server".to_string(),
+                    McpServerConfig {
+                        command: Some("npx".to_string()),
+                        args: Some(vec![
+                            "-y".to_string(),
+                            "@example/mcp-server".to_string(),
+                            "--config".to_string(),
+                            "production.json".to_string(),
+                        ]),
+                        cwd: Some("$HOME/.mcp/servers".to_string()),
+                        env: Some({
+                            let mut env = HashMap::new();
+                            env.insert("NODE_ENV".to_string(), "production".to_string());
+                            env.insert("LOG_LEVEL".to_string(), "info".to_string());
+                            env.insert("API_TOKEN".to_string(), "$MCP_API_TOKEN".to_string());
+                            env
+                        }),
+                        timeout: Some(120000),
+                        trust: Some(true),
+                        url: None,
+                    },
+                );
                 servers
             },
             context_file_name: Some("ADVANCED.md".to_string()),
@@ -187,7 +187,7 @@ impl McpFixtures {
             },
         }
     }
-    
+
     /// Echo server context content
     fn echo_context_content() -> String {
         r#"# Echo Test Extension
@@ -212,9 +212,10 @@ No additional configuration required.
 
 ## Testing
 
-Use this extension to verify that MCP server communication is working correctly."#.to_string()
+Use this extension to verify that MCP server communication is working correctly."#
+            .to_string()
     }
-    
+
     /// Multi-server context content
     fn multi_server_context() -> String {
         r#"# Multi-Server Test Extension
@@ -240,9 +241,10 @@ Command-based server with environment configuration
 
 ## Usage
 
-Each server operates independently and can be called separately."#.to_string()
+Each server operates independently and can be called separately."#
+            .to_string()
     }
-    
+
     /// Context-only content
     fn context_only_content() -> String {
         r#"# Context Only Extension
@@ -275,9 +277,10 @@ src/
 
 - Always use semantic commit messages
 - Keep functions small and focused
-- Write tests for new functionality"#.to_string()
+- Write tests for new functionality"#
+            .to_string()
     }
-    
+
     /// Advanced context content
     fn advanced_context_content() -> String {
         r#"# Advanced Full-Featured Extension
@@ -317,7 +320,8 @@ Use with caution in production environments.
 
 - Timeout: 120 seconds for long-running operations
 - Optimized for production workloads
-- Supports concurrent requests"#.to_string()
+- Supports concurrent requests"#
+            .to_string()
     }
 }
 
@@ -336,49 +340,52 @@ pub fn validate_extension_json(extension: &Extension) -> Result<(), String> {
     if extension.name.is_empty() {
         return Err("Extension name is required".to_string());
     }
-    
+
     if extension.version.is_empty() {
         return Err("Extension version is required".to_string());
     }
-    
+
     // Validate MCP servers
     for (name, server) in &extension.mcp_servers {
         // Must have command
         if server.command.is_none() {
             return Err(format!("Server '{}' must have a command", name));
         }
-        
+
         // If command-based, args should be present (but can be empty)
         if server.command.is_some() && server.args.is_none() {
-            return Err(format!("Server '{}' with command should have args field", name));
+            return Err(format!(
+                "Server '{}' with command should have args field",
+                name
+            ));
         }
     }
-    
+
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
     use super::{McpFixtures, validate_extension_json};
-    
+
     #[test]
     fn test_echo_extension_valid() {
         let ext = McpFixtures::echo_extension();
         assert!(validate_extension_json(&ext).is_ok());
     }
-    
+
     #[test]
     fn test_multi_server_extension_valid() {
         let ext = McpFixtures::multi_server_extension();
         assert!(validate_extension_json(&ext).is_ok());
         assert_eq!(ext.mcp_servers.len(), 3);
     }
-    
+
     #[test]
     fn test_extension_json_format() {
         let ext = McpFixtures::echo_extension();
         let json = super::create_extension_json(&ext);
-        
+
         assert_eq!(json["name"], "Echo Test Extension");
         assert_eq!(json["version"], "1.0.0");
         assert!(json["mcpServers"]["echo"].is_object());

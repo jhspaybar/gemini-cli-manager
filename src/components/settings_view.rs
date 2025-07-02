@@ -6,7 +6,7 @@ use super::Component;
 use crate::{action::Action, config::Config, theme, utils::KeybindingManager};
 
 // NOTE: There's a complex module import resolution issue with the settings module
-// The settings module compiles fine on its own, but importing from it causes circular 
+// The settings module compiles fine on its own, but importing from it causes circular
 // reference issues. For now using inline definitions until the issue is investigated.
 // TODO: Investigate Rust module import resolution issue in components/settings_view.rs
 
@@ -20,27 +20,27 @@ impl SettingsManager {
     pub fn new() -> color_eyre::Result<Self> {
         let settings_path = Self::get_settings_path()?;
         let settings = Self::load_settings(&settings_path)?;
-        
+
         Ok(Self {
             settings,
             settings_path,
         })
     }
-    
+
     pub fn get_settings(&self) -> &UserSettings {
         &self.settings
     }
-    
+
     pub fn update_theme(&mut self, theme: String) -> color_eyre::Result<()> {
         self.settings.theme = theme;
         self.save()
     }
-    
+
     pub fn reset_keybindings(&mut self) -> color_eyre::Result<()> {
         self.settings.keybindings = KeybindingConfig::default();
         self.save()
     }
-    
+
     pub fn update_keybinding(&mut self, action: &str, keys: Vec<String>) -> color_eyre::Result<()> {
         match action {
             "up" => self.settings.keybindings.navigation.up = keys,
@@ -60,7 +60,7 @@ impl SettingsManager {
         }
         self.save()
     }
-    
+
     fn save(&self) -> color_eyre::Result<()> {
         let json = serde_json::to_string_pretty(&self.settings)?;
         if let Some(parent) = self.settings_path.parent() {
@@ -69,7 +69,7 @@ impl SettingsManager {
         std::fs::write(&self.settings_path, json)?;
         Ok(())
     }
-    
+
     fn load_settings(path: &std::path::PathBuf) -> color_eyre::Result<UserSettings> {
         if path.exists() {
             let content = std::fs::read_to_string(path)?;
@@ -79,7 +79,7 @@ impl SettingsManager {
             Ok(UserSettings::default())
         }
     }
-    
+
     fn get_settings_path() -> color_eyre::Result<std::path::PathBuf> {
         // Use data_local_dir for application data on all platforms
         // On macOS: ~/Library/Application Support
@@ -89,7 +89,6 @@ impl SettingsManager {
             .ok_or_else(|| color_eyre::eyre::eyre!("Could not find data directory"))?;
         Ok(data_dir.join("gemini-cli-manager").join("settings.json"))
     }
-    
 }
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -107,20 +106,12 @@ impl Default for UserSettings {
     }
 }
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct KeybindingConfig {
     pub navigation: NavigationKeys,
     pub actions: ActionKeys,
 }
 
-impl Default for KeybindingConfig {
-    fn default() -> Self {
-        Self {
-            navigation: NavigationKeys::default(),
-            actions: ActionKeys::default(),
-        }
-    }
-}
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct NavigationKeys {
@@ -193,23 +184,23 @@ impl KeybindingConfig {
             "select" => self.actions.select.clone(),
             "search" => self.actions.search.clone(),
             "tab" => vec!["Tab".to_string()], // Hardcoded for now
-            "x" => vec!["x".to_string()], // Hardcoded for now
+            "x" => vec!["x".to_string()],     // Hardcoded for now
             "Space" => vec!["Space".to_string()], // Hardcoded for now
             "Ctrl+S" => vec!["Ctrl+S".to_string()], // Hardcoded for now
             "Type" => vec!["Type".to_string()], // Hardcoded for now - represents typing text
-            "r" => vec!["r".to_string()], // Hardcoded for now - reset keybindings
-            "e" => vec!["e".to_string()], // Hardcoded for now - export settings
-            "i" => vec!["i".to_string()], // Hardcoded for now - import settings
+            "r" => vec!["r".to_string()],     // Hardcoded for now - reset keybindings
+            "e" => vec!["e".to_string()],     // Hardcoded for now - export settings
+            "i" => vec!["i".to_string()],     // Hardcoded for now - import settings
             _ => vec![],
         }
     }
-    
+
     /// Convert to HashMap for KeybindingManager
     #[allow(dead_code)]
     pub fn to_keybinding_config(&self) -> std::collections::HashMap<String, Vec<String>> {
         // TODO: Use KeyAction enum when keybindings module is available
         let mut config = std::collections::HashMap::new();
-        
+
         config.insert("NavigateUp".to_string(), self.navigation.up.clone());
         config.insert("NavigateDown".to_string(), self.navigation.down.clone());
         config.insert("NavigateLeft".to_string(), self.navigation.left.clone());
@@ -223,7 +214,7 @@ impl KeybindingConfig {
         config.insert("LaunchProfile".to_string(), self.actions.launch.clone());
         config.insert("Select".to_string(), self.actions.select.clone());
         config.insert("StartSearch".to_string(), self.actions.search.clone());
-        
+
         config
     }
 }
@@ -278,7 +269,7 @@ pub struct Settings {
     settings_manager: Option<SettingsManager>,
     shared_settings: Option<std::sync::Arc<std::sync::RwLock<UserSettings>>>,
     keybinding_manager: Option<KeybindingManager>,
-    
+
     // UI state
     current_section: SettingsSection,
     focused_pane: FocusedPane,
@@ -286,7 +277,7 @@ pub struct Settings {
     selected_keybinding: usize,
     editing_keybinding: bool,
     captured_keys: Vec<String>,
-    
+
     // Data
     available_themes: Vec<ThemeInfo>,
     keybinding_actions: Vec<String>,
@@ -329,7 +320,7 @@ impl Default for Settings {
 impl Settings {
     pub fn new() -> Self {
         let mut settings = Self::default();
-        
+
         // Always initialize settings manager, creating defaults if needed
         let manager = match SettingsManager::new() {
             Ok(m) => m,
@@ -341,21 +332,24 @@ impl Settings {
                     .unwrap_or_else(|| std::path::PathBuf::from("."))
                     .join("gemini-cli-manager")
                     .join("settings.json");
-                
+
                 SettingsManager {
                     settings: default_settings,
                     settings_path,
                 }
             }
         };
-        
+
         // Set selected theme based on current setting
         let current_theme = &manager.get_settings().theme;
-        if let Some(index) = settings.available_themes.iter()
-            .position(|t| t.name == *current_theme) {
+        if let Some(index) = settings
+            .available_themes
+            .iter()
+            .position(|t| t.name == *current_theme)
+        {
             settings.selected_theme = index;
         }
-        
+
         settings.settings_manager = Some(manager);
         settings
     }
@@ -370,11 +364,11 @@ impl Settings {
             SettingsSection::Appearance => 0,
             SettingsSection::Keybindings => 1,
         };
-        
+
         let new_index = (current_index as isize + direction)
             .max(0)
             .min(sections.len() as isize - 1) as usize;
-        
+
         self.current_section = match new_index {
             0 => SettingsSection::Appearance,
             1 => SettingsSection::Keybindings,
@@ -387,13 +381,17 @@ impl Settings {
             SettingsSection::Appearance => {
                 let len = self.available_themes.len();
                 if len > 0 {
-                    self.selected_theme = ((self.selected_theme as isize + direction).rem_euclid(len as isize)) as usize;
+                    self.selected_theme = ((self.selected_theme as isize + direction)
+                        .rem_euclid(len as isize))
+                        as usize;
                 }
             }
             SettingsSection::Keybindings => {
                 let len = self.keybinding_actions.len();
                 if len > 0 {
-                    self.selected_keybinding = ((self.selected_keybinding as isize + direction).rem_euclid(len as isize)) as usize;
+                    self.selected_keybinding = ((self.selected_keybinding as isize + direction)
+                        .rem_euclid(len as isize))
+                        as usize;
                 }
             }
         }
@@ -403,7 +401,7 @@ impl Settings {
         if let Some(theme) = self.available_themes.get(self.selected_theme) {
             // Apply theme immediately for live preview
             if let Err(e) = crate::theme::set_theme_by_name(&theme.name) {
-                eprintln!("Error setting theme: {}", e);
+                eprintln!("Error setting theme: {e}");
                 return Ok(());
             }
 
@@ -420,13 +418,16 @@ impl Settings {
                     Ok(()) => {
                         // Send success notification
                         if let Some(tx) = &self.command_tx {
-                            let _ = tx.send(Action::Success(format!("Theme changed to {}", theme.display_name)));
+                            let _ = tx.send(Action::Success(format!(
+                                "Theme changed to {}",
+                                theme.display_name
+                            )));
                         }
                     }
                     Err(e) => {
                         // Send error notification
                         if let Some(tx) = &self.command_tx {
-                            let _ = tx.send(Action::Error(format!("Failed to save theme: {}", e)));
+                            let _ = tx.send(Action::Error(format!("Failed to save theme: {e}")));
                         }
                     }
                 }
@@ -446,9 +447,12 @@ impl Settings {
             .iter()
             .enumerate()
             .map(|(i, &section)| {
-                let style = if (i == 0 && self.current_section == SettingsSection::Appearance) ||
-                             (i == 1 && self.current_section == SettingsSection::Keybindings) {
-                    Style::default().fg(theme::primary()).add_modifier(Modifier::BOLD)
+                let style = if (i == 0 && self.current_section == SettingsSection::Appearance)
+                    || (i == 1 && self.current_section == SettingsSection::Keybindings)
+                {
+                    Style::default()
+                        .fg(theme::primary())
+                        .add_modifier(Modifier::BOLD)
                 } else {
                     Style::default().fg(theme::text_primary())
                 };
@@ -466,7 +470,7 @@ impl Settings {
                             theme::border_focused()
                         } else {
                             theme::border()
-                        }
+                        },
                     ))
                     .border_type(BorderType::Rounded),
             )
@@ -476,12 +480,16 @@ impl Settings {
     }
 
     fn render_appearance(&self, frame: &mut Frame, area: Rect) {
-        let items: Vec<ListItem> = self.available_themes
+        let items: Vec<ListItem> = self
+            .available_themes
             .iter()
             .enumerate()
             .map(|(i, theme)| {
                 let mut content = vec![
-                    Span::styled(&theme.display_name, Style::default().fg(theme::text_primary())),
+                    Span::styled(
+                        &theme.display_name,
+                        Style::default().fg(theme::text_primary()),
+                    ),
                     Span::styled(" (", Style::default().fg(theme::text_muted())),
                     Span::styled(&theme.variant, Style::default().fg(theme::text_muted())),
                     Span::styled(")", Style::default().fg(theme::text_muted())),
@@ -489,7 +497,7 @@ impl Settings {
 
                 // Add preview colors
                 content.push(Span::styled("  ", Style::default()));
-                
+
                 // Show current selection indicator
                 if i == self.selected_theme {
                     content.insert(0, Span::styled("● ", Style::default().fg(theme::success())));
@@ -510,12 +518,13 @@ impl Settings {
                     .title(" Theme Selection ")
                     .borders(Borders::ALL)
                     .border_style(Style::default().fg(
-                        if self.focused_pane == FocusedPane::Content && 
-                           self.current_section == SettingsSection::Appearance {
+                        if self.focused_pane == FocusedPane::Content
+                            && self.current_section == SettingsSection::Appearance
+                        {
                             theme::border_focused()
                         } else {
                             theme::border()
-                        }
+                        },
                     ))
                     .border_type(BorderType::Rounded),
             )
@@ -530,12 +539,14 @@ impl Settings {
         let chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints([
-                Constraint::Min(10),     // Keybindings list
-                Constraint::Length(3),   // Reset button
+                Constraint::Min(10),   // Keybindings list
+                Constraint::Length(3), // Reset button
             ])
             .split(area);
 
-        let settings = self.settings_manager.as_ref()
+        let settings = self
+            .settings_manager
+            .as_ref()
             .map(|m| m.get_settings())
             .cloned()
             .unwrap_or_default();
@@ -545,25 +556,22 @@ impl Settings {
             .enumerate()
             .map(|(idx, action)| {
                 let is_editing = self.editing_keybinding && idx == self.selected_keybinding;
-                
                 let keys = if is_editing && !self.captured_keys.is_empty() {
                     self.captured_keys.clone()
                 } else {
                     settings.keybindings.get_keys_for_action(action)
                 };
                 let keys_str = keys.join(", ");
-                
                 let mut content = vec![
-                    Span::styled(format!("{:12}", action), Style::default().fg(theme::highlight())),
+                    Span::styled(format!("{action:12}"), Style::default().fg(theme::highlight())),
                     Span::styled(" → ", Style::default().fg(theme::text_muted())),
                 ];
-                
                 if is_editing {
                     content.push(Span::styled(
                         if self.captured_keys.is_empty() {
                             "Press keys to capture... (Ctrl+S: save | Esc: cancel | Backspace: remove last)".to_string()
                         } else {
-                            format!("{} (add more keys | Ctrl+S: save | Esc: cancel | Backspace: remove last)", keys_str)
+                            format!("{keys_str} (add more keys | Ctrl+S: save | Esc: cancel | Backspace: remove last)")
                         },
                         Style::default().fg(theme::warning()).add_modifier(Modifier::ITALIC)
                     ));
@@ -584,12 +592,13 @@ impl Settings {
                     .title(" Keybindings ")
                     .borders(Borders::ALL)
                     .border_style(Style::default().fg(
-                        if self.focused_pane == FocusedPane::Content && 
-                           self.current_section == SettingsSection::Keybindings {
+                        if self.focused_pane == FocusedPane::Content
+                            && self.current_section == SettingsSection::Keybindings
+                        {
                             theme::border_focused()
                         } else {
                             theme::border()
-                        }
+                        },
                     ))
                     .border_type(BorderType::Rounded),
             )
@@ -604,11 +613,13 @@ impl Settings {
         } else {
             " Reset to Defaults (r) "
         };
-        
+
         let reset_button = Paragraph::new(reset_button_text)
-            .style(Style::default()
-                .fg(theme::warning())
-                .add_modifier(Modifier::BOLD))
+            .style(
+                Style::default()
+                    .fg(theme::warning())
+                    .add_modifier(Modifier::BOLD),
+            )
             .alignment(Alignment::Center)
             .block(
                 Block::default()
@@ -619,7 +630,6 @@ impl Settings {
 
         frame.render_widget(reset_button, chunks[1]);
     }
-
 
     fn render_content(&self, frame: &mut Frame, area: Rect) {
         match self.current_section {
@@ -640,26 +650,35 @@ impl Component for Settings {
         Ok(())
     }
 
-    fn register_settings_handler(&mut self, settings: std::sync::Arc<std::sync::RwLock<UserSettings>>) -> Result<()> {
+    fn register_settings_handler(
+        &mut self,
+        settings: std::sync::Arc<std::sync::RwLock<UserSettings>>,
+    ) -> Result<()> {
         self.shared_settings = Some(settings.clone());
         self.keybinding_manager = Some(KeybindingManager::new(settings.clone()));
-        
+
         // Initialize theme selection based on current settings
         if let Ok(settings_guard) = settings.read() {
-            if let Some(index) = self.available_themes.iter()
-                .position(|t| t.name == settings_guard.theme) {
+            if let Some(index) = self
+                .available_themes
+                .iter()
+                .position(|t| t.name == settings_guard.theme)
+            {
                 self.selected_theme = index;
             }
         }
-        
+
         Ok(())
     }
 
     fn update(&mut self, action: Action) -> Result<Option<Action>> {
         match action {
             Action::ChangeTheme(theme_name) => {
-                if let Some(index) = self.available_themes.iter()
-                    .position(|t| t.name == theme_name) {
+                if let Some(index) = self
+                    .available_themes
+                    .iter()
+                    .position(|t| t.name == theme_name)
+                {
                     self.selected_theme = index;
                     self.apply_theme_change()?;
                 }
@@ -678,14 +697,18 @@ impl Component for Settings {
                         Ok(()) => {
                             // Send success notification
                             if let Some(tx) = &self.command_tx {
-                                let _ = tx.send(Action::Success("Keybindings reset to defaults".to_string()));
+                                let _ = tx.send(Action::Success(
+                                    "Keybindings reset to defaults".to_string(),
+                                ));
                                 let _ = tx.send(Action::Render);
                             }
                         }
                         Err(e) => {
                             // Send error notification
                             if let Some(tx) = &self.command_tx {
-                                let _ = tx.send(Action::Error(format!("Failed to reset keybindings: {}", e)));
+                                let _ = tx.send(Action::Error(format!(
+                                    "Failed to reset keybindings: {e}"
+                                )));
                             }
                         }
                     }
@@ -722,26 +745,22 @@ impl Component for Settings {
 
         use crate::utils::build_help_text;
         let help_text = match self.focused_pane {
-            FocusedPane::Sections => {
-                build_help_text(&[
-                    ("up", "Navigate sections"),
-                    ("down", "Navigate sections"),
-                    ("right", "Enter section"),
+            FocusedPane::Sections => build_help_text(&[
+                ("up", "Navigate sections"),
+                ("down", "Navigate sections"),
+                ("right", "Enter section"),
+                ("tab", "Next tab"),
+                ("quit", "Quit"),
+            ]),
+            FocusedPane::Content => match self.current_section {
+                SettingsSection::Appearance => build_help_text(&[
+                    ("up", "Select theme"),
+                    ("down", "Select theme"),
+                    ("select", "Apply"),
+                    ("left", "Back"),
                     ("tab", "Next tab"),
                     ("quit", "Quit"),
-                ])
-            }
-            FocusedPane::Content => match self.current_section {
-                SettingsSection::Appearance => {
-                    build_help_text(&[
-                        ("up", "Select theme"),
-                        ("down", "Select theme"),
-                        ("select", "Apply"),
-                        ("left", "Back"),
-                        ("tab", "Next tab"),
-                        ("quit", "Quit"),
-                    ])
-                }
+                ]),
                 SettingsSection::Keybindings => {
                     if self.editing_keybinding {
                         " Press any key to add | Backspace: Remove last | Ctrl+S: Save | Esc: Cancel ".to_string()
@@ -791,29 +810,70 @@ impl Component for Settings {
                     (KeyCode::Char('s'), crossterm::event::KeyModifiers::CONTROL) => {
                         // Save the captured keys with Ctrl+S
                         if !self.captured_keys.is_empty() {
-                            if let Some(action) = self.keybinding_actions.get(self.selected_keybinding) {
+                            if let Some(action) =
+                                self.keybinding_actions.get(self.selected_keybinding)
+                            {
                                 self.editing_keybinding = false;
                                 let keys = self.captured_keys.clone();
                                 self.captured_keys.clear();
-                                
+
                                 // Update shared settings first
                                 if let Some(ref shared_settings) = self.shared_settings {
                                     if let Ok(mut settings_guard) = shared_settings.write() {
                                         // Update the appropriate keybinding in shared settings
                                         match action.as_str() {
-                                            "up" => settings_guard.keybindings.navigation.up = keys.clone(),
-                                            "down" => settings_guard.keybindings.navigation.down = keys.clone(),
-                                            "left" => settings_guard.keybindings.navigation.left = keys.clone(),
-                                            "right" => settings_guard.keybindings.navigation.right = keys.clone(),
-                                            "back" => settings_guard.keybindings.navigation.back = keys.clone(),
-                                            "quit" => settings_guard.keybindings.navigation.quit = keys.clone(),
-                                            "edit" => settings_guard.keybindings.actions.edit = keys.clone(),
-                                            "delete" => settings_guard.keybindings.actions.delete = keys.clone(),
-                                            "create" => settings_guard.keybindings.actions.create = keys.clone(),
-                                            "import" => settings_guard.keybindings.actions.import = keys.clone(),
-                                            "launch" => settings_guard.keybindings.actions.launch = keys.clone(),
-                                            "select" => settings_guard.keybindings.actions.select = keys.clone(),
-                                            "search" => settings_guard.keybindings.actions.search = keys.clone(),
+                                            "up" => {
+                                                settings_guard.keybindings.navigation.up =
+                                                    keys.clone()
+                                            }
+                                            "down" => {
+                                                settings_guard.keybindings.navigation.down =
+                                                    keys.clone()
+                                            }
+                                            "left" => {
+                                                settings_guard.keybindings.navigation.left =
+                                                    keys.clone()
+                                            }
+                                            "right" => {
+                                                settings_guard.keybindings.navigation.right =
+                                                    keys.clone()
+                                            }
+                                            "back" => {
+                                                settings_guard.keybindings.navigation.back =
+                                                    keys.clone()
+                                            }
+                                            "quit" => {
+                                                settings_guard.keybindings.navigation.quit =
+                                                    keys.clone()
+                                            }
+                                            "edit" => {
+                                                settings_guard.keybindings.actions.edit =
+                                                    keys.clone()
+                                            }
+                                            "delete" => {
+                                                settings_guard.keybindings.actions.delete =
+                                                    keys.clone()
+                                            }
+                                            "create" => {
+                                                settings_guard.keybindings.actions.create =
+                                                    keys.clone()
+                                            }
+                                            "import" => {
+                                                settings_guard.keybindings.actions.import =
+                                                    keys.clone()
+                                            }
+                                            "launch" => {
+                                                settings_guard.keybindings.actions.launch =
+                                                    keys.clone()
+                                            }
+                                            "select" => {
+                                                settings_guard.keybindings.actions.select =
+                                                    keys.clone()
+                                            }
+                                            "search" => {
+                                                settings_guard.keybindings.actions.search =
+                                                    keys.clone()
+                                            }
                                             _ => {}
                                         }
                                     }
@@ -824,20 +884,24 @@ impl Component for Settings {
                                     match manager.update_keybinding(action, keys.clone()) {
                                         Ok(()) => {
                                             if let Some(tx) = &self.command_tx {
-                                                let _ = tx.send(Action::Success(format!("Keybinding for '{}' updated successfully", action)));
+                                                let _ = tx.send(Action::Success(format!(
+                                                    "Keybinding for '{action}' updated successfully"
+                                                )));
                                                 let _ = tx.send(Action::Render);
                                             }
                                         }
                                         Err(e) => {
                                             if let Some(tx) = &self.command_tx {
-                                                let _ = tx.send(Action::Error(format!("Failed to update keybinding: {}", e)));
+                                                let _ = tx.send(Action::Error(format!(
+                                                    "Failed to update keybinding: {e}"
+                                                )));
                                             }
                                         }
                                     }
-                                } else {
-                                    if let Some(tx) = &self.command_tx {
-                                        let _ = tx.send(Action::Error("Settings manager not initialized".to_string()));
-                                    }
+                                } else if let Some(tx) = &self.command_tx {
+                                    let _ = tx.send(Action::Error(
+                                        "Settings manager not initialized".to_string(),
+                                    ));
                                 }
                                 return Ok(Some(Action::Render));
                             }
@@ -914,9 +978,10 @@ impl Component for Settings {
                         }
                     } else if key.code == KeyCode::Char('r') {
                         // Only handle reset when in keybindings section and content pane is focused
-                        if self.current_section == SettingsSection::Keybindings && 
-                           self.focused_pane == FocusedPane::Content &&
-                           !self.editing_keybinding {
+                        if self.current_section == SettingsSection::Keybindings
+                            && self.focused_pane == FocusedPane::Content
+                            && !self.editing_keybinding
+                        {
                             return Ok(Some(Action::ResetKeybindings));
                         }
                     }
@@ -926,7 +991,7 @@ impl Component for Settings {
                         KeyCode::Char('q') => return Ok(Some(Action::Quit)),
                         KeyCode::Esc => return Ok(Some(Action::NavigateBack)),
                         KeyCode::Tab => return Ok(Some(Action::NavigateToExtensions)),
-                        
+
                         KeyCode::Up | KeyCode::Char('k') => {
                             match self.focused_pane {
                                 FocusedPane::Sections => self.navigate_sections(-1),
@@ -934,7 +999,7 @@ impl Component for Settings {
                             }
                             return Ok(Some(Action::Render));
                         }
-                        
+
                         KeyCode::Down | KeyCode::Char('j') => {
                             match self.focused_pane {
                                 FocusedPane::Sections => self.navigate_sections(1),
@@ -942,27 +1007,27 @@ impl Component for Settings {
                             }
                             return Ok(Some(Action::Render));
                         }
-                        
+
                         KeyCode::Right | KeyCode::Char('l') => {
                             if self.focused_pane == FocusedPane::Sections {
                                 self.focused_pane = FocusedPane::Content;
                                 return Ok(Some(Action::Render));
                             }
                         }
-                        
+
                         KeyCode::Left | KeyCode::Char('h') => {
                             if self.focused_pane == FocusedPane::Content {
                                 self.focused_pane = FocusedPane::Sections;
                                 return Ok(Some(Action::Render));
                             }
                         }
-                        
+
                         KeyCode::Enter => {
                             match self.current_section {
                                 SettingsSection::Appearance => {
                                     self.apply_theme_change()?;
                                     return Ok(Some(Action::Render));
-                        }
+                                }
                                 SettingsSection::Keybindings => {
                                     // Start editing the selected keybinding
                                     self.editing_keybinding = true;
@@ -971,16 +1036,17 @@ impl Component for Settings {
                                 }
                             }
                         }
-                        
+
                         KeyCode::Char('r') => {
                             // Only handle reset when in keybindings section and content pane is focused
-                            if self.current_section == SettingsSection::Keybindings && 
-                               self.focused_pane == FocusedPane::Content &&
-                               !self.editing_keybinding {
+                            if self.current_section == SettingsSection::Keybindings
+                                && self.focused_pane == FocusedPane::Content
+                                && !self.editing_keybinding
+                            {
                                 return Ok(Some(Action::ResetKeybindings));
                             }
                         }
-                        
+
                         _ => {}
                     }
                 }
@@ -993,9 +1059,9 @@ impl Component for Settings {
 
 fn format_key_event(key: &crossterm::event::KeyEvent) -> String {
     use crossterm::event::{KeyCode, KeyModifiers};
-    
+
     let mut parts = Vec::new();
-    
+
     // Add modifiers
     if key.modifiers.contains(KeyModifiers::CONTROL) {
         parts.push("Ctrl");
@@ -1006,22 +1072,20 @@ fn format_key_event(key: &crossterm::event::KeyEvent) -> String {
     if key.modifiers.contains(KeyModifiers::SHIFT) {
         parts.push("Shift");
     }
-    
+
     // Add the key itself
     let key_str = match key.code {
-        KeyCode::Char(c) => {
-            match c {
-                ' ' => "Space".to_string(),
-                c => {
-                    if key.modifiers.contains(KeyModifiers::SHIFT) {
-                        c.to_uppercase().to_string()
-                    } else {
-                        c.to_string()
-                    }
+        KeyCode::Char(c) => match c {
+            ' ' => "Space".to_string(),
+            c => {
+                if key.modifiers.contains(KeyModifiers::SHIFT) {
+                    c.to_uppercase().to_string()
+                } else {
+                    c.to_string()
                 }
             }
-        }
-        KeyCode::F(n) => format!("F{}", n),
+        },
+        KeyCode::F(n) => format!("F{n}"),
         KeyCode::Up => "Up".to_string(),
         KeyCode::Down => "Down".to_string(),
         KeyCode::Left => "Left".to_string(),
@@ -1039,9 +1103,9 @@ fn format_key_event(key: &crossterm::event::KeyEvent) -> String {
         KeyCode::Esc => "Esc".to_string(),
         _ => return "Unknown".to_string(),
     };
-    
+
     parts.push(&key_str);
-    
+
     if parts.len() > 1 && !parts[0].starts_with('F') {
         parts.join("+")
     } else {

@@ -8,8 +8,8 @@ use ratatui::{
 };
 use tokio::sync::mpsc::UnboundedSender;
 
-use crate::{action::Action, config::Config, tui::Event};
 use self::settings_view::UserSettings;
+use crate::{action::Action, config::Config, tui::Event};
 
 pub mod confirm_dialog;
 pub mod extension_detail;

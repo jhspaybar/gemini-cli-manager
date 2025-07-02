@@ -8,7 +8,10 @@ use tracing::{debug, info};
 
 use crate::{
     action::Action,
-    components::{Component, settings_view::{UserSettings, SettingsManager}},
+    components::{
+        Component,
+        settings_view::{SettingsManager, UserSettings},
+    },
     config::Config,
     storage::Storage,
     tui::{Event, Tui},
@@ -28,33 +31,33 @@ pub struct App {
     in_form_view: bool,
 }
 
-
 impl App {
     pub fn new() -> Result<Self> {
         let (action_tx, action_rx) = mpsc::unbounded_channel();
-        
+
         // Initialize storage
         let storage = Storage::new()?;
         storage.init()?;
-        
+
         // Load settings from disk into shared memory
         let settings_manager = SettingsManager::new()?;
         let settings = Arc::new(RwLock::new(settings_manager.get_settings().clone()));
-        
+
         // Apply saved theme from the loaded settings
         if let Ok(settings_lock) = settings.read() {
             if let Err(e) = crate::theme::set_theme_by_name(&settings_lock.theme) {
-                debug!("Warning: Could not apply saved theme '{}': {}", settings_lock.theme, e);
+                debug!(
+                    "Warning: Could not apply saved theme '{}': {}",
+                    settings_lock.theme, e
+                );
             }
         }
-        
+
         // Create view manager with storage
         let view_manager = ViewManager::with_storage(storage.clone());
-        
+
         Ok(Self {
-            components: vec![
-                Box::new(view_manager),
-            ],
+            components: vec![Box::new(view_manager)],
             should_quit: false,
             should_suspend: false,
             config: Config::new()?,
@@ -111,14 +114,14 @@ impl App {
             return Ok(());
         };
         let action_tx = self.action_tx.clone();
-        
+
         // First, let components handle the event
         for component in self.components.iter_mut() {
             if let Some(action) = component.handle_events(Some(event.clone()))? {
                 action_tx.send(action)?;
             }
         }
-        
+
         // Process system events (Tick, Render, Resize) always
         // But only process Key events if we're not in a form view
         match event {
@@ -181,12 +184,16 @@ impl App {
                     self.handle_launch_profile(profile_id, tui)?;
                 }
                 // Track when we're in form views
-                Action::CreateNewExtension | Action::EditExtension(_) | 
-                Action::CreateProfile | Action::EditProfile(_) => {
+                Action::CreateNewExtension
+                | Action::EditExtension(_)
+                | Action::CreateProfile
+                | Action::EditProfile(_) => {
                     self.in_form_view = true;
                 }
-                Action::NavigateBack | Action::NavigateToExtensions | 
-                Action::NavigateToProfiles | Action::NavigateToSettings => {
+                Action::NavigateBack
+                | Action::NavigateToExtensions
+                | Action::NavigateToProfiles
+                | Action::NavigateToSettings => {
                     self.in_form_view = false;
                 }
                 _ => {}
@@ -215,7 +222,7 @@ impl App {
                     .style(ratatui::style::Style::default().bg(crate::theme::background())),
                 area,
             );
-            
+
             // Then render components on top
             for component in self.components.iter_mut() {
                 if let Err(err) = component.draw(frame, frame.area()) {
@@ -230,42 +237,43 @@ impl App {
 
     fn handle_launch_profile(&mut self, profile_id: String, tui: &mut Tui) -> Result<()> {
         use crate::launcher::Launcher;
-        
+
         // Get the profile from storage
         match self.storage.load_profile(&profile_id) {
             Ok(profile) => {
                 // Exit TUI mode before launching
                 tui.exit()?;
-                
+
                 // Display launch message
                 println!("Preparing to launch profile: {}", profile.display_name());
                 println!();
-                
+
                 // Launch the profile with storage
                 let launcher = Launcher::with_storage(self.storage.clone());
                 match launcher.launch_with_profile(&profile) {
                     Ok(_) => {
                         println!();
                         println!("✅ Gemini CLI session ended successfully.");
-                        
+
                         // Small delay to let the user see the message
                         std::thread::sleep(std::time::Duration::from_millis(500));
-                        
+
                         // Re-enter TUI mode
                         tui.enter()?;
                         self.action_tx.send(Action::ClearScreen)?;
                         self.action_tx.send(Action::Render)?;
                     }
                     Err(e) => {
-                        eprintln!("❌ Error launching profile: {}", e);
-                        
+                        eprintln!("❌ Error launching profile: {e}");
+
                         // Longer delay for errors so user can read the message
                         std::thread::sleep(std::time::Duration::from_secs(2));
-                        
+
                         // Re-enter TUI mode
                         tui.enter()?;
                         self.action_tx.send(Action::ClearScreen)?;
-                        self.action_tx.send(Action::Error(format!("Failed to launch profile: {}", e)))?;
+                        self.action_tx
+                            .send(Action::Error(format!("Failed to launch profile: {e}")))?;
                     }
                 }
             }
@@ -273,11 +281,11 @@ impl App {
                 // Re-enter TUI mode on error
                 tui.enter()?;
                 self.action_tx.send(Action::ClearScreen)?;
-                self.action_tx.send(Action::Error(format!("Failed to load profile: {}", e)))?;
+                self.action_tx
+                    .send(Action::Error(format!("Failed to load profile: {e}")))?;
             }
         }
-        
+
         Ok(())
     }
 }
-
