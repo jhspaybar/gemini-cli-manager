@@ -1,5 +1,11 @@
 # Gemini CLI Manager
 
+> **⚠️ EXPERIMENTAL TOY PROJECT ⚠️**
+> 
+> This is an experimental project created to learn and explore TUI development with Go/Bubbletea and Rust/Ratatui. 
+> **This is NOT production-ready software.** Do not use this project or its code for anything other than learning purposes.
+> The code quality, architecture, and functionality are all experimental and should not be relied upon.
+
 A Terminal User Interface (TUI) application for managing Gemini CLI extensions and profiles.
 
 ![Gemini CLI Manager Demo](demo.gif)
